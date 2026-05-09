@@ -3,89 +3,154 @@
 @section('title', 'Profil Saya - VINTARA')
 
 @section('content')
-<div class="profile-page" style="padding: 40px 0; background: #F3F0FF; min-height: 60vh;">
-    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+<div class="profile-page" style="background: linear-gradient(135deg, #F3F0FF 0%, #E8E4FF 100%); min-height: 100vh;">
+    <div class="container" style="max-width: 1400px; margin: 0 auto; padding: 40px 20px;">
+        
+        {{-- HEADER SECTION --}}
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h1 style="color: #1F1B5B; font-size: 32px; margin-bottom: 10px; font-weight: 700;">
+                <i class="fas fa-user-circle"></i> Profil Saya
+            </h1>
+            <p style="color: #6c757d; font-size: 14px;">Kelola informasi pribadi dan pengaturan akun Anda</p>
+        </div>
         
         <div class="profile-wrapper" style="display: flex; gap: 30px; flex-wrap: wrap;">
             
-            {{-- SIDEBAR KIRI - PROFIL USER --}}
-            <div style="flex: 1; min-width: 280px; background: white; border-radius: 24px; padding: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
-                <div style="text-align: center; margin-bottom: 25px;">
-                    <div style="width: 100px; height: 100px; background: #1F1B5B; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px;">
-                        <i class="fas fa-user" style="font-size: 50px; color: white;"></i>
+            {{-- SIDEBAR KIRI - PROFIL USER (MODERN) --}}
+            <div style="flex: 1; min-width: 300px; background: white; border-radius: 32px; padding: 30px; box-shadow: 0 15px 35px rgba(31,27,91,0.1); transition: all 0.3s ease;">
+                
+                {{-- AVATAR SECTION --}}
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div style="position: relative; width: 120px; height: 120px; margin: 0 auto 20px;">
+                        <div style="width: 120px; height: 120px; background: linear-gradient(135deg, #1F1B5B, #3a3590); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 25px rgba(31,27,91,0.2);">
+                            <i class="fas fa-user" style="font-size: 55px; color: white;"></i>
+                        </div>
+                        <div style="position: absolute; bottom: 5px; right: 5px; width: 35px; height: 35px; background: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 3px solid white;">
+                            <i class="fas fa-check" style="font-size: 14px; color: white;"></i>
+                        </div>
                     </div>
-                    <h3 id="profileNameDisplay" style="color: #1F1B5B; margin-bottom: 5px;">Pengunjung</h3>
-                    <p id="profileEmailDisplay" style="color: #6c757d; font-size: 13px;">guest@vintara.com</p>
-                    <p id="memberSinceDisplay" style="color: #888; font-size: 11px; margin-top: 5px;">Pengunjung</p>
+                    <h3 id="profileNameDisplay" style="color: #1F1B5B; margin-bottom: 5px; font-size: 22px; font-weight: 700;">Pengunjung</h3>
+                    <p id="profileEmailDisplay" style="color: #6c757d; font-size: 13px; margin-bottom: 8px;">guest@vintara.com</p>
+                    <div id="memberSinceDisplay" style="background: #F3F0FF; display: inline-block; padding: 4px 15px; border-radius: 30px; font-size: 11px; color: #1F1B5B;">
+                        <i class="fas fa-calendar-alt"></i> Pengunjung
+                    </div>
                 </div>
                 
-                <div style="border-top: 1px solid #e9ecef; padding-top: 20px;">
-                    <div id="adminBadge" style="display: none; background: #ffcc00; color: #1F1B5B; padding: 8px; border-radius: 20px; text-align: center; font-size: 12px; font-weight: 600; margin-bottom: 15px;">
-                        <i class="fas fa-crown"></i> Administrator
+                {{-- ADMIN BADGE --}}
+                <div id="adminBadge" style="display: none; background: linear-gradient(135deg, #ffcc00, #ffdd44); color: #1F1B5B; padding: 8px; border-radius: 30px; text-align: center; font-size: 12px; font-weight: 600; margin-bottom: 20px;">
+                    <i class="fas fa-crown"></i> Administrator
+                </div>
+                
+                {{-- MENU ITEMS (MODERN) --}}
+                <div style="margin-top: 10px;">
+                    <div class="menu-item active" data-tab="personal" onclick="showTab('personal')" style="display: flex; align-items: center; gap: 14px; padding: 14px 18px; margin-bottom: 8px; border-radius: 20px; cursor: pointer; background: linear-gradient(135deg, #F3F0FF, #E8E4FF); color: #1F1B5B; transition: all 0.3s;">
+                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #1F1B5B, #3a3590); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user" style="color: white; font-size: 18px;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 15px;">Informasi Pribadi</div>
+                            <div style="font-size: 11px; color: #6c757d;">Edit profil Anda</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
                     </div>
                     
-                    <div class="menu-item active" data-tab="personal" onclick="showTab('personal')" style="display: flex; align-items: center; gap: 12px; padding: 12px 15px; margin-bottom: 5px; border-radius: 12px; cursor: pointer; background: #F3F0FF; color: #1F1B5B;">
-                        <i class="fas fa-user" style="width: 20px;"></i>
-                        <span>Informasi Pribadi</span>
+                    <div class="menu-item" data-tab="orders" onclick="showTab('orders')" style="display: flex; align-items: center; gap: 14px; padding: 14px 18px; margin-bottom: 8px; border-radius: 20px; cursor: pointer; transition: all 0.3s;">
+                        <div style="width: 40px; height: 40px; background: #F3F0FF; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-shopping-bag" style="color: #1F1B5B; font-size: 18px;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 15px;">Riwayat Pesanan</div>
+                            <div style="font-size: 11px; color: #6c757d;">Lihat semua pesanan Anda</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
                     </div>
                     
-                    <div class="menu-item" data-tab="orders" onclick="showTab('orders')" style="display: flex; align-items: center; gap: 12px; padding: 12px 15px; margin-bottom: 5px; border-radius: 12px; cursor: pointer;">
-                        <i class="fas fa-shopping-bag" style="width: 20px;"></i>
-                        <span>Riwayat Pesanan</span>
+                    <div class="menu-item" data-tab="address" onclick="showTab('address')" style="display: flex; align-items: center; gap: 14px; padding: 14px 18px; margin-bottom: 8px; border-radius: 20px; cursor: pointer; transition: all 0.3s;">
+                        <div style="width: 40px; height: 40px; background: #F3F0FF; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-map-marker-alt" style="color: #1F1B5B; font-size: 18px;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 15px;">Alamat Saya</div>
+                            <div style="font-size: 11px; color: #6c757d;">Kelola alamat pengiriman</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
                     </div>
                     
-                    <div class="menu-item" data-tab="address" onclick="showTab('address')" style="display: flex; align-items: center; gap: 12px; padding: 12px 15px; margin-bottom: 5px; border-radius: 12px; cursor: pointer;">
-                        <i class="fas fa-map-marker-alt" style="width: 20px;"></i>
-                        <span>Alamat Saya</span>
-                    </div>
-                    
-                    <div class="menu-item" data-tab="security" onclick="showTab('security')" style="display: flex; align-items: center; gap: 12px; padding: 12px 15px; margin-bottom: 5px; border-radius: 12px; cursor: pointer;">
-                        <i class="fas fa-lock" style="width: 20px;"></i>
-                        <span>Keamanan</span>
+                    <div class="menu-item" data-tab="security" onclick="showTab('security')" style="display: flex; align-items: center; gap: 14px; padding: 14px 18px; margin-bottom: 8px; border-radius: 20px; cursor: pointer; transition: all 0.3s;">
+                        <div style="width: 40px; height: 40px; background: #F3F0FF; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-lock" style="color: #1F1B5B; font-size: 18px;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 600; font-size: 15px;">Keamanan</div>
+                            <div style="font-size: 11px; color: #6c757d;">Ubah password Anda</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="margin-left: auto; font-size: 12px; opacity: 0.5;"></i>
                     </div>
                     
                     <div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #e9ecef;">
-                        <button onclick="logout()" style="width: 100%; background: none; border: none; padding: 12px; text-align: left; color: #ff4757; cursor: pointer; display: flex; align-items: center; gap: 12px; border-radius: 12px;">
-                            <i class="fas fa-sign-out-alt" style="width: 20px;"></i>
-                            <span>Logout</span>
+                        <button onclick="logout()" style="width: 100%; background: linear-gradient(135deg, #fff5f5, #ffe0e0); border: none; padding: 14px 18px; text-align: left; color: #ff4757; cursor: pointer; display: flex; align-items: center; gap: 14px; border-radius: 20px; transition: all 0.3s;">
+                            <div style="width: 40px; height: 40px; background: #ff4757; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-sign-out-alt" style="color: white; font-size: 18px;"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight: 600; font-size: 15px;">Logout</div>
+                                <div style="font-size: 11px; color: #6c757d;">Keluar dari akun Anda</div>
+                            </div>
+                            <i class="fas fa-sign-out-alt" style="margin-left: auto; font-size: 14px; opacity: 0.5;"></i>
                         </button>
                     </div>
                 </div>
             </div>
             
             {{-- CONTENT KANAN --}}
-            <div style="flex: 3; min-width: 300px; background: white; border-radius: 24px; padding: 30px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+            <div style="flex: 3; min-width: 300px; background: white; border-radius: 32px; padding: 35px; box-shadow: 0 15px 35px rgba(31,27,91,0.1);">
                 
                 {{-- TAB INFORMASI PRIBADI --}}
                 <div id="tab-personal" class="tab-content" style="display: block;">
-                    <h2 style="color: #1F1B5B; margin-bottom: 25px; font-size: 22px;">
-                        <i class="fas fa-user-circle"></i> Informasi Pribadi
-                    </h2>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 30px; border-bottom: 2px solid #F3F0FF; padding-bottom: 15px;">
+                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #1F1B5B, #3a3590); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user-edit" style="font-size: 22px; color: white;"></i>
+                        </div>
+                        <h2 style="color: #1F1B5B; font-size: 22px; margin: 0; font-weight: 600;">Informasi Pribadi</h2>
+                    </div>
                     
                     <form id="profileForm" onsubmit="return false;">
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px;">
                             <div>
-                                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Nama Lengkap</label>
-                                <input type="text" id="fullName" class="form-input" placeholder="Nama lengkap" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: #333;">
+                                    <i class="fas fa-user"></i> Nama Lengkap
+                                </label>
+                                <input type="text" id="fullName" class="form-input" placeholder="Masukkan nama lengkap" 
+                                       style="width: 100%; padding: 14px 16px; border: 2px solid #e9ecef; border-radius: 16px; font-size: 14px; transition: all 0.3s;">
                             </div>
                             <div>
-                                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Email</label>
-                                <input type="email" id="email" class="form-input" placeholder="Email" readonly style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px; background: #f5f5f5;">
-                            </div>
-                        </div>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-                            <div>
-                                <label style="display: block; margin-bottom: 8px; font-weight: 500;">No. Telepon</label>
-                                <input type="tel" id="phone" class="form-input" placeholder="08123456789" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px;">
-                            </div>
-                            <div>
-                                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Tanggal Lahir</label>
-                                <input type="date" id="birthdate" class="form-input" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: #333;">
+                                    <i class="fas fa-envelope"></i> Email
+                                </label>
+                                <input type="email" id="email" class="form-input" placeholder="Email" readonly 
+                                       style="width: 100%; padding: 14px 16px; border: 2px solid #e9ecef; border-radius: 16px; font-size: 14px; background: #f8f9fa;">
                             </div>
                         </div>
                         
-                        <button type="button" onclick="saveProfile()" style="background: #1F1B5B; color: white; border: none; padding: 12px 30px; border-radius: 30px; font-weight: 600; cursor: pointer; margin-top: 10px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: #333;">
+                                    <i class="fas fa-phone"></i> No. Telepon
+                                </label>
+                                <input type="tel" id="phone" class="form-input" placeholder="08123456789" 
+                                       style="width: 100%; padding: 14px 16px; border: 2px solid #e9ecef; border-radius: 16px; font-size: 14px;">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: #333;">
+                                    <i class="fas fa-calendar"></i> Tanggal Lahir
+                                </label>
+                                <input type="date" id="birthdate" class="form-input" 
+                                       style="width: 100%; padding: 14px 16px; border: 2px solid #e9ecef; border-radius: 16px; font-size: 14px;">
+                            </div>
+                        </div>
+                        
+                        <button type="button" onclick="saveProfile()" 
+                                style="background: linear-gradient(135deg, #1F1B5B, #3a3590); color: white; border: none; padding: 14px 35px; border-radius: 50px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: all 0.3s; box-shadow: 0 4px 12px rgba(31,27,91,0.2);">
                             <i class="fas fa-save"></i> Simpan Perubahan
                         </button>
                     </form>
@@ -93,54 +158,79 @@
                 
                 {{-- TAB RIWAYAT PESANAN --}}
                 <div id="tab-orders" class="tab-content" style="display: none;">
-                    <h2 style="color: #1F1B5B; margin-bottom: 25px; font-size: 22px;">
-                        <i class="fas fa-shopping-bag"></i> Riwayat Pesanan
-                    </h2>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 30px; border-bottom: 2px solid #F3F0FF; padding-bottom: 15px;">
+                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #1F1B5B, #3a3590); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-shopping-bag" style="font-size: 22px; color: white;"></i>
+                        </div>
+                        <h2 style="color: #1F1B5B; font-size: 22px; margin: 0; font-weight: 600;">Riwayat Pesanan</h2>
+                    </div>
                     
                     <div id="orderHistoryList" style="max-height: 500px; overflow-y: auto;">
-                        <div style="text-align: center; padding: 40px;">
-                            <i class="fas fa-box-open" style="font-size: 50px; color: #ccc;"></i>
+                        <div style="text-align: center; padding: 60px;">
+                            <i class="fas fa-box-open" style="font-size: 60px; color: #ccc;"></i>
                             <p style="margin-top: 15px; color: #6c757d;">Belum ada pesanan</p>
-                            <button onclick="window.location.href='/kategori'" style="background: #1F1B5B; color: white; border: none; padding: 10px 25px; border-radius: 30px; cursor: pointer; margin-top: 15px;">Mulai Belanja</button>
+                            <button onclick="window.location.href='/kategori'" 
+                                    style="background: linear-gradient(135deg, #1F1B5B, #3a3590); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; margin-top: 20px; font-weight: 600;">
+                                Mulai Belanja
+                            </button>
                         </div>
                     </div>
                 </div>
                 
                 {{-- TAB ALAMAT --}}
                 <div id="tab-address" class="tab-content" style="display: none;">
-                    <h2 style="color: #1F1B5B; margin-bottom: 25px; font-size: 22px;">
-                        <i class="fas fa-map-marker-alt"></i> Alamat Saya
-                    </h2>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 30px; border-bottom: 2px solid #F3F0FF; padding-bottom: 15px;">
+                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #1F1B5B, #3a3590); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-map-marker-alt" style="font-size: 22px; color: white;"></i>
+                        </div>
+                        <h2 style="color: #1F1B5B; font-size: 22px; margin: 0; font-weight: 600;">Alamat Saya</h2>
+                    </div>
                     
                     <form id="addressForm" onsubmit="return false;">
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Alamat Lengkap</label>
-                            <textarea id="fullAddress" rows="3" class="form-input" placeholder="Jl. Contoh No. 123, RT/RW" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px;"></textarea>
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: #333;">
+                                <i class="fas fa-home"></i> Alamat Lengkap
+                            </label>
+                            <textarea id="fullAddress" rows="3" class="form-input" placeholder="Jl. Contoh No. 123, RT/RW, Kelurahan, Kecamatan" 
+                                      style="width: 100%; padding: 14px 16px; border: 2px solid #e9ecef; border-radius: 16px; font-size: 14px; resize: vertical;"></textarea>
                         </div>
                         
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px;">
                             <div>
-                                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Kota</label>
-                                <input type="text" id="city" class="form-input" placeholder="Kota" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: #333;">
+                                    <i class="fas fa-city"></i> Kota
+                                </label>
+                                <input type="text" id="city" class="form-input" placeholder="Kota" 
+                                       style="width: 100%; padding: 14px 16px; border: 2px solid #e9ecef; border-radius: 16px; font-size: 14px;">
                             </div>
                             <div>
-                                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Provinsi</label>
-                                <input type="text" id="province" class="form-input" placeholder="Provinsi" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px;">
-                            </div>
-                        </div>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
-                            <div>
-                                <label style="display: block; margin-bottom: 8px; font-weight: 500;">Kode Pos</label>
-                                <input type="text" id="postalCode" class="form-input" placeholder="Kode pos" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px;">
-                            </div>
-                            <div>
-                                <label style="display: block; margin-bottom: 8px; font-weight: 500;">No. Telepon</label>
-                                <input type="tel" id="addressPhone" class="form-input" placeholder="08123456789" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px;">
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: #333;">
+                                    <i class="fas fa-map"></i> Provinsi
+                                </label>
+                                <input type="text" id="province" class="form-input" placeholder="Provinsi" 
+                                       style="width: 100%; padding: 14px 16px; border: 2px solid #e9ecef; border-radius: 16px; font-size: 14px;">
                             </div>
                         </div>
                         
-                        <button type="button" onclick="saveAddress()" style="background: #1F1B5B; color: white; border: none; padding: 12px 30px; border-radius: 30px; font-weight: 600; cursor: pointer;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px;">
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: #333;">
+                                    <i class="fas fa-mail-bulk"></i> Kode Pos
+                                </label>
+                                <input type="text" id="postalCode" class="form-input" placeholder="Kode pos" 
+                                       style="width: 100%; padding: 14px 16px; border: 2px solid #e9ecef; border-radius: 16px; font-size: 14px;">
+                            </div>
+                            <div>
+                                <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: #333;">
+                                    <i class="fas fa-phone"></i> No. Telepon
+                                </label>
+                                <input type="tel" id="addressPhone" class="form-input" placeholder="08123456789" 
+                                       style="width: 100%; padding: 14px 16px; border: 2px solid #e9ecef; border-radius: 16px; font-size: 14px;">
+                            </div>
+                        </div>
+                        
+                        <button type="button" onclick="saveAddress()" 
+                                style="background: linear-gradient(135deg, #1F1B5B, #3a3590); color: white; border: none; padding: 14px 35px; border-radius: 50px; font-weight: 600; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(31,27,91,0.2);">
                             <i class="fas fa-save"></i> Simpan Alamat
                         </button>
                     </form>
@@ -148,27 +238,40 @@
                 
                 {{-- TAB KEAMANAN --}}
                 <div id="tab-security" class="tab-content" style="display: none;">
-                    <h2 style="color: #1F1B5B; margin-bottom: 25px; font-size: 22px;">
-                        <i class="fas fa-lock"></i> Keamanan
-                    </h2>
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 30px; border-bottom: 2px solid #F3F0FF; padding-bottom: 15px;">
+                        <div style="width: 45px; height: 45px; background: linear-gradient(135deg, #1F1B5B, #3a3590); border-radius: 15px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-shield-alt" style="font-size: 22px; color: white;"></i>
+                        </div>
+                        <h2 style="color: #1F1B5B; font-size: 22px; margin: 0; font-weight: 600;">Keamanan Akun</h2>
+                    </div>
                     
                     <form id="securityForm" onsubmit="return false;">
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Password Saat Ini</label>
-                            <input type="password" id="currentPassword" class="form-input" placeholder="Masukkan password saat ini" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px;">
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: #333;">
+                                <i class="fas fa-key"></i> Password Saat Ini
+                            </label>
+                            <input type="password" id="currentPassword" class="form-input" placeholder="Masukkan password saat ini" 
+                                   style="width: 100%; padding: 14px 16px; border: 2px solid #e9ecef; border-radius: 16px; font-size: 14px;">
                         </div>
                         
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Password Baru</label>
-                            <input type="password" id="newPassword" class="form-input" placeholder="Minimal 4 karakter" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px;">
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: #333;">
+                                <i class="fas fa-lock"></i> Password Baru
+                            </label>
+                            <input type="password" id="newPassword" class="form-input" placeholder="Minimal 4 karakter" 
+                                   style="width: 100%; padding: 14px 16px; border: 2px solid #e9ecef; border-radius: 16px; font-size: 14px;">
                         </div>
                         
-                        <div style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; font-weight: 500;">Konfirmasi Password Baru</label>
-                            <input type="password" id="confirmPassword" class="form-input" placeholder="Ulangi password baru" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px;">
+                        <div style="margin-bottom: 25px;">
+                            <label style="display: block; margin-bottom: 8px; font-weight: 600; font-size: 13px; color: #333;">
+                                <i class="fas fa-check-circle"></i> Konfirmasi Password Baru
+                            </label>
+                            <input type="password" id="confirmPassword" class="form-input" placeholder="Ulangi password baru" 
+                                   style="width: 100%; padding: 14px 16px; border: 2px solid #e9ecef; border-radius: 16px; font-size: 14px;">
                         </div>
                         
-                        <button type="button" onclick="changePassword()" style="background: #1F1B5B; color: white; border: none; padding: 12px 30px; border-radius: 30px; font-weight: 600; cursor: pointer;">
+                        <button type="button" onclick="changePassword()" 
+                                style="background: linear-gradient(135deg, #1F1B5B, #3a3590); color: white; border: none; padding: 14px 35px; border-radius: 50px; font-weight: 600; cursor: pointer; margin-top: 10px; box-shadow: 0 4px 12px rgba(31,27,91,0.2);">
                             <i class="fas fa-key"></i> Ubah Password
                         </button>
                     </form>
@@ -182,14 +285,14 @@
     .menu-item {
         transition: all 0.3s ease;
     }
-    .menu-item:hover {
-        background: #F3F0FF;
-        color: #1F1B5B;
+    .menu-item:hover:not(.active) {
+        background: #F8F9FA !important;
+        transform: translateX(5px);
     }
     .form-input:focus {
         outline: none;
-        border-color: #1F1B5B;
-        box-shadow: 0 0 0 2px rgba(31,27,91,0.1);
+        border-color: #1F1B5B !important;
+        box-shadow: 0 0 0 3px rgba(31,27,91,0.1) !important;
     }
     .notification-custom {
         position: fixed;
@@ -202,19 +305,13 @@
         z-index: 9999;
         transform: translateX(450px);
         transition: transform 0.3s;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
     .notification-custom.error {
         background: #ff4757;
     }
     .notification-custom.show {
         transform: translateX(0);
-    }
-    .order-card {
-        transition: all 0.3s ease;
-    }
-    .order-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
     .status-badge {
         display: inline-block;
@@ -230,6 +327,23 @@
     .status-delivered { background: #d4edda; color: #155724; }
     .status-cancelled { background: #f8d7da; color: #721c24; }
     .status-success { background: #28a745; color: white; }
+    
+    .order-card {
+        transition: all 0.3s ease;
+    }
+    .order-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(31,27,91,0.1);
+    }
+    
+    @media (max-width: 768px) {
+        .profile-wrapper {
+            flex-direction: column;
+        }
+        .profile-wrapper > div:first-child {
+            margin-bottom: 20px;
+        }
+    }
 </style>
 
 <script>
@@ -270,7 +384,6 @@
         return statusMap[status] || { text: status, class: 'status-pending' };
     }
     
-    // ==================== SAVE PROFILE ====================
     function saveProfile() {
         const name = document.getElementById('fullName').value;
         const phone = document.getElementById('phone').value;
@@ -281,9 +394,6 @@
             return;
         }
         
-        console.log('Saving profile:', { name, phone, birthdate });
-        
-        // Buat object profil lengkap
         const completeProfile = {
             name: name.trim(),
             phone: phone || '',
@@ -292,14 +402,12 @@
             lastUpdated: new Date().toISOString()
         };
         
-        // SIMPAN KE BANYAK TEMPAT AGAR AMAN
         localStorage.setItem('vintara_guest_profile', JSON.stringify(completeProfile));
         localStorage.setItem('vintara_profile', JSON.stringify(completeProfile));
         localStorage.setItem('vintara_user_name', name.trim());
         localStorage.setItem('vintara_user_phone', phone || '');
         localStorage.setItem('vintara_user_birthdate', birthdate || '');
         
-        // Update user login jika ada
         const user = localStorage.getItem('vintara_user');
         if (user) {
             try {
@@ -309,64 +417,36 @@
             } catch(e) {}
         }
         
-        // Update tampilan sidebar
         document.getElementById('profileNameDisplay').textContent = name.trim();
-        
         showNotification('Profil berhasil diperbarui!');
-        
-        // Verifikasi
-        const saved = localStorage.getItem('vintara_guest_profile');
-        console.log('Verifikasi tersimpan:', saved);
     }
     
-    // ==================== LOAD PROFILE ====================
     function loadProfile() {
-        console.log('Loading profile...');
-        
         let profileName = 'Pengunjung';
         let profileEmail = 'guest@vintara.com';
         let profilePhone = '';
         let profileBirthdate = '';
         
-        // PRIORITAS 1: Ambil dari guest profile
         const guestProfile = localStorage.getItem('vintara_guest_profile');
         if (guestProfile) {
             try {
                 const profile = JSON.parse(guestProfile);
-                if (profile.name && profile.name !== 'Pengunjung') {
-                    profileName = profile.name;
-                }
-                if (profile.phone) profilePhone = profile.phone;
-                if (profile.birthdate) profileBirthdate = profile.birthdate;
-                if (profile.email) profileEmail = profile.email;
-                console.log('Loaded from guest_profile:', profile);
-            } catch(e) {}
-        }
-        
-        // PRIORITAS 2: Ambil dari vintara_profile
-        const mainProfile = localStorage.getItem('vintara_profile');
-        if (mainProfile && !guestProfile) {
-            try {
-                const profile = JSON.parse(mainProfile);
                 if (profile.name && profile.name !== 'Pengunjung') profileName = profile.name;
                 if (profile.phone) profilePhone = profile.phone;
                 if (profile.birthdate) profileBirthdate = profile.birthdate;
-                console.log('Loaded from vintara_profile:', profile);
+                if (profile.email) profileEmail = profile.email;
             } catch(e) {}
         }
         
-        // PRIORITAS 3: Ambil dari user login
         const user = localStorage.getItem('vintara_user');
         if (user) {
             try {
                 currentUser = JSON.parse(user);
                 if (currentUser.name && profileName === 'Pengunjung') profileName = currentUser.name;
                 if (currentUser.email) profileEmail = currentUser.email;
-                console.log('Loaded from user:', currentUser);
             } catch(e) {}
         }
         
-        // PRIORITAS 4: Ambil dari legacy storage
         const savedName = localStorage.getItem('vintara_user_name');
         if (savedName && profileName === 'Pengunjung') profileName = savedName;
         
@@ -376,19 +456,16 @@
         const savedBirthdate = localStorage.getItem('vintara_user_birthdate');
         if (savedBirthdate && !profileBirthdate) profileBirthdate = savedBirthdate;
         
-        // Update sidebar profile
         document.getElementById('profileNameDisplay').textContent = profileName;
         document.getElementById('profileEmailDisplay').textContent = profileEmail;
         
-        // Set member since
         const memberDate = localStorage.getItem('vintara_member_since');
         if (memberDate) {
-            document.getElementById('memberSinceDisplay').textContent = 'Member sejak ' + new Date(memberDate).toLocaleDateString('id-ID');
+            document.getElementById('memberSinceDisplay').innerHTML = `<i class="fas fa-calendar-alt"></i> Member sejak ${new Date(memberDate).toLocaleDateString('id-ID')}`;
         } else {
-            document.getElementById('memberSinceDisplay').textContent = 'Pengunjung';
+            document.getElementById('memberSinceDisplay').innerHTML = `<i class="fas fa-calendar-alt"></i> Pengunjung`;
         }
         
-        // Show admin badge if admin
         const adminBadge = document.getElementById('adminBadge');
         if (currentUser && (currentUser.isAdmin === true || currentUser.email === 'admin@vintara.com')) {
             adminBadge.style.display = 'block';
@@ -396,21 +473,11 @@
             adminBadge.style.display = 'none';
         }
         
-        // Isi form
-        const fullNameInput = document.getElementById('fullName');
-        const phoneInput = document.getElementById('phone');
-        const birthdateInput = document.getElementById('birthdate');
-        const emailInput = document.getElementById('email');
+        document.getElementById('fullName').value = profileName;
+        document.getElementById('email').value = profileEmail;
+        document.getElementById('phone').value = profilePhone;
+        document.getElementById('birthdate').value = profileBirthdate;
         
-        if (fullNameInput) fullNameInput.value = profileName;
-        if (phoneInput) phoneInput.value = profilePhone;
-        if (birthdateInput) birthdateInput.value = profileBirthdate;
-        if (emailInput) {
-            emailInput.value = profileEmail;
-            emailInput.readOnly = true;
-        }
-        
-        // Load address
         const savedAddress = localStorage.getItem('vintara_address');
         if (savedAddress) {
             try {
@@ -423,10 +490,7 @@
             } catch(e) {}
         }
         
-        // Load orders
         loadOrderHistory();
-        
-        console.log('Profile loaded - Name:', profileName, 'Phone:', profilePhone);
     }
     
     function saveAddress() {
@@ -480,10 +544,10 @@
         
         if (orders.length === 0) {
             container.innerHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <i class="fas fa-box-open" style="font-size: 50px; color: #ccc;"></i>
+                <div style="text-align: center; padding: 60px;">
+                    <i class="fas fa-box-open" style="font-size: 60px; color: #ccc;"></i>
                     <p style="margin-top: 15px; color: #6c757d;">Belum ada pesanan</p>
-                    <button onclick="window.location.href='/kategori'" style="background: #1F1B5B; color: white; border: none; padding: 10px 25px; border-radius: 30px; cursor: pointer; margin-top: 15px;">Mulai Belanja</button>
+                    <button onclick="window.location.href='/kategori'" style="background: linear-gradient(135deg, #1F1B5B, #3a3590); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; margin-top: 20px; font-weight: 600;">Mulai Belanja</button>
                 </div>
             `;
             return;
@@ -496,7 +560,7 @@
             const orderId = order.order_number || order.id;
             
             return `
-                <div class="order-card" style="background: #F3F0FF; padding: 20px; border-radius: 16px; margin-bottom: 15px;">
+                <div class="order-card" style="background: #F3F0FF; padding: 20px; border-radius: 20px; margin-bottom: 15px; transition: all 0.3s;">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap;">
                         <div>
                             <span style="font-weight: bold; color: #1F1B5B; font-size: 14px;">Order #${orderId}</span>
@@ -536,7 +600,6 @@
     
     function logout() {
         localStorage.removeItem('vintara_user');
-        // Jangan hapus guest profile
         showNotification('Anda telah logout');
         setTimeout(() => {
             window.location.href = '/';
@@ -556,11 +619,12 @@
         document.querySelectorAll('.menu-item').forEach(item => {
             item.style.background = 'transparent';
             item.style.color = '#333';
+            item.style.transform = 'translateX(0)';
         });
         
         const activeMenu = document.querySelector(`.menu-item[data-tab="${tabName}"]`);
         if (activeMenu) {
-            activeMenu.style.background = '#F3F0FF';
+            activeMenu.style.background = 'linear-gradient(135deg, #F3F0FF, #E8E4FF)';
             activeMenu.style.color = '#1F1B5B';
         }
         
@@ -587,9 +651,7 @@
         }
     }
     
-    // ==================== PREVENT OVERRIDE ====================
     function preventProfileOverride() {
-        // Setiap 2 detik, cek apakah data profil berubah
         setInterval(function() {
             const savedProfile = localStorage.getItem('vintara_guest_profile');
             if (savedProfile) {
@@ -598,14 +660,11 @@
                     const currentInputName = document.getElementById('fullName').value;
                     const currentDisplayName = document.getElementById('profileNameDisplay').textContent;
                     
-                    // Jika input kosong atau masih 'Pengunjung' tapi ada data tersimpan, pulihkan
                     if ((currentInputName === '' || currentInputName === 'Pengunjung') && profile.name && profile.name !== 'Pengunjung') {
-                        console.log('Restoring profile from storage...');
                         document.getElementById('fullName').value = profile.name;
                         document.getElementById('profileNameDisplay').textContent = profile.name;
                     }
                     
-                    // Jika display masih 'Pengunjung' tapi ada nama tersimpan
                     if ((currentDisplayName === 'Pengunjung' || currentDisplayName === '') && profile.name && profile.name !== 'Pengunjung') {
                         document.getElementById('profileNameDisplay').textContent = profile.name;
                     }

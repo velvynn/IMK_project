@@ -87,9 +87,9 @@ function initDefaultCart() {
     
     if (cart.length === 0) {
         const defaultCart = [
-            { id: 1, name: 'iPhone 16 Pro Max', price: 18000000, quantity: 1, image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&h=400&fit=crop', stock: 50, brand: 'Apple' },
-            { id: 2, name: 'Samsung Galaxy S24 Ultra', price: 19000000, quantity: 1, image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&h=400&fit=crop', stock: 45, brand: 'Samsung' },
-            { id: 3, name: 'Xiaomi 14 Pro', price: 12000000, quantity: 1, image: 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop', stock: 60, brand: 'Xiaomi' }
+            { id: 1, name: 'iPhone 16 Pro Max', price: 18000000, quantity: 1, image: 'https://picsum.photos/id/0/400/400', stock: 50, brand: 'Apple' },
+            { id: 2, name: 'Samsung Galaxy S24 Ultra', price: 19000000, quantity: 1, image: 'https://picsum.photos/id/1/400/400', stock: 45, brand: 'Samsung' },
+            { id: 3, name: 'Xiaomi 14 Pro', price: 12000000, quantity: 1, image: 'https://picsum.photos/id/2/400/400', stock: 60, brand: 'Xiaomi' }
         ];
         
         localStorage.setItem('vintara_cart', JSON.stringify(defaultCart));
@@ -112,12 +112,12 @@ function initDefaultCart() {
 // ==================== FALLBACK PRODUCTS ====================
 function getFallbackProducts() {
     return [
-        { id: 1, name: "iPhone 16 Pro Max", slug: "iphone-16-pro-max", category_slug: "handphone", brand: "Apple", price: 18000000, original_price: 25000000, stock: 50, sold: 1234, rating: 4.8, description: "iPhone 16 Pro Max dengan chip A18 Pro.", is_flash_sale: true, discount: 28, main_image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&h=400&fit=crop" },
-        { id: 2, name: "Samsung Galaxy S24 Ultra", slug: "samsung-galaxy-s24-ultra", category_slug: "handphone", brand: "Samsung", price: 19000000, original_price: 24000000, stock: 45, sold: 2345, rating: 4.7, is_flash_sale: true, discount: 21, main_image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&h=400&fit=crop" },
-        { id: 3, name: "Xiaomi 14 Pro", slug: "xiaomi-14-pro", category_slug: "handphone", brand: "Xiaomi", price: 12000000, original_price: 16000000, stock: 60, sold: 3456, rating: 4.6, is_flash_sale: false, discount: 0, main_image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop" },
-        { id: 4, name: "MacBook Air M3", slug: "macbook-air-m3", category_slug: "laptop", brand: "Apple", price: 35000000, original_price: 42000000, stock: 30, sold: 567, rating: 4.9, is_flash_sale: false, discount: 0, main_image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop" },
-        { id: 5, name: "ASUS ROG Zephyrus G14", slug: "asus-rog-zephyrus-g14", category_slug: "laptop", brand: "Asus", price: 22000000, original_price: 28000000, stock: 25, sold: 789, rating: 4.7, is_flash_sale: true, discount: 21, main_image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&h=400&fit=crop" },
-        { id: 6, name: "Sony WH-1000XM5", slug: "sony-wh-1000xm5", category_slug: "headset", brand: "Sony", price: 7000000, original_price: 9500000, stock: 45, sold: 1234, rating: 4.9, is_flash_sale: true, discount: 26, main_image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&h=400&fit=crop" },
+        { id: 1, name: "iPhone 16 Pro Max", slug: "iphone-16-pro-max", category_slug: "handphone", brand: "Apple", price: 18000000, original_price: 25000000, stock: 50, sold: 1234, rating: 4.8, description: "iPhone 16 Pro Max dengan chip A18 Pro.", is_flash_sale: true, discount: 28, main_image: "https://picsum.photos/id/0/400/400" },
+        { id: 2, name: "Samsung Galaxy S24 Ultra", slug: "samsung-galaxy-s24-ultra", category_slug: "handphone", brand: "Samsung", price: 19000000, original_price: 24000000, stock: 45, sold: 2345, rating: 4.7, is_flash_sale: true, discount: 21, main_image: "https://picsum.photos/id/1/400/400" },
+        { id: 3, name: "Xiaomi 14 Pro", slug: "xiaomi-14-pro", category_slug: "handphone", brand: "Xiaomi", price: 12000000, original_price: 16000000, stock: 60, sold: 3456, rating: 4.6, is_flash_sale: false, discount: 0, main_image: "https://picsum.photos/id/2/400/400" },
+        { id: 4, name: "MacBook Air M3", slug: "macbook-air-m3", category_slug: "laptop", brand: "Apple", price: 35000000, original_price: 42000000, stock: 30, sold: 567, rating: 4.9, is_flash_sale: false, discount: 0, main_image: "https://picsum.photos/id/8/400/400" },
+        { id: 5, name: "ASUS ROG Zephyrus G14", slug: "asus-rog-zephyrus-g14", category_slug: "laptop", brand: "Asus", price: 22000000, original_price: 28000000, stock: 25, sold: 789, rating: 4.7, is_flash_sale: true, discount: 21, main_image: "https://picsum.photos/id/9/400/400" },
+        { id: 6, name: "Sony WH-1000XM5", slug: "sony-wh-1000xm5", category_slug: "headset", brand: "Sony", price: 7000000, original_price: 9500000, stock: 45, sold: 1234, rating: 4.9, is_flash_sale: true, discount: 26, main_image: "https://picsum.photos/id/13/400/400" },
     ];
 }
 
@@ -712,8 +712,9 @@ function setupNewsletter() {
     }
 }
 
-// ==================== EVENT LISTENERS ====================
+// ==================== EVENT LISTENERS (DENGAN PERBAIKAN SEARCH) ====================
 function setupEventListeners() {
+    // User Icon - langsung ke profile
     const userIcon = document.getElementById('userIcon');
     if (userIcon) {
         const newUserIcon = userIcon.cloneNode(true);
@@ -725,6 +726,7 @@ function setupEventListeners() {
         });
     }
     
+    // Cart Icon
     const cartIcon = document.getElementById('cartIcon');
     if (cartIcon) {
         const newCartIcon = cartIcon.cloneNode(true);
@@ -736,6 +738,7 @@ function setupEventListeners() {
         });
     }
     
+    // Close Cart
     const closeCart = document.getElementById('closeCart');
     if (closeCart) {
         const newCloseCart = closeCart.cloneNode(true);
@@ -745,6 +748,7 @@ function setupEventListeners() {
         });
     }
     
+    // Cart Overlay
     const cartOverlay = document.getElementById('cartOverlay');
     if (cartOverlay) {
         const newOverlay = cartOverlay.cloneNode(true);
@@ -754,39 +758,43 @@ function setupEventListeners() {
         });
     }
     
+    // ==================== PERBAIKAN SEARCH ====================
     const searchInput = document.getElementById('searchInput');
     if (searchInput) {
         let timeout;
-        searchInput.addEventListener('input', (e) => {
+        searchInput.addEventListener('input', function(e) {
             clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                const keyword = e.target.value;
-                if (keyword.length > 2) {
-                    const filtered = allProducts.filter(p => 
-                        p.name.toLowerCase().includes(keyword.toLowerCase()) ||
-                        (p.brand && p.brand.toLowerCase().includes(keyword.toLowerCase()))
-                    );
-                    const grid = document.getElementById('berandaProductGrid');
-                    if (grid) {
-                        grid.innerHTML = filtered.slice(0, 8).map(product => `
-                            <div class="product-card" onclick="goToProductDetail(${product.id})" style="cursor:pointer;">
-                                <div class="product-image">
-                                    <img src="${product.main_image || 'https://placehold.co/400x400/e9ecef/1F1B5B?text=' + encodeURIComponent(product.name)}" 
-                                         alt="${product.name}" 
-                                         onerror="this.src='https://placehold.co/400x400/e9ecef/1F1B5B?text=No+Image'">
-                                </div>
-                                <div class="product-info">
-                                    <h4 class="product-title">${escapeHtml(product.name)}</h4>
-                                    <div class="product-price">${formatRupiah(product.price)}</div>
-                                    <button class="btn-add-cart" onclick="event.stopPropagation(); addToCartLocal(${product.id})">Add to Cart</button>
-                                </div>
-                            </div>
-                        `).join('');
-                    }
-                } else if (keyword.length === 0 && document.getElementById('berandaProductGrid')) {
-                    renderBerandaProducts();
+            timeout = setTimeout(function() {
+                const keyword = e.target.value.trim();
+                if (keyword.length > 0) {
+                    window.location.href = '/kategori?search=' + encodeURIComponent(keyword);
                 }
             }, 500);
+        });
+        
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const keyword = e.target.value.trim();
+                if (keyword.length > 0) {
+                    window.location.href = '/kategori?search=' + encodeURIComponent(keyword);
+                }
+            }
+        });
+    }
+    
+    // Search icon click
+    const searchIcon = document.querySelector('.nav-search i');
+    if (searchIcon) {
+        const newSearchIcon = searchIcon.cloneNode(true);
+        searchIcon.parentNode.replaceChild(newSearchIcon, searchIcon);
+        newSearchIcon.addEventListener('click', function(e) {
+            e.preventDefault();
+            const searchInputField = document.getElementById('searchInput');
+            const keyword = searchInputField ? searchInputField.value.trim() : '';
+            if (keyword.length > 0) {
+                window.location.href = '/kategori?search=' + encodeURIComponent(keyword);
+            }
         });
     }
 }
@@ -872,4 +880,4 @@ window.formatRupiah = formatRupiah;
 window.generateStarRating = generateStarRating;
 window.showNotification = showNotification;
 
-console.log('✅ main.js loaded - Stok akan berkurang otomatis saat checkout');
+console.log('✅ main.js loaded - Stok akan berkurang otomatis saat checkout - Search berfungsi');

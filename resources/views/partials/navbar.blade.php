@@ -6,7 +6,7 @@
         </div>
         
         <div class="nav-search">
-            <i class="fas fa-search"></i>
+            <i class="fas fa-search" id="searchIcon" style="cursor: pointer;"></i>
             <input type="text" id="searchInput" placeholder="Cari produk, brand, atau kategori...">
         </div>
         
@@ -64,9 +64,21 @@
         }
     }
     
+    // ==================== FUNGSI PENCARIAN ====================
+    function performSearch() {
+        const searchInput = document.getElementById('searchInput');
+        const keyword = searchInput.value.trim();
+        
+        if (keyword.length === 0) {
+            window.location.href = '/';
+            return;
+        }
+        
+        window.location.href = '/kategori?search=' + encodeURIComponent(keyword);
+    }
+    
     // Setup saat halaman dimuat
     document.addEventListener('DOMContentLoaded', function() {
-        // Update cart count
         updateNavbarCartCount();
         
         // Setup cart icon
@@ -79,23 +91,39 @@
             };
         }
         
-        // ========== PERBAIKAN UTAMA: USER ICON LANGSUNG KE PROFIL ==========
+        // ========== USER ICON LANGSUNG KE PROFIL ==========
         const userIcon = document.getElementById('userIcon');
         if (userIcon) {
-            // Hapus semua event listener lama dengan clone
             const newUserIcon = userIcon.cloneNode(true);
             userIcon.parentNode.replaceChild(newUserIcon, userIcon);
-            
-            // Tambah event listener baru - LANGSUNG KE PROFIL
             newUserIcon.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-                console.log('User icon clicked - redirecting to profile');
                 window.location.href = '/profile';
             });
         }
         
-        // Update cart count saat ada perubahan storage
+        // ========== FUNGSI PENCARIAN ==========
+        const searchInput = document.getElementById('searchInput');
+        const searchIcon = document.getElementById('searchIcon');
+        
+        if (searchInput) {
+            // Search saat tekan Enter
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    performSearch();
+                }
+            });
+        }
+        
+        if (searchIcon) {
+            searchIcon.addEventListener('click', function(e) {
+                e.preventDefault();
+                performSearch();
+            });
+        }
+        
         window.addEventListener('storage', function(e) {
             if (e.key === 'vintara_cart') {
                 updateNavbarCartCount();
@@ -103,12 +131,10 @@
         });
     });
     
-    // Update setiap 2 detik (sinkronisasi)
     setInterval(function() {
         updateNavbarCartCount();
     }, 2000);
     
-    // Navbar scroll effect
     window.addEventListener('scroll', function() {
         const navbar = document.querySelector('.navbar');
         if (navbar) {
@@ -122,7 +148,7 @@
         }
     });
     
-    // Export ke global
     window.updateNavbarCartCount = updateNavbarCartCount;
     window.openCartSidebarFromNavbar = openCartSidebarFromNavbar;
+    window.performSearch = performSearch;
 </script>

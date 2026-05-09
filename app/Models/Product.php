@@ -10,6 +10,8 @@ class Product extends Model
 {
     use HasFactory;
 
+    protected $table = 'products';
+
     protected $fillable = [
         'name', 'slug', 'category_id', 'brand', 'price', 'original_price',
         'stock', 'sold', 'description', 'is_flash_sale', 'discount',
@@ -28,7 +30,6 @@ class Product extends Model
         'rating' => 'float',
     ];
 
-    // Boot method untuk auto-generate slug
     protected static function boot()
     {
         parent::boot();
@@ -46,7 +47,7 @@ class Product extends Model
         });
     }
 
-    // Relationships
+    // ==================== RELATIONSHIPS ====================
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -54,34 +55,49 @@ class Product extends Model
 
     public function images()
     {
-        return $this->hasMany(ProductImage::class);
+        return $this->hasMany(ProductImage::class, 'product_id');
     }
 
     public function variants()
     {
-        return $this->hasMany(ProductVariant::class);
+        return $this->hasMany(ProductVariant::class, 'product_id');
     }
 
     public function reviews()
     {
-        return $this->hasMany(Review::class);
+        return $this->hasMany(Review::class, 'product_id');
     }
 
     public function orderItems()
     {
-        return $this->hasMany(OrderItem::class);
+        return $this->hasMany(OrderItem::class, 'product_id');
     }
 
     public function carts()
     {
-        return $this->hasMany(Cart::class);
+        return $this->hasMany(Cart::class, 'product_id');
     }
 
-    // Accessors
+    // ==================== ACCESSORS UTAMA ====================
+    
+    // PERBAIKAN UTAMA: main_image - ambil dari tabel product_images
     public function getMainImageAttribute()
     {
-        $image = $this->images()->where('is_main', true)->first();
-        return $image ? $image->image_url : null;
+        // Cari gambar utama (is_main = true)
+        $mainImage = $this->images()->where('is_main', true)->first();
+        
+        if ($mainImage) {
+            return $mainImage->image_url;
+        }
+        
+        // Jika tidak ada gambar utama, ambil gambar pertama
+        $firstImage = $this->images()->first();
+        if ($firstImage) {
+            return $firstImage->image_url;
+        }
+        
+        // Fallback: gambar placeholder dengan nama produk
+        return 'https://placehold.co/400x400/1F1B5B/white?text=' . urlencode($this->name);
     }
 
     public function getAllImagesAttribute()
@@ -125,6 +141,13 @@ class Product extends Model
         return 'Tersedia';
     }
 
+    public function getStockStatusClassAttribute()
+    {
+        if ($this->stock <= 0) return 'danger';
+        if ($this->stock <= 5) return 'warning';
+        return 'success';
+    }
+
     public function getRatingAverageAttribute()
     {
         return round($this->reviews()->avg('rating') ?? 0, 1);
@@ -141,7 +164,7 @@ class Product extends Model
         $this->update(['rating' => round($avg, 1)]);
     }
 
-    // Stock management
+    // ==================== STOCK MANAGEMENT ====================
     public function decreaseStock($quantity)
     {
         $this->decrement('stock', $quantity);
@@ -154,7 +177,7 @@ class Product extends Model
         $this->decrement('sold', $quantity);
     }
 
-    // Scopes
+    // ==================== SCOPES ====================
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
@@ -165,6 +188,16 @@ class Product extends Model
         return $query->where('is_flash_sale', true)
             ->where('flash_sale_end', '>', now())
             ->where('is_active', true);
+    }
+
+    public function scopeLowStock($query)
+    {
+        return $query->where('stock', '<=', 5)->where('is_active', true);
+    }
+
+    public function scopeOutOfStock($query)
+    {
+        return $query->where('stock', '<=', 0);
     }
 
     public function getRouteKeyName()

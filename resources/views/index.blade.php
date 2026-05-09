@@ -16,28 +16,13 @@
             </div>
         </div>
         <div class="hero-visual">
-            <div class="floating-card card-1">
-                <i class="fas fa-mobile-alt"></i>
-                <div class="card-info">
-                    <span>iPhone 16 Pro</span>
-                    <strong>Rp 18.999.000</strong>
-                </div>
+            {{-- GAMBAR BULAT --}}
+            <div class="hero-round-image-wrapper">
+                <img src="{{ asset('img/beranda.png') }}" 
+                     alt="VINTARA" 
+                     class="hero-round-img"
+                     onerror="this.src='https://placehold.co/400x400/1F1B5B/white?text=VINTARA'">
             </div>
-            <div class="floating-card card-2">
-                <i class="fas fa-headphones"></i>
-                <div class="card-info">
-                    <span>Sony WH-1000XM5</span>
-                    <strong>Rp 6.999.000</strong>
-                </div>
-            </div>
-            <div class="floating-card card-3">
-                <i class="fas fa-laptop"></i>
-                <div class="card-info">
-                    <span>MacBook Air M3</span>
-                    <strong>Rp 34.999.000</strong>
-                </div>
-            </div>
-            <div class="hero-circle"></div>
         </div>
     </div>
 </section>
@@ -449,7 +434,71 @@
     @keyframes spin {
         to { transform: rotate(360deg); }
     }
+    
+    /* ==================== HERO GAMBAR BULAT ==================== */
+    .hero-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        gap: 60px;
+        flex-wrap: wrap;
+    }
+    
+    .hero-content {
+        flex: 1;
+    }
+    
+    .hero-visual {
+        flex: 1;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+    
+    .hero-round-image-wrapper {
+        width: 300px;
+        height: 300px;
+        background: linear-gradient(135deg, #F3F0FF, #E8E4FF);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 20px 35px rgba(31,27,91,0.15);
+        animation: floatImage 4s ease-in-out infinite;
+    }
+    
+    .hero-round-img {
+        width: 85%;
+        height: 85%;
+        object-fit: cover;
+        border-radius: 50%;
+        transition: transform 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .hero-round-img:hover {
+        transform: scale(1.03);
+    }
+    
+    @keyframes floatImage {
+        0%, 100% {
+            transform: translateY(0);
+        }
+        50% {
+            transform: translateY(-12px);
+        }
+    }
+    
     @media (max-width: 992px) {
+        .hero-container {
+            flex-direction: column;
+            text-align: center;
+        }
+        .hero-round-image-wrapper {
+            width: 250px;
+            height: 250px;
+        }
         .beranda-two-column {
             grid-template-columns: 1fr;
         }
@@ -460,7 +509,12 @@
             grid-template-columns: repeat(2, 1fr);
         }
     }
+    
     @media (max-width: 768px) {
+        .hero-round-image-wrapper {
+            width: 200px;
+            height: 200px;
+        }
         .deals-grid {
             grid-template-columns: 1fr;
         }

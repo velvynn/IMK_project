@@ -86,6 +86,8 @@ class ProductController extends Controller
             $rating = $this->getProductRating($product->id);
             $product->avg_rating = $rating['average'];
             $product->total_reviews = $rating['total'];
+            // PASTIKAN main_image TERSEDIA
+            $product->main_image = $product->main_image;
         }
         
         return response()->json([
@@ -115,6 +117,8 @@ class ProductController extends Controller
         $rating = $this->getProductRating($product->id);
         $product->avg_rating = $rating['average'];
         $product->total_reviews = $rating['total'];
+        // PASTIKAN main_image TERSEDIA
+        $product->main_image = $product->main_image;
         
         return response()->json([
             'success' => true,
@@ -123,9 +127,58 @@ class ProductController extends Controller
     }
 
     /**
-     * Get product by slug
+     * Get product by slug for web view
      */
     public function showBySlug($slug)
+    {
+        $product = Product::with(['images', 'variants', 'reviews.user', 'category'])
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->first();
+        
+        if (!$product) {
+            abort(404, 'Product not found');
+        }
+        
+        // PASTIKAN main_image TERSEDIA
+        $product->main_image = $product->main_image;
+        
+        $rating = $this->getProductRating($product->id);
+        $product->avg_rating = $rating['average'];
+        $product->total_reviews = $rating['total'];
+        
+        // Get related products
+        $relatedProducts = Product::with('images')
+            ->where('category_id', $product->category_id)
+            ->where('id', '!=', $product->id)
+            ->where('is_active', true)
+            ->limit(4)
+            ->get();
+        
+        // PASTIKAN main_image TERSEDIA untuk setiap related product
+        foreach ($relatedProducts as $related) {
+            $related->main_image = $related->main_image;
+        }
+        
+        $reviews = $product->reviews;
+        $totalReviews = $reviews->count();
+        $averageRating = $totalReviews > 0 ? round($reviews->avg('rating'), 1) : 0;
+        
+        $ratingDistribution = [
+            5 => $reviews->where('rating', 5)->count(),
+            4 => $reviews->where('rating', 4)->count(),
+            3 => $reviews->where('rating', 3)->count(),
+            2 => $reviews->where('rating', 2)->count(),
+            1 => $reviews->where('rating', 1)->count(),
+        ];
+        
+        return view('product-detail', compact('product', 'relatedProducts', 'reviews', 'totalReviews', 'averageRating', 'ratingDistribution'));
+    }
+
+    /**
+     * Get product by slug for API
+     */
+    public function showBySlugApi($slug)
     {
         $product = Product::with(['images', 'variants', 'reviews.user'])
             ->where('slug', $slug)
@@ -142,6 +195,7 @@ class ProductController extends Controller
         $rating = $this->getProductRating($product->id);
         $product->avg_rating = $rating['average'];
         $product->total_reviews = $rating['total'];
+        $product->main_image = $product->main_image;
         
         return response()->json([
             'success' => true,
@@ -172,6 +226,7 @@ class ProductController extends Controller
         foreach ($products as $product) {
             $rating = $this->getProductRating($product->id);
             $product->avg_rating = $rating['average'];
+            $product->main_image = $product->main_image;
         }
         
         return response()->json([
@@ -195,6 +250,7 @@ class ProductController extends Controller
         foreach ($products as $product) {
             $rating = $this->getProductRating($product->id);
             $product->avg_rating = $rating['average'];
+            $product->main_image = $product->main_image;
         }
         
         return response()->json([
@@ -231,6 +287,7 @@ class ProductController extends Controller
         foreach ($products as $product) {
             $rating = $this->getProductRating($product->id);
             $product->avg_rating = $rating['average'];
+            $product->main_image = $product->main_image;
         }
         
         return response()->json([

@@ -3098,3 +3098,181 @@ button {
     cursor: not-allowed;
     transform: none;
 }
+
+/* ==================== PERBAIKAN GAMBAR PRODUCT UNTUK KATEGORI & RELATED PRODUCTS ==================== */
+
+/* PASTIKAN SEMUA PRODUCT IMAGE KONSISTEN - FULL FRAME TANPA WHITE SPACE */
+.product-image {
+    height: 200px;
+    width: 100%;
+    background: linear-gradient(135deg, #f5f5f5, #ffffff);
+    overflow: hidden;
+    position: relative;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+/* HOVER ZOOM EFFECT */
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+/* KHUSUS UNTUK KATEGORI PRODUCT GRID */
+.kategori-product-grid .product-image,
+.related-products-grid .product-image,
+.beranda-product-grid .product-image {
+    height: 200px;
+    width: 100%;
+}
+
+.kategori-product-grid .product-image img,
+.related-products-grid .product-image img,
+.beranda-product-grid .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* UNTUK GAMBAR YANG MEMBUTUHKAN CONTAIN MODE (KASUS KHUSUS) */
+.product-image img.contain-mode {
+    object-fit: contain;
+    padding: 10px;
+}
+
+/* FALLBACK UNTUK GAMBAR YANG GAGAL LOAD */
+.product-image img.error-load {
+    object-fit: contain;
+    padding: 20px;
+    background: #f5f5f5;
+}
+
+/* RESPONSIVE UNTUK TABLET */
+@media (max-width: 768px) {
+    .product-image,
+    .kategori-product-grid .product-image,
+    .related-products-grid .product-image,
+    .beranda-product-grid .product-image {
+        height: 160px;
+    }
+}
+
+/* RESPONSIVE UNTUK HP */
+@media (max-width: 576px) {
+    .product-image,
+    .kategori-product-grid .product-image,
+    .related-products-grid .product-image,
+    .beranda-product-grid .product-image {
+        height: 140px;
+    }
+}
+
+/* KHUSUS UNTUK FLASH SALE PAGE */
+.flash-products-grid .product-image {
+    height: 200px;
+    width: 100%;
+}
+
+.flash-products-grid .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (max-width: 768px) {
+    .flash-products-grid .product-image {
+        height: 160px;
+    }
+}
+
+/* KHUSUS UNTUK CART PAGE */
+.cart-product-image {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #f5f5f5, #ffffff);
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cart-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* KHUSUS UNTUK CART SIDEBAR */
+.cart-item-img {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #f5f5f5, #ffffff);
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.cart-item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* KHUSUS UNTUK PRODUCT DETAIL MAIN IMAGE */
+.main-image {
+    background: linear-gradient(135deg, #f5f5f5, #ffffff);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    overflow: hidden;
+}
+
+.main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* KHUSUS UNTUK THUMBNAIL */
+.thumbnail {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #f5f5f5, #ffffff);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.thumbnail.active {
+    border-color: var(--primary);
+}
+
+/* KHUSUS UNTUK RECOMMENDATIONS */
+.recommend-img-small {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #f5f5f5, #ffffff);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.recommend-img-small img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

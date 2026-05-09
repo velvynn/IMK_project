@@ -3,21 +3,41 @@
 @section('title', $product->name . ' - VINTARA')
 
 @section('content')
-<div class="product-detail-page" style="padding: 60px 0; background: var(--bg-light); min-height: 60vh;">
+<div class="product-detail-page" style="padding: 60px 0; background: #F3F0FF; min-height: 60vh;">
     <div class="product-detail-container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-        <div class="product-detail-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; background: var(--bg-white); border-radius: 30px; padding: 40px; box-shadow: 0 10px 30px rgba(31,27,91,0.08);">
+        
+        {{-- BREADCRUMB --}}
+        <div style="margin-bottom: 20px; font-size: 13px; color: #6c757d;">
+            <a href="{{ url('/') }}" style="color: #6c757d; text-decoration: none;">Beranda</a>
+            <i class="fas fa-chevron-right" style="font-size: 10px; margin: 0 8px;"></i>
+            <a href="{{ url('/kategori/' . ($product->category->slug ?? '')) }}" style="color: #6c757d; text-decoration: none;">{{ $product->category->name ?? 'Produk' }}</a>
+            <i class="fas fa-chevron-right" style="font-size: 10px; margin: 0 8px;"></i>
+            <span style="color: #1F1B5B;">{{ $product->name }}</span>
+        </div>
+
+        <div class="product-detail-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; background: white; border-radius: 30px; padding: 40px; box-shadow: 0 10px 30px rgba(31,27,91,0.08);">
             
             {{-- GALLERY SECTION --}}
             <div class="product-gallery" style="display: flex; flex-direction: column; gap: 15px;">
-                <div class="main-image" style="background: var(--bg-light); border-radius: 24px; display: flex; align-items: center; justify-content: center; height: 400px; overflow: hidden;">
-                    <img id="mainImageImg" src="{{ $product->main_image ?? 'https://placehold.co/600x600/e9ecef/1F1B5B?text=' . urlencode($product->name) }}" 
+                <div class="main-image" style="background: #F3F0FF; border-radius: 24px; display: flex; align-items: center; justify-content: center; height: 400px; overflow: hidden;">
+                    @php
+                        $mainImage = $product->main_image;
+                        if (!$mainImage && $product->images && $product->images->count() > 0) {
+                            $mainImg = $product->images->where('is_main', true)->first();
+                            $mainImage = $mainImg ? $mainImg->image_url : $product->images->first()->image_url;
+                        }
+                        if (!$mainImage) {
+                            $mainImage = 'https://placehold.co/600x600/1F1B5B/white?text=' . urlencode($product->name);
+                        }
+                    @endphp
+                    <img id="mainImageImg" src="{{ $mainImage }}" 
                          alt="{{ $product->name }}" 
                          style="width:100%; height:100%; object-fit:cover; display:block;">
                 </div>
                 <div class="thumbnail-list" id="thumbnailList" style="display: flex; gap: 10px; flex-wrap: wrap;">
                     @foreach($product->images as $index => $image)
                     <div class="thumbnail {{ $index === 0 ? 'active' : '' }}" 
-                         style="width: 80px; height: 80px; background: var(--bg-light); border-radius: 16px; cursor: pointer; overflow: hidden; border: 2px solid {{ $index === 0 ? 'var(--primary)' : 'transparent' }};" 
+                         style="width: 80px; height: 80px; background: #F3F0FF; border-radius: 16px; cursor: pointer; overflow: hidden; border: 2px solid {{ $index === 0 ? '#1F1B5B' : 'transparent' }};" 
                          onclick="changeMainImage('{{ $image->image_url }}', this)">
                         <img src="{{ $image->image_url }}" alt="Thumbnail" style="width:100%; height:100%; object-fit:cover;">
                     </div>
@@ -27,14 +47,14 @@
             
             {{-- PRODUCT INFO SECTION --}}
             <div class="product-detail-info">
-                <h1 style="font-size: 28px; color: var(--primary); margin-bottom: 10px;">{{ $product->name }}</h1>
+                <h1 style="font-size: 28px; color: #1F1B5B; margin-bottom: 10px;">{{ $product->name }}</h1>
                 
                 <div class="product-detail-rating" style="display: flex; align-items: center; gap: 15px; margin: 15px 0; flex-wrap: wrap;">
-                    <div class="rating-stars" id="productRating" style="color: var(--warning); font-size: 16px;">
+                    <div class="rating-stars" id="productRating" style="color: #ffc107; font-size: 16px;">
                         {!! generateStarRating($averageRating) !!}
                     </div>
-                    <span style="color: var(--text-gray);">{{ number_format($averageRating, 1) }} ({{ $totalReviews }} Penilaian)</span>
-                    <span style="color: var(--text-gray);">{{ number_format($product->sold) }} Terjual</span>
+                    <span style="color: #6c757d;">{{ number_format($averageRating, 1) }} ({{ $totalReviews }} Penilaian)</span>
+                    <span style="color: #6c757d;">{{ number_format($product->sold) }} Terjual</span>
                 </div>
                 
                 {{-- Flash Sale Timer --}}
@@ -65,27 +85,27 @@
                 @endif
                 
                 {{-- Price --}}
-                <div class="flash-sale-price" style="font-size: 32px; font-weight: 800; color: var(--primary); display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 15px 0;">
+                <div class="flash-sale-price" style="font-size: 32px; font-weight: 800; color: #1F1B5B; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 15px 0;">
                     {{ formatRupiah($product->price) }}
                     @if($product->original_price && $product->original_price > $product->price)
-                    <span class="original-price-striked" style="font-size: 18px; color: var(--text-gray); text-decoration: line-through;">{{ formatRupiah($product->original_price) }}</span>
+                    <span class="original-price-striked" style="font-size: 18px; color: #6c757d; text-decoration: line-through;">{{ formatRupiah($product->original_price) }}</span>
                     <span class="discount-badge-price" style="background: #ff4757; color: white; padding: 4px 10px; border-radius: 30px; font-size: 13px;">-{{ $product->discount }}%</span>
                     @endif
                 </div>
                 
                 {{-- Description --}}
-                <p class="product-description" style="color: var(--text-gray); line-height: 1.6; margin: 20px 0;">{{ $product->description }}</p>
+                <p class="product-description" style="color: #6c757d; line-height: 1.6; margin: 20px 0;">{{ $product->description }}</p>
                 
                 {{-- Voucher Toko --}}
-                <div class="voucher-toko" style="background: linear-gradient(135deg, #e8eaf6, #c5cae9); padding: 15px; border-radius: 16px; margin: 20px 0; border-left: 4px solid var(--primary);">
-                    <strong style="color: var(--primary);">🎫 Voucher Toko</strong>
+                <div class="voucher-toko" style="background: linear-gradient(135deg, #e8eaf6, #c5cae9); padding: 15px; border-radius: 16px; margin: 20px 0; border-left: 4px solid #1F1B5B;">
+                    <strong style="color: #1F1B5B;">🎫 Voucher Toko</strong>
                     <p style="margin-top: 5px; font-size: 13px;">Potongan <span id="voucherDiscount">{{ $product->discount ?: 10 }}</span>% untuk pembelian pertama</p>
                 </div>
                 
                 {{-- Shipping Info --}}
                 <div class="shipping-info-card" style="background: linear-gradient(135deg, #e3f2fd, #bbdef5); padding: 15px; border-radius: 16px; margin: 15px 0; border-left: 4px solid #1565c0;">
                     <strong style="color: #1565c0;">🚚 Pengiriman</strong>
-                    <p style="margin-top: 5px; font-size: 13px;">Garansi Tiba 23-25 Apr ></p>
+                    <p style="margin-top: 5px; font-size: 13px;">Garansi Tiba 2-3 hari setelah pembayaran</p>
                     <p style="font-size: 12px; margin-top: 5px;">Jaminan Vintara: Bebas Pengembalian • COD • Proteksi Kerusakan</p>
                     <div class="shipping-from-to" style="background: rgba(255,255,255,0.6); padding: 10px; border-radius: 12px; margin-top: 10px; font-size: 13px;">
                         <i class="fas fa-map-marker-alt"></i> Dikirim dari <strong>Bandung</strong> ke seluruh Indonesia
@@ -100,10 +120,10 @@
                 
                 @if(count($colors) > 0)
                 <div class="product-variants" style="margin: 20px 0;">
-                    <p><strong>🎨 Color:</strong></p>
+                    <p><strong>🎨 Warna:</strong></p>
                     <div class="variant-buttons" id="colorOptions" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
                         @foreach($colors as $color)
-                        <button class="variant-btn" onclick="selectColor(this, '{{ $color }}')" style="padding: 8px 20px; border: 1px solid var(--border); background: white; border-radius: 30px; cursor: pointer; transition: all 0.3s;">
+                        <button class="variant-btn" onclick="selectColor(this, '{{ $color }}')" style="padding: 8px 20px; border: 1px solid #e9ecef; background: white; border-radius: 30px; cursor: pointer; transition: all 0.3s;">
                             {{ $color }}
                         </button>
                         @endforeach
@@ -117,7 +137,7 @@
                     <p><strong>📏 Ukuran / Varian:</strong></p>
                     <div class="size-options" id="sizeOptions" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
                         @foreach($sizes as $size)
-                        <button class="size-btn" onclick="selectSize(this, '{{ $size }}')" style="padding: 8px 20px; border: 1px solid var(--border); background: white; border-radius: 30px; cursor: pointer; transition: all 0.3s;">
+                        <button class="size-btn" onclick="selectSize(this, '{{ $size }}')" style="padding: 8px 20px; border: 1px solid #e9ecef; background: white; border-radius: 30px; cursor: pointer; transition: all 0.3s;">
                             {{ $size }}
                         </button>
                         @endforeach
@@ -127,15 +147,15 @@
                 
                 {{-- Quantity --}}
                 <div class="quantity-selector" style="display: flex; align-items: center; gap: 15px; margin: 20px 0;">
-                    <button onclick="decreaseQuantity()" style="width: 35px; height: 35px; border: 1px solid var(--border); background: white; border-radius: 8px; cursor: pointer; font-size: 18px;">-</button>
+                    <button onclick="decreaseQuantity()" style="width: 35px; height: 35px; border: 1px solid #e9ecef; background: white; border-radius: 8px; cursor: pointer; font-size: 18px;">-</button>
                     <span id="quantity" style="font-size: 16px; min-width: 40px; text-align: center; font-weight: 600;">1</span>
-                    <button onclick="increaseQuantity()" style="width: 35px; height: 35px; border: 1px solid var(--border); background: white; border-radius: 8px; cursor: pointer; font-size: 18px;">+</button>
-                    <span class="stock-info" style="color: var(--success); font-size: 14px;">Tersedia {{ $product->stock }}</span>
+                    <button onclick="increaseQuantity()" style="width: 35px; height: 35px; border: 1px solid #e9ecef; background: white; border-radius: 8px; cursor: pointer; font-size: 18px;">+</button>
+                    <span class="stock-info" style="color: #28a745; font-size: 14px;">Tersedia {{ $product->stock }}</span>
                 </div>
                 
                 {{-- Action Buttons --}}
                 <div class="product-actions" style="display: flex; gap: 15px; margin: 25px 0; flex-wrap: wrap;">
-                    <button class="btn-add-cart-large" id="addToCartDetail" style="flex: 1; background: var(--primary); color: white; border: none; padding: 14px; border-radius: 40px; font-weight: 600; cursor: pointer;">
+                    <button class="btn-add-cart-large" id="addToCartDetail" style="flex: 1; background: #1F1B5B; color: white; border: none; padding: 14px; border-radius: 40px; font-weight: 600; cursor: pointer;">
                         <i class="fas fa-shopping-cart"></i> Masukkan Keranjang
                     </button>
                     <button class="btn-buy-now" id="buyNowBtn" style="flex: 1; background: linear-gradient(135deg, #1a237e, #283593); color: white; border: none; padding: 14px; border-radius: 40px; font-weight: 600; cursor: pointer;">
@@ -146,17 +166,17 @@
         </div>
         
         {{-- REVIEWS SECTION --}}
-        <div class="reviews-section" style="margin-top: 50px; background: var(--bg-white); border-radius: 30px; padding: 30px; box-shadow: 0 10px 30px rgba(31,27,91,0.08);">
-            <h3 style="color: var(--primary); margin-bottom: 20px; font-size: 24px;">
+        <div class="reviews-section" style="margin-top: 50px; background: white; border-radius: 30px; padding: 30px; box-shadow: 0 10px 30px rgba(31,27,91,0.08);">
+            <h3 style="color: #1F1B5B; margin-bottom: 20px; font-size: 24px;">
                 <i class="fas fa-comment"></i> Ulasan Pembeli
             </h3>
             
             {{-- Rating Summary --}}
-            <div class="rating-summary" style="display: flex; gap: 30px; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid var(--border); flex-wrap: wrap;">
+            <div class="rating-summary" style="display: flex; gap: 30px; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 1px solid #e9ecef; flex-wrap: wrap;">
                 <div class="rating-average" style="text-align: center;">
-                    <div style="font-size: 48px; font-weight: 800; color: var(--primary);">{{ number_format($averageRating, 1) }}</div>
-                    <div style="color: var(--warning); font-size: 20px;">{!! generateStarRating($averageRating) !!}</div>
-                    <div style="color: var(--text-gray); font-size: 13px;">{{ $totalReviews }} ulasan</div>
+                    <div style="font-size: 48px; font-weight: 800; color: #1F1B5B;">{{ number_format($averageRating, 1) }}</div>
+                    <div style="color: #ffc107; font-size: 20px;">{!! generateStarRating($averageRating) !!}</div>
+                    <div style="color: #6c757d; font-size: 13px;">{{ $totalReviews }} ulasan</div>
                 </div>
                 <div class="rating-distribution" style="flex: 1;">
                     @foreach([5,4,3,2,1] as $star)
@@ -166,10 +186,10 @@
                     @endphp
                     <div class="rating-bar-item" style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                         <span style="min-width: 30px; font-size: 13px;">{{ $star }} ★</span>
-                        <div class="rating-bar-bg" style="flex: 1; height: 8px; background: var(--bg-light); border-radius: 4px; overflow: hidden;">
-                            <div class="rating-bar-fill" style="width: {{ $percentage }}%; height: 100%; background: var(--warning); border-radius: 4px;"></div>
+                        <div class="rating-bar-bg" style="flex: 1; height: 8px; background: #F3F0FF; border-radius: 4px; overflow: hidden;">
+                            <div class="rating-bar-fill" style="width: {{ $percentage }}%; height: 100%; background: #ffc107; border-radius: 4px;"></div>
                         </div>
-                        <span style="min-width: 45px; font-size: 12px; color: var(--text-gray);">{{ $count }}</span>
+                        <span style="min-width: 45px; font-size: 12px; color: #6c757d;">{{ $count }}</span>
                     </div>
                     @endforeach
                 </div>
@@ -178,56 +198,95 @@
             {{-- Reviews List --}}
             <div id="reviewsContainer">
                 @forelse($reviews as $review)
-                <div class="review-card" style="background: var(--bg-light); padding: 20px; border-radius: 20px; margin-bottom: 15px;">
+                <div class="review-card" style="background: #F3F0FF; padding: 20px; border-radius: 20px; margin-bottom: 15px;">
                     <div class="review-header" style="display: flex; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap;">
-                        <span class="review-name" style="font-weight: 600; color: var(--primary);">
+                        <span class="review-name" style="font-weight: 600; color: #1F1B5B;">
                             <i class="fas fa-user-circle"></i> {{ $review->user->name ?? 'Anonymous' }}
                         </span>
-                        <div class="review-stars" style="color: var(--warning);">
+                        <div class="review-stars" style="color: #ffc107;">
                             {!! generateStarRating($review->rating) !!}
                         </div>
-                        <span class="review-date" style="font-size: 12px; color: var(--text-gray);">
+                        <span class="review-date" style="font-size: 12px; color: #6c757d;">
                             {{ $review->created_at->format('d M Y') }}
                         </span>
                     </div>
-                    <p class="review-text" style="color: var(--text-gray); line-height: 1.5; margin-top: 10px;">{{ $review->comment }}</p>
+                    <p class="review-text" style="color: #6c757d; line-height: 1.5; margin-top: 10px;">{{ $review->comment }}</p>
                 </div>
                 @empty
                 <div class="no-reviews" style="text-align: center; padding: 40px;">
-                    <i class="fas fa-comment-slash" style="font-size: 50px; color: var(--text-light);"></i>
+                    <i class="fas fa-comment-slash" style="font-size: 50px; color: #adb5bd;"></i>
                     <p style="margin-top: 15px;">Belum ada ulasan untuk produk ini.</p>
-                    <p style="font-size: 13px; color: var(--text-gray);">Jadilah yang pertama memberikan ulasan!</p>
+                    <p style="font-size: 13px; color: #6c757d;">Jadilah yang pertama memberikan ulasan!</p>
                 </div>
                 @endforelse
             </div>
         </div>
         
-        {{-- RELATED PRODUCTS SECTION --}}
+        {{-- ==================== RELATED PRODUCTS SECTION (FIXED) ==================== --}}
         @if($relatedProducts->count() > 0)
         <div class="related-products" style="margin-top: 50px;">
-            <h3 style="color: var(--primary); margin-bottom: 25px; font-size: 24px;">
-                <i class="fas fa-tags"></i> Produk Terkait
-            </h3>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+                <h3 style="color: #1F1B5B; font-size: 24px; margin: 0;">
+                    <i class="fas fa-tags"></i> Produk Terkait
+                </h3>
+                <a href="{{ url('/kategori/' . ($product->category->slug ?? '')) }}" style="color: #1F1B5B; font-size: 14px; text-decoration: none;">
+                    Lihat Semua <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
             <div class="related-products-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px;">
                 @foreach($relatedProducts as $related)
+                @php
+                    // AMBIL GAMBAR DENGAN PRIORITAS YANG BENAR
+                    $relatedImage = $related->main_image;
+                    if (!$relatedImage && $related->images && $related->images->count() > 0) {
+                        $mainImg = $related->images->where('is_main', true)->first();
+                        $relatedImage = $mainImg ? $mainImg->image_url : $related->images->first()->image_url;
+                    }
+                    if (!$relatedImage) {
+                        $relatedImage = 'https://placehold.co/400x400/1F1B5B/white?text=' . urlencode($related->name);
+                    }
+                @endphp
                 <div class="product-card" onclick="window.location.href='{{ url('/product/' . $related->slug) }}'" 
-                     style="background: var(--bg-white); border-radius: 20px; overflow: hidden; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: all 0.3s;">
+                     style="background: white; border-radius: 20px; overflow: hidden; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative;">
+                    
+                    {{-- FLASH SALE BADGE --}}
                     @if($related->is_flash_sale)
-                    <div class="product-badge flash" style="position: absolute; top: 12px; left: 12px; background: #ff4757; color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; z-index: 1;">🔥 Flash Sale</div>
-                    @endif
-                    <div class="product-image" style="height: 200px; overflow: hidden; background: #f5f5f5;">
-                        <img src="{{ $related->main_image ?? 'https://placehold.co/400x400/e9ecef/1F1B5B?text=' . urlencode($related->name) }}" 
-                             alt="{{ $related->name }}" 
-                             style="width:100%; height:100%; object-fit:cover;"
-                             onerror="this.src='https://placehold.co/400x400/e9ecef/1F1B5B?text=No+Image'">
+                    <div class="product-badge flash" style="position: absolute; top: 12px; left: 12px; background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; z-index: 1;">
+                        🔥 Flash Sale -{{ $related->discount }}%
                     </div>
+                    @endif
+                    
+                    {{-- GAMBAR - FULL FRAME 100% height & width, object-fit cover --}}
+                    <div class="product-image" style="height: 200px; width: 100%; overflow: hidden; background: linear-gradient(135deg, #f5f5f5, #ffffff);">
+                        <img src="{{ $relatedImage }}" 
+                             alt="{{ $related->name }}" 
+                             style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;"
+                             onerror="this.onerror=null; this.src='https://placehold.co/400x400/1F1B5B/white?text=' + encodeURIComponent('{{ $related->name }}')">
+                    </div>
+                    
+                    {{-- INFO PRODUK --}}
                     <div class="product-info" style="padding: 16px;">
-                        <h4 class="product-title" style="font-weight: 600; margin-bottom: 5px; font-size: 15px;">{{ $related->name }}</h4>
-                        <div class="product-price" style="font-size: 18px; font-weight: 700; color: var(--primary);">
+                        <h4 class="product-title" style="font-weight: 600; margin-bottom: 5px; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            {{ $related->name }}
+                        </h4>
+                        <div class="product-rating" style="display: flex; align-items: center; gap: 5px; margin: 5px 0;">
+                            {!! generateStarRating($related->rating ?? 0) !!}
+                            <span style="font-size: 12px; color: #6c757d;">({{ number_format($related->rating ?? 0, 1) }})</span>
+                        </div>
+                        <div class="product-price" style="font-size: 18px; font-weight: 700; color: #1F1B5B; margin: 8px 0;">
                             {{ formatRupiah($related->price) }}
+                            @if($related->original_price && $related->original_price > $related->price)
+                                <span class="product-old-price" style="font-size: 14px; color: #6c757d; text-decoration: line-through; margin-left: 8px;">
+                                    {{ formatRupiah($related->original_price) }}
+                                </span>
+                            @endif
+                        </div>
+                        <div class="product-sold" style="font-size: 12px; color: #6c757d; margin-bottom: 10px;">
+                            <i class="fas fa-shopping-bag"></i> Terjual {{ number_format($related->sold ?? 0) }}+
                         </div>
                         <button class="btn-add-cart" onclick="event.stopPropagation(); addToCartLocal({{ $related->id }})" 
-                                style="width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; margin-top: 10px;">
+                                style="width: 100%; padding: 10px; background: #1F1B5B; color: white; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
                             <i class="fas fa-shopping-cart"></i> Add to Cart
                         </button>
                     </div>
@@ -236,11 +295,54 @@
             </div>
         </div>
         @endif
+        {{-- ==================== END RELATED PRODUCTS ==================== --}}
+        
     </div>
 </div>
-@endsection
 
-@push('scripts')
+<style>
+    .product-card {
+        transition: all 0.3s ease;
+    }
+    .product-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(31,27,91,0.15);
+    }
+    .product-card:hover .product-image img {
+        transform: scale(1.05);
+    }
+    .btn-add-cart:hover {
+        background: #3a3590 !important;
+    }
+    
+    /* Related Products Grid Responsive */
+    .related-products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 25px;
+    }
+    
+    @media (max-width: 768px) {
+        .related-products-grid {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .product-detail-grid {
+            grid-template-columns: 1fr;
+            padding: 25px !important;
+        }
+        .main-image {
+            height: 300px !important;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .related-products-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+</style>
+
 <script>
     // Product detail variables
     let currentStock = {{ $product->stock }};
@@ -284,12 +386,12 @@
     function selectColor(button, color) {
         document.querySelectorAll('.variant-btn').forEach(btn => {
             btn.style.background = 'white';
-            btn.style.color = 'var(--primary)';
-            btn.style.border = '1px solid var(--border)';
+            btn.style.color = '#1F1B5B';
+            btn.style.border = '1px solid #e9ecef';
         });
-        button.style.background = 'var(--primary)';
+        button.style.background = '#1F1B5B';
         button.style.color = 'white';
-        button.style.border = '1px solid var(--primary)';
+        button.style.border = '1px solid #1F1B5B';
         selectedColor = color;
         console.log('Selected color:', color);
     }
@@ -298,12 +400,12 @@
     function selectSize(button, size) {
         document.querySelectorAll('.size-btn').forEach(btn => {
             btn.style.background = 'white';
-            btn.style.color = 'var(--primary)';
-            btn.style.border = '1px solid var(--border)';
+            btn.style.color = '#1F1B5B';
+            btn.style.border = '1px solid #e9ecef';
         });
-        button.style.background = 'var(--primary)';
+        button.style.background = '#1F1B5B';
         button.style.color = 'white';
-        button.style.border = '1px solid var(--primary)';
+        button.style.border = '1px solid #1F1B5B';
         selectedSize = size;
         console.log('Selected size:', size);
     }
@@ -337,7 +439,7 @@
         document.querySelectorAll('.thumbnail').forEach(thumb => {
             thumb.style.border = '2px solid transparent';
         });
-        element.style.border = '2px solid var(--primary)';
+        element.style.border = '2px solid #1F1B5B';
     }
     
     // Add to cart function
@@ -403,4 +505,4 @@
     window.addToCartFromDetail = addToCartFromDetail;
     window.buyNow = buyNow;
 </script>
-@endpush
+@endsection
