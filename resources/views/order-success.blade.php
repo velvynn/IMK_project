@@ -3,83 +3,131 @@
 @section('title', 'Pesanan Berhasil - VINTARA')
 
 @section('content')
-<div class="success-page" style="min-height: 100vh; display: flex; justify-content: center; align-items: center; background: #F8F9FA; padding: 40px 20px;">
-    <div class="success-card" style="text-align: center; padding: 45px 35px; background: white; border-radius: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); max-width: 480px; width: 100%;">
+<div class="success-page" style="min-height: 100vh; display: flex; justify-content: center; align-items: center; background: linear-gradient(135deg, #F3F0FF 0%, #E8E4FF 100%); padding: 40px 20px;">
+    <div class="success-card" style="text-align: center; padding: 50px 40px; background: white; border-radius: 40px; box-shadow: 0 25px 50px rgba(31,27,91,0.15); max-width: 520px; width: 100%; animation: fadeInUp 0.5s ease;">
         
-        {{-- ICON SUKSES - DI TENGAH PERFECT --}}
-        <div style="margin-bottom: 24px;">
-            <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #28a745, #20c997); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; box-shadow: 0 8px 20px rgba(40,167,69,0.25);">
-                <i class="fas fa-check" style="font-size: 30px; color: white;"></i>
+        {{-- ==================== IKON 1: IKON CENTANG SUKSES (BESAR) ==================== --}}
+        {{-- Untuk mengatur BESAR/KECIL: ubah width dan height (contoh: 80px -> 100px) --}}
+        {{-- Untuk mengatur NAIK/TURUN: tambahkan margin-top: -10px (ke atas) atau margin-top: 10px (ke bawah) --}}
+        <div style="margin-bottom: 25px;">
+            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #28a745, #20c997); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto; box-shadow: 0 10px 25px rgba(40,167,69,0.3);">
+                <i class="fas fa-check" style="font-size: 38px; color: white;"></i>
             </div>
         </div>
         
         {{-- TEKS JUDUL --}}
-        <div style="margin-bottom: 20px;">
-            <h1 style="color: #1F1B5B; font-size: 26px; margin: 0 0 8px 0; font-weight: 700;">Pesanan Berhasil!</h1>
-            <p style="color: #6c757d; margin: 0; font-size: 14px;">Terima kasih telah berbelanja di VINTARA</p>
+        <div style="margin-bottom: 15px;">
+            <h1 style="color: #1F1B5B; font-size: 32px; margin: 0 0 8px 0; font-weight: 800;">Pesanan Berhasil!</h1>
+            <p style="color: #6c757d; margin: 0; font-size: 15px;">Terima kasih telah berbelanja di VINTARA</p>
         </div>
         
         {{-- STATUS BADGE --}}
         <div style="margin-bottom: 30px;">
-            <div style="background: #e8f5e9; padding: 8px 20px; border-radius: 40px; display: inline-flex; align-items: center; gap: 8px;">
-                <i class="fas fa-clock" style="font-size: 12px; color: #2e7d32;"></i>
-                <span style="color: #2e7d32; font-weight: 500; font-size: 13px;">Pesanan Anda sedang diproses</span>
+            <div style="background: linear-gradient(135deg, #e8f5e9, #c8e6d9); padding: 8px 24px; border-radius: 40px; display: inline-flex; align-items: center; gap: 10px;">
+                <div style="width: 10px; height: 10px; background: #28a745; border-radius: 50%; animation: pulse 1.5s infinite;"></div>
+                <span style="color: #2e7d32; font-weight: 600; font-size: 14px;">Pesanan Anda sedang diproses</span>
             </div>
         </div>
         
-        <div style="border-top: 1px solid #e9ecef; margin: 0 0 24px 0;"></div>
+        <div style="border-top: 1px solid #e9ecef; margin: 0 0 25px 0;"></div>
         
         {{-- NOMOR PESANAN --}}
-        <div style="margin-bottom: 24px;">
-            <p style="font-size: 11px; color: #6c757d; margin-bottom: 10px; letter-spacing: 1.5px; font-weight: 600;">NOMOR PESANAN</p>
-            <div style="background: #F3F0FF; padding: 10px 20px; border-radius: 50px; display: inline-block;">
-                <span id="orderNumberDisplay" style="font-size: 16px; font-weight: 700; color: #1F1B5B; letter-spacing: 0.5px; font-family: 'Courier New', monospace;">VIN-1234ABCD</span>
+        <div style="margin-bottom: 25px;">
+            <p style="font-size: 12px; color: #6c757d; margin-bottom: 12px; letter-spacing: 2px; font-weight: 600;">NOMOR PESANAN</p>
+            <div style="background: linear-gradient(135deg, #F3F0FF, #E8E4FF); padding: 14px 28px; border-radius: 60px; display: inline-block; border: 1px solid #d0c8ff;">
+                <span id="orderNumberDisplay" style="font-size: 18px; font-weight: 700; color: #1F1B5B; letter-spacing: 1px; font-family: 'Courier New', monospace;">VIN-1234ABCD</span>
             </div>
         </div>
         
-        <div style="border-top: 1px solid #e9ecef; margin: 0 0 24px 0;"></div>
+        <div style="border-top: 1px solid #e9ecef; margin: 0 0 25px 0;"></div>
         
-        {{-- INFORMASI --}}
-        <div style="margin-bottom: 35px; text-align: left;">
-            <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
-                <div style="width: 36px; height: 36px; background: #F3F0FF; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <i class="fas fa-envelope" style="font-size: 16px; color: #1F1B5B;"></i>
+        {{-- ==================== INFORMASI 1: EMAIL ==================== --}}
+        {{-- 
+          UNTUK MENGATUR NAIK/TURUN LOGO EMAIL:
+          - KE ATAS: tambah margin-top: -5px atau -10px pada div kotak logo
+          - KE BAWAH: tambah margin-top: 5px atau 10px pada div kotak logo
+          - align-items: center -> tengah, flex-start -> ke atas, flex-end -> ke bawah
+        --}}
+        <div style="margin-bottom: 15px;">
+            <div style="display: flex; align-items: center; gap: 18px; background: #F8F9FA; padding: 14px 22px; border-radius: 20px; border-left: 4px solid #1F1B5B;">
+                
+                {{-- KOTAK LOGO EMAIL --}}
+                {{-- Untuk mengatur BESAR/KECIL: ubah width dan height (contoh: 48px -> 40px kecil, 55px besar) --}}
+                {{-- Untuk mengatur NAIK/TURUN: ubah margin-top (positif = turun, negatif = naik) --}}
+                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #1F1B5B, #3a3590); border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    {{-- Untuk mengatur BESAR/KECIL IKON: ubah font-size (contoh: 22px -> 18px kecil, 26px besar) --}}
+                    <i class="fas fa-envelope" style="font-size: 22px; color: white;"></i>
                 </div>
-                <p style="color: #6c757d; font-size: 13px; margin: 0; line-height: 1.4;">Bukti pembayaran akan dikirim ke email Anda</p>
-            </div>
-            <div style="display: flex; align-items: center; gap: 14px;">
-                <div style="width: 36px; height: 36px; background: #F3F0FF; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                    <i class="fas fa-box" style="font-size: 16px; color: #1F1B5B;"></i>
-                </div>
-                <p style="color: #6c757d; font-size: 13px; margin: 0; line-height: 1.4;">Status pesanan dapat dilihat di halaman profil</p>
+                
+                {{-- TEKS EMAIL --}}
+                <p style="color: #4a5568; font-size: 14px; margin: 0; line-height: 1.4; text-align: left; flex: 1; font-weight: 500;">Bukti pembayaran akan dikirim ke email Anda</p>
             </div>
         </div>
         
-        {{-- TOMBOL --}}
-        <div style="display: flex; gap: 15px; justify-content: center;">
-            <button onclick="continueShopping()" style="background: #1F1B5B; color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px;">
-                <i class="fas fa-shopping-bag" style="font-size: 13px;"></i> Lanjut Belanja
+        {{-- ==================== INFORMASI 2: STATUS PESANAN ==================== --}}
+        {{-- 
+          UNTUK MENGATUR NAIK/TURUN LOGO BOX:
+          - KE ATAS: tambah margin-top: -5px atau -10px pada div kotak logo
+          - KE BAWAH: tambah margin-top: 5px atau 10px pada div kotak logo
+        --}}
+        <div style="margin-bottom: 35px;">
+            <div style="display: flex; align-items: center; gap: 18px; background: #F8F9FA; padding: 14px 22px; border-radius: 20px; border-left: 4px solid #1F1B5B;">
+                
+                {{-- KOTAK LOGO BOX --}}
+                {{-- Untuk mengatur BESAR/KECIL: ubah width dan height (contoh: 48px -> 40px kecil, 55px besar) --}}
+                {{-- Untuk mengatur NAIK/TURUN: ubah margin-top (positif = turun, negatif = naik) --}}
+                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #1F1B5B, #3a3590); border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    {{-- Untuk mengatur BESAR/KECIL IKON: ubah font-size (contoh: 22px -> 18px kecil, 26px besar) --}}
+                    <i class="fas fa-box" style="font-size: 22px; color: white;"></i>
+                </div>
+                
+                {{-- TEKS STATUS PESANAN --}}
+                <p style="color: #4a5568; font-size: 14px; margin: 0; line-height: 1.4; text-align: left; flex: 1; font-weight: 500;">Status pesanan dapat dilihat di halaman profil</p>
+            </div>
+        </div>
+        
+        {{-- ==================== TOMBOL ==================== --}}
+        {{-- 
+          UNTUK MENGATUR POSISI IKON DI TOMBOL:
+          - align-items: center -> ikon sejajar dengan teks
+          - gap: 10px -> jarak antara ikon dan teks
+          - Untuk ikon lebih besar: ubah font-size: 16px -> 18px atau 20px
+        --}}
+        <div style="display: flex; gap: 18px; justify-content: center; align-items: center; flex-wrap: wrap;">
+            
+            {{-- TOMBOL 1: LANJUT BELANJA --}}
+            <button onclick="continueShopping()" style="background: linear-gradient(135deg, #1F1B5B, #3a3590); color: white; border: none; padding: 14px 35px; border-radius: 50px; cursor: pointer; font-weight: 600; font-size: 15px; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(31,27,91,0.2);">
+                <i class="fas fa-shopping-bag" style="font-size: 16px;"></i> Lanjut Belanja
             </button>
-            <button onclick="viewMyOrders()" style="background: transparent; color: #1F1B5B; border: 2px solid #1F1B5B; padding: 12px 28px; border-radius: 50px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px;">
-                <i class="fas fa-list-ul" style="font-size: 13px;"></i> Lihat Pesanan
+            
+            {{-- TOMBOL 2: LIHAT PESANAN --}}
+            <button onclick="viewMyOrders()" style="background: transparent; color: #1F1B5B; border: 2px solid #1F1B5B; background: white; padding: 14px 35px; border-radius: 50px; cursor: pointer; font-weight: 600; font-size: 15px; transition: all 0.3s; display: inline-flex; align-items: center; justify-content: center; gap: 10px;">
+                <i class="fas fa-list-ul" style="font-size: 16px;"></i> Lihat Pesanan
             </button>
         </div>
     </div>
 </div>
 
 <style>
-    .success-card {
-        animation: fadeInUp 0.5s ease;
-    }
-    
     @keyframes fadeInUp {
         from {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(40px);
         }
         to {
             opacity: 1;
             transform: translateY(0);
+        }
+    }
+    
+    @keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.5;
+            transform: scale(1.2);
         }
     }
     
@@ -88,9 +136,17 @@
         cursor: pointer;
     }
     
-    button:hover {
+    button:first-child:hover {
         transform: translateY(-3px);
-        box-shadow: 0 6px 16px rgba(31,27,91,0.2);
+        box-shadow: 0 8px 20px rgba(31,27,91,0.3);
+    }
+    
+    button:last-child:hover {
+        transform: translateY(-3px);
+        background: #1F1B5B;
+        color: white;
+        border-color: #1F1B5B;
+        box-shadow: 0 8px 20px rgba(31,27,91,0.15);
     }
     
     button:active {
@@ -99,22 +155,33 @@
     
     #orderNumberDisplay {
         font-family: 'Courier New', monospace;
-        font-weight: 600;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+    
+    @media (max-width: 480px) {
+        .success-card {
+            padding: 35px 25px !important;
+        }
+        .success-card h1 {
+            font-size: 26px !important;
+        }
+        button {
+            padding: 12px 25px !important;
+            font-size: 13px !important;
+        }
     }
 </style>
 
 <script>
-    // Lanjut belanja -> ke beranda
     function continueShopping() {
         window.location.href = '/';
     }
     
-    // Lihat pesanan saya -> LANGSUNG KE PROFIL
     function viewMyOrders() {
         window.location.href = '/profile?tab=orders';
     }
     
-    // Load nomor pesanan dari localStorage
     function loadOrderNumber() {
         const lastOrder = localStorage.getItem('last_order');
         const orderNumberSpan = document.getElementById('orderNumberDisplay');

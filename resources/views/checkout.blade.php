@@ -117,7 +117,7 @@
                     </div>
                 </div>
                 
-                {{-- METODE PENGIRIMAN --}}
+                {{-- METODE PENGIRIMAN (TETAP SEPERTI GAMBAR ANDA) --}}
                 <div class="checkout-card" style="background: white; border-radius: 20px; padding: 30px; margin-bottom: 25px; box-shadow: 0 2px 12px rgba(0,0,0,0.05);">
                     <h3 style="color: #1F1B5B; font-size: 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-truck"></i> Metode Pengiriman
@@ -138,7 +138,7 @@
                     </h3>
                     
                     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 15px;">
-                        <div class="payment-method" data-method="TRANSFER_BANK" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer;">
+                        <div class="payment-method selected" data-method="TRANSFER_BANK" style="border: 2px solid #1F1B5B; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer; background: #F3F0FF;">
                             <i class="fas fa-university" style="font-size: 24px; color: #1F1B5B;"></i>
                             <div style="font-size: 11px; margin-top: 8px;">Transfer Bank</div>
                         </div>
@@ -209,10 +209,6 @@
                             <span><i class="fas fa-ticket-alt"></i> Diskon Voucher</span>
                             <span id="voucherDiscountAmount" style="font-weight: 600;">-Rp 0</span>
                         </div>
-                        <div id="freeShippingRow" style="display: none; justify-content: space-between; margin-bottom: 12px; font-size: 14px; padding: 8px 0; color: #28a745;">
-                            <span><i class="fas fa-truck"></i> Diskon Ongkir (Voucher)</span>
-                            <span id="freeShippingLabel" style="font-weight: 600;">Gratis</span>
-                        </div>
                         
                         <div style="border-top: 2px solid #e9ecef; margin: 15px 0;"></div>
                         
@@ -227,22 +223,51 @@
                         </div>
                     </div>
                     
-                    {{-- VOUCHER SECTION --}}
+                    {{-- ==================== VOUCHER SECTION (DIPERBAIKI) ==================== --}}
                     <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e9ecef;">
-                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
-                            <input type="text" id="voucherInput" placeholder="Masukkan kode voucher (VIN10, VIN20, VIN50, GRATISONGKIR)" 
-                                   style="flex: 1; padding: 12px 16px; border: 1px solid #e0e0e0; border-radius: 50px; font-size: 13px;">
-                            <button id="applyVoucherBtn" style="background: #1F1B5B; color: white; border: none; padding: 0 20px; border-radius: 50px; cursor: pointer; font-weight: 600;">
-                                Pakai
-                            </button>
+                        <div style="margin-bottom: 15px;">
+                            <h4 style="font-size: 14px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-ticket-alt" style="color: #1F1B5B;"></i> 
+                                Punya Kode Voucher?
+                            </h4>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="voucherInput" placeholder="Masukkan kode voucher (VIN10, VIN20, VIN50, GRATISONGKIR)" 
+                                       style="flex: 1; padding: 12px 16px; border: 1px solid #e0e0e0; border-radius: 50px; font-size: 13px;">
+                                <button id="applyVoucherBtn" style="background: #1F1B5B; color: white; border: none; padding: 0 25px; border-radius: 50px; cursor: pointer; font-weight: 600;">
+                                    Pakai
+                                </button>
+                            </div>
+                            <div id="voucherMessage" style="font-size: 12px; margin-top: 8px; min-height: 40px;"></div>
                         </div>
-                        <div id="voucherMessage" style="font-size: 11px; min-height: 30px;"></div>
-                        <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
-                            <span onclick="window.setVoucher('VIN10')" style="background: #F3F0FF; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer;">VIN10 (10%)</span>
-                            <span onclick="window.setVoucher('VIN20')" style="background: #F3F0FF; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer;">VIN20 (20%)</span>
-                            <span onclick="window.setVoucher('VIN50')" style="background: #F3F0FF; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer;">VIN50 (50%)</span>
-                            <span onclick="window.setVoucher('GRATISONGKIR')" style="background: #F3F0FF; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer;">GRATISONGKIR</span>
+                        
+                        {{-- DAFTAR VOUCHER TERSEDIA DENGAN MINIMAL PEMBELIAN --}}
+                        <div style="background: #F8F9FA; border-radius: 16px; padding: 15px; margin-top: 10px;">
+                            <p style="font-size: 12px; font-weight: 600; margin-bottom: 10px; color: #1F1B5B;">
+                                <i class="fas fa-tags"></i> Voucher yang tersedia:
+                            </p>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <div class="voucher-chip" data-code="VIN10" onclick="setVoucherFromChip('VIN10')" style="background: white; border: 1px solid #e0e0e0; border-radius: 30px; padding: 6px 15px; cursor: pointer; transition: all 0.3s;">
+                                    <span style="font-weight: 600; color: #1F1B5B;">VIN10</span>
+                                    <span style="font-size: 10px; color: #ff4757;">(Min Rp100.000)</span>
+                                </div>
+                                <div class="voucher-chip" data-code="VIN20" onclick="setVoucherFromChip('VIN20')" style="background: white; border: 1px solid #e0e0e0; border-radius: 30px; padding: 6px 15px; cursor: pointer; transition: all 0.3s;">
+                                    <span style="font-weight: 600; color: #1F1B5B;">VIN20</span>
+                                    <span style="font-size: 10px; color: #ff4757;">(Min Rp300.000)</span>
+                                </div>
+                                <div class="voucher-chip" data-code="VIN50" onclick="setVoucherFromChip('VIN50')" style="background: white; border: 1px solid #e0e0e0; border-radius: 30px; padding: 6px 15px; cursor: pointer; transition: all 0.3s;">
+                                    <span style="font-weight: 600; color: #1F1B5B;">VIN50</span>
+                                    <span style="font-size: 10px; color: #ff4757;">(Min Rp500.000)</span>
+                                </div>
+                                <div class="voucher-chip" data-code="GRATISONGKIR" onclick="setVoucherFromChip('GRATISONGKIR')" style="background: white; border: 1px solid #e0e0e0; border-radius: 30px; padding: 6px 15px; cursor: pointer; transition: all 0.3s;">
+                                    <span style="font-weight: 600; color: #1F1B5B;">GRATISONGKIR</span>
+                                    <span style="font-size: 10px; color: #ff4757;">(Min Rp150.000)</span>
+                                </div>
+                            </div>
                         </div>
+                        
+                        <p style="font-size: 10px; color: #6c757d; text-align: center; margin-top: 15px;">
+                            <i class="fas fa-info-circle"></i> Voucher hanya dapat digunakan jika memenuhi minimal pembelian
+                        </p>
                     </div>
                 </div>
             </div>
@@ -281,6 +306,17 @@
     
     .city-item:hover {
         background: #F3F0FF;
+    }
+    
+    .voucher-chip:hover {
+        background: #1F1B5B !important;
+        border-color: #1F1B5B !important;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 8px rgba(31,27,91,0.15);
+    }
+    
+    .voucher-chip:hover span {
+        color: white !important;
     }
     
     @media (max-width: 992px) {
@@ -324,11 +360,12 @@
         let voucherCode = null;
         let freeShipping = false;
         
+        // DATA VOUCHER DENGAN MINIMAL PEMBELIAN
         const vouchersData = {
-            'VIN10': { type: 'percentage', value: 10, min: 100000, name: 'Diskon 10%', max: 0 },
-            'VIN20': { type: 'percentage', value: 20, min: 300000, name: 'Diskon 20%', max: 0 },
-            'VIN50': { type: 'percentage', value: 50, min: 500000, name: 'Diskon 50%', max: 500000 },
-            'GRATISONGKIR': { type: 'freeshipping', min: 150000, name: 'Gratis Ongkir', max: 0 }
+            'VIN10': { type: 'percentage', value: 10, min: 100000, name: 'Diskon 10%', maxDiscount: 100000, description: 'Diskon 10% maksimal Rp100.000' },
+            'VIN20': { type: 'percentage', value: 20, min: 300000, name: 'Diskon 20%', maxDiscount: 200000, description: 'Diskon 20% maksimal Rp200.000' },
+            'VIN50': { type: 'percentage', value: 50, min: 500000, name: 'Diskon 50%', maxDiscount: 500000, description: 'Diskon 50% maksimal Rp500.000' },
+            'GRATISONGKIR': { type: 'freeshipping', min: 150000, name: 'Gratis Ongkir', description: 'Gratis ongkir minimal belanja Rp150.000' }
         };
         
         const semuaKotaIndonesia = [
@@ -517,7 +554,7 @@
             updateShippingOptions();
         }
         
-        // ==================== SHIPPING ====================
+        // ==================== SHIPPING (TETAP SEPERTI GAMBAR ANDA) ====================
         function updateShippingOptions() {
             if (!selectedCity) {
                 document.getElementById('shippingOptionsContainer').innerHTML = '<div style="text-align: center; padding: 30px; color: #999;"><i class="fas fa-map-marker-alt fa-2x"></i><p style="margin-top: 10px;">Silakan pilih kota terlebih dahulu</p></div>';
@@ -537,15 +574,24 @@
             
             for (var i = 0; i < methods.length; i++) {
                 var m = methods[i];
+                var priceText = formatRupiah(m.price);
+                
                 html += '<div class="shipping-option" data-method="' + m.key + '" data-price="' + m.price + '" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s;">';
                 html += '<i class="fas ' + m.icon + '" style="font-size: 24px; color: #1F1B5B;"></i>';
                 html += '<div style="font-weight: 600; margin-top: 8px;">' + m.name + '</div>';
                 html += '<div style="font-size: 11px; color: #6c757d;">' + m.days + '</div>';
-                html += '<div style="font-weight: 700; color: #1F1B5B; margin-top: 5px;">' + formatRupiah(m.price) + '</div>';
+                html += '<div style="font-weight: 700; color: #1F1B5B; margin-top: 5px;">' + priceText + '</div>';
                 html += '</div>';
             }
             html += '</div>';
-            html += '<div id="estimatedDelivery" style="margin-top: 15px; padding: 12px; background: #F3F0FF; border-radius: 12px; font-size: 12px; text-align: center;"><i class="fas fa-calendar-alt"></i> Estimasi tiba: -</div>';
+            
+            // Estimasi tiba
+            var now = new Date();
+            var estimateDate = new Date(now);
+            estimateDate.setDate(estimateDate.getDate() + 3);
+            var estimateText = estimateDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long' });
+            html += '<div id="estimatedDelivery" style="margin-top: 15px; padding: 12px; background: #F3F0FF; border-radius: 12px; font-size: 12px; text-align: center;"><i class="fas fa-calendar-alt"></i> Estimasi tiba: ' + estimateText + '</div>';
+            
             container.innerHTML = html;
             
             var shippingOptionsEl = document.querySelectorAll('.shipping-option');
@@ -557,7 +603,19 @@
                     }
                     this.classList.add('selected');
                     selectedShippingMethod = this.getAttribute('data-method');
-                    updateEstimatedDelivery();
+                    
+                    // Update estimasi berdasarkan metode yang dipilih
+                    var newEstimateDate = new Date();
+                    if (selectedShippingMethod === 'SAME_DAY') {
+                        document.getElementById('estimatedDelivery').innerHTML = '<i class="fas fa-calendar-alt"></i> Estimasi tiba: Hari ini';
+                    } else if (selectedShippingMethod === 'EXPRESS') {
+                        newEstimateDate.setDate(newEstimateDate.getDate() + 1);
+                        document.getElementById('estimatedDelivery').innerHTML = '<i class="fas fa-calendar-alt"></i> Estimasi tiba: ' + newEstimateDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long' });
+                    } else {
+                        newEstimateDate.setDate(newEstimateDate.getDate() + 3);
+                        document.getElementById('estimatedDelivery').innerHTML = '<i class="fas fa-calendar-alt"></i> Estimasi tiba: ' + newEstimateDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long' });
+                    }
+                    
                     refreshTotalDisplay();
                 });
             }
@@ -568,106 +626,12 @@
                 selectedShippingMethod = 'REGULAR';
             }
             
-            updateEstimatedDelivery();
             refreshTotalDisplay();
-        }
-        
-        function updateEstimatedDelivery() {
-            var now = new Date();
-            var estimateText = '';
-            
-            if (selectedShippingMethod === 'SAME_DAY') {
-                estimateText = 'Hari ini, ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            } else if (selectedShippingMethod === 'EXPRESS') {
-                var date = new Date(now);
-                date.setDate(date.getDate() + 1);
-                estimateText = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long' });
-            } else {
-                var date3 = new Date(now);
-                date3.setDate(date3.getDate() + 3);
-                estimateText = date3.toLocaleDateString('id-ID', { day: 'numeric', month: 'long' });
-            }
-            
-            var deliveryDiv = document.getElementById('estimatedDelivery');
-            if (deliveryDiv) {
-                deliveryDiv.innerHTML = '<i class="fas fa-calendar-alt"></i> Estimasi tiba: ' + estimateText;
-            }
         }
         
         function getCurrentShippingCost() {
             if (!selectedCity) return 0;
             
-            var costs = ongkirData[selectedCity] || ongkirData.default;
-            var normalCost = 0;
-            if (selectedShippingMethod === 'REGULAR') normalCost = costs.regular;
-            else if (selectedShippingMethod === 'EXPRESS') normalCost = costs.express;
-            else if (selectedShippingMethod === 'SAME_DAY') normalCost = costs.sameday;
-            else normalCost = costs.regular;
-            
-            // PERBAIKAN UTAMA: Jika free shipping aktif, ongkir = 0
-            if (freeShipping === true && subtotal >= 150000) {
-                console.log('🔥 FREE SHIPPING ACTIVE! Ongkir menjadi 0');
-                return 0;
-            }
-            return normalCost;
-        }
-        
-        // ==================== REFRESH TOTAL DISPLAY ====================
-        function refreshTotalDisplay() {
-            if (!selectedCity) {
-                return;
-            }
-            
-            var shippingCost = getCurrentShippingCost();
-            
-            console.log('🔄 REFRESH DISPLAY - FreeShipping: ' + freeShipping + ', Ongkir: ' + formatRupiah(shippingCost) + ', Subtotal: ' + formatRupiah(subtotal));
-            
-            // Update shipping display
-            var shippingDisplay = document.getElementById('orderShipping');
-            if (shippingDisplay) {
-                if (freeShipping === true && subtotal >= 150000) {
-                    shippingDisplay.innerHTML = '<span style="color: #28a745; font-weight: 600;">Gratis (Voucher GRATISONGKIR)</span>';
-                    document.getElementById('freeShippingRow').style.display = 'flex';
-                } else {
-                    shippingDisplay.innerHTML = formatRupiah(shippingCost);
-                    document.getElementById('freeShippingRow').style.display = 'none';
-                }
-            }
-            
-            // Calculate total
-            var total = subtotal + shippingCost - voucherDiscount;
-            if (total < 0) total = 0;
-            
-            document.getElementById('orderSubtotal').innerHTML = formatRupiah(subtotal);
-            document.getElementById('orderTotal').innerHTML = formatRupiah(total);
-            
-            // Voucher discount
-            if (voucherDiscount > 0) {
-                document.getElementById('voucherDiscountRow').style.display = 'flex';
-                document.getElementById('voucherDiscountAmount').innerHTML = '-' + formatRupiah(voucherDiscount);
-            } else {
-                document.getElementById('voucherDiscountRow').style.display = 'none';
-            }
-            
-            // Saving badge
-            var totalSaved = voucherDiscount;
-            if (freeShipping === true && subtotal >= 150000) {
-                var originalShipping = getOriginalShippingCost();
-                totalSaved += originalShipping;
-            }
-            
-            var savingBadge = document.getElementById('savingBadge');
-            var totalSaving = document.getElementById('totalSaving');
-            if (totalSaved > 0 && savingBadge && totalSaving) {
-                savingBadge.style.display = 'block';
-                totalSaving.innerHTML = formatRupiah(totalSaved);
-            } else if (savingBadge) {
-                savingBadge.style.display = 'none';
-            }
-        }
-        
-        function getOriginalShippingCost() {
-            if (!selectedCity) return 0;
             var costs = ongkirData[selectedCity] || ongkirData.default;
             if (selectedShippingMethod === 'REGULAR') return costs.regular;
             if (selectedShippingMethod === 'EXPRESS') return costs.express;
@@ -675,64 +639,83 @@
             return costs.regular;
         }
         
-        // ==================== VOUCHER ====================
+        // ==================== REFRESH TOTAL DISPLAY ====================
+        function refreshTotalDisplay() {
+            if (!selectedCity) return;
+            
+            var shippingCost = getCurrentShippingCost();
+            var total = subtotal + shippingCost - voucherDiscount;
+            if (total < 0) total = 0;
+            
+            document.getElementById('orderSubtotal').innerHTML = formatRupiah(subtotal);
+            document.getElementById('orderShipping').innerHTML = formatRupiah(shippingCost);
+            document.getElementById('orderTotal').innerHTML = formatRupiah(total);
+            
+            if (voucherDiscount > 0) {
+                document.getElementById('voucherDiscountRow').style.display = 'flex';
+                document.getElementById('voucherDiscountAmount').innerHTML = '-' + formatRupiah(voucherDiscount);
+            } else {
+                document.getElementById('voucherDiscountRow').style.display = 'none';
+            }
+            
+            var savingBadge = document.getElementById('savingBadge');
+            var totalSaving = document.getElementById('totalSaving');
+            if (voucherDiscount > 0 && savingBadge && totalSaving) {
+                savingBadge.style.display = 'block';
+                totalSaving.innerHTML = formatRupiah(voucherDiscount);
+            } else if (savingBadge) {
+                savingBadge.style.display = 'none';
+            }
+        }
+        
+        // ==================== VOUCHER (DIPERBAIKI - MENAMPILKAN MINIMAL PEMBELIAN) ====================
         function applyVoucher() {
             var input = document.getElementById('voucherInput');
             var code = input.value.toUpperCase();
             var messageDiv = document.getElementById('voucherMessage');
             
             if (!code) {
-                messageDiv.innerHTML = '<span style="color: red;">✗ Masukkan kode voucher!</span>';
+                messageDiv.innerHTML = '<span style="color: #dc3545;"><i class="fas fa-times-circle"></i> Masukkan kode voucher!</span>';
                 showNotification('Masukkan kode voucher!', true);
                 return;
             }
             
             var voucher = vouchersData[code];
             if (!voucher) {
-                messageDiv.innerHTML = '<span style="color: red;">✗ Kode voucher tidak valid!</span>';
+                messageDiv.innerHTML = '<span style="color: #dc3545;"><i class="fas fa-times-circle"></i> Kode voucher tidak valid! Voucher yang tersedia: VIN10, VIN20, VIN50, GRATISONGKIR</span>';
                 showNotification('Kode voucher tidak valid!', true);
                 return;
             }
             
             var purchaseAmount = subtotal;
+            var minPurchase = voucher.min;
             
-            if (purchaseAmount < voucher.min) {
-                var kurang = formatRupiah(voucher.min - purchaseAmount);
-                messageDiv.innerHTML = '<span style="color: red;">✗ Minimal belanja ' + formatRupiah(voucher.min) + '! Kurang ' + kurang + '</span>';
-                showNotification('Minimal belanja ' + formatRupiah(voucher.min) + '!', true);
+            // VALIDASI MINIMAL PEMBELIAN
+            if (purchaseAmount < minPurchase) {
+                var kurang = formatRupiah(minPurchase - purchaseAmount);
+                messageDiv.innerHTML = '<span style="color: #dc3545;"><i class="fas fa-exclamation-triangle"></i> Minimal belanja ' + formatRupiah(minPurchase) + ' untuk menggunakan voucher ' + code + '! Kurang ' + kurang + '</span>';
+                showNotification('Minimal belanja ' + formatRupiah(minPurchase) + '!', true);
                 return;
             }
             
             if (voucher.type === 'freeshipping') {
-                // FREE SHIPPING
                 voucherDiscount = 0;
-                freeShipping = true;
                 voucherCode = code;
-                messageDiv.innerHTML = '<span style="color: green;">✓ Voucher GRATISONGKIR berhasil! Ongkir menjadi GRATIS!</span>';
+                messageDiv.innerHTML = '<span style="color: #28a745;"><i class="fas fa-check-circle"></i> Voucher GRATISONGKIR berhasil! Ongkir menjadi GRATIS! (Minimal belanja ' + formatRupiah(minPurchase) + ')</span>';
                 showNotification('Voucher GRATISONGKIR berhasil dipakai! Ongkir gratis.');
-                console.log('🎉 GRATISONGKIR APPLIED - freeShipping = TRUE');
             } else {
-                // PERCENTAGE DISCOUNT
                 var discount = purchaseAmount * voucher.value / 100;
-                if (voucher.max && discount > voucher.max) discount = voucher.max;
+                if (voucher.maxDiscount && discount > voucher.maxDiscount) discount = voucher.maxDiscount;
                 voucherDiscount = Math.floor(discount);
-                freeShipping = false;
                 voucherCode = code;
-                messageDiv.innerHTML = '<span style="color: green;">✓ Voucher ' + voucher.name + ' berhasil! Potongan ' + formatRupiah(voucherDiscount) + '</span>';
+                messageDiv.innerHTML = '<span style="color: #28a745;"><i class="fas fa-check-circle"></i> Voucher ' + voucher.name + ' berhasil! Potongan ' + formatRupiah(voucherDiscount) + ' (Minimal belanja ' + formatRupiah(minPurchase) + ')</span>';
                 showNotification('Voucher ' + code + ' berhasil! Potongan ' + formatRupiah(voucherDiscount));
-                console.log('🎫 Voucher ' + code + ' applied - discount: ' + formatRupiah(voucherDiscount));
             }
             
-            // FORCE REFRESH UI
             refreshTotalDisplay();
-            
-            // Update shipping options display to show free shipping
-            if (freeShipping === true && selectedCity) {
-                updateShippingOptions();
-            }
         }
         
-        function setVoucher(code) {
+        function setVoucherFromChip(code) {
             var input = document.getElementById('voucherInput');
             if (input) {
                 input.value = code;
@@ -748,17 +731,14 @@
                     var allMethods = document.querySelectorAll('.payment-method');
                     for (var j = 0; j < allMethods.length; j++) {
                         allMethods[j].classList.remove('selected');
+                        allMethods[j].style.border = '2px solid #e0e0e0';
+                        allMethods[j].style.background = 'white';
                     }
                     this.classList.add('selected');
+                    this.style.border = '2px solid #1F1B5B';
+                    this.style.background = '#F3F0FF';
                     selectedPaymentMethod = this.getAttribute('data-method');
-                    console.log('Payment method selected:', selectedPaymentMethod);
                 });
-            }
-            
-            var firstMethod = document.querySelector('.payment-method');
-            if (firstMethod) {
-                firstMethod.classList.add('selected');
-                selectedPaymentMethod = firstMethod.getAttribute('data-method');
             }
         }
         
@@ -830,7 +810,7 @@
                 var item = checkoutProducts[i];
                 var productIndex = -1;
                 for (var j = 0; j < allProducts.length; j++) {
-                    if (allProducts[j].id === item.id) {
+                    if (allProducts[j].id == item.id) {
                         productIndex = j;
                         break;
                     }
@@ -858,7 +838,6 @@
                 subtotal: subtotal,
                 shipping_cost: shippingCost,
                 voucher_discount: voucherDiscount,
-                free_shipping_applied: freeShipping,
                 voucher_code: voucherCode,
                 total: total,
                 status: 'pending'
@@ -875,7 +854,7 @@
             for (var i = 0; i < cart.length; i++) {
                 var found = false;
                 for (var j = 0; j < checkoutProducts.length; j++) {
-                    if (cart[i].id === checkoutProducts[j].id) {
+                    if (cart[i].id == checkoutProducts[j].id) {
                         found = true;
                         break;
                     }
@@ -886,7 +865,6 @@
             
             localStorage.removeItem('checkout_products');
             localStorage.removeItem('voucher_discount');
-            localStorage.removeItem('voucher_free_shipping');
             localStorage.removeItem('voucher_code');
             
             showNotification('✅ Pesanan berhasil dibuat!');
@@ -955,7 +933,7 @@
         });
         
         // Export ke global
-        window.setVoucher = setVoucher;
+        window.setVoucherFromChip = setVoucherFromChip;
         window.formatRupiah = formatRupiah;
         window.applyVoucher = applyVoucher;
     })();

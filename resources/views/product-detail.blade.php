@@ -6,14 +6,6 @@
 <div class="product-detail-page" style="padding: 60px 0; background: #F3F0FF; min-height: 60vh;">
     <div class="product-detail-container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px;">
         
-        {{-- BREADCRUMB --}}
-        <div style="margin-bottom: 20px; font-size: 13px; color: #6c757d;">
-            <a href="{{ url('/') }}" style="color: #6c757d; text-decoration: none;">Beranda</a>
-            <i class="fas fa-chevron-right" style="font-size: 10px; margin: 0 8px;"></i>
-            <a href="{{ url('/kategori/' . ($product->category->slug ?? '')) }}" style="color: #6c757d; text-decoration: none;">{{ $product->category->name ?? 'Produk' }}</a>
-            <i class="fas fa-chevron-right" style="font-size: 10px; margin: 0 8px;"></i>
-            <span style="color: #1F1B5B;">{{ $product->name }}</span>
-        </div>
 
         <div class="product-detail-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 50px; background: white; border-radius: 30px; padding: 40px; box-shadow: 0 10px 30px rgba(31,27,91,0.08);">
             
@@ -96,12 +88,6 @@
                 {{-- Description --}}
                 <p class="product-description" style="color: #6c757d; line-height: 1.6; margin: 20px 0;">{{ $product->description }}</p>
                 
-                {{-- Voucher Toko --}}
-                <div class="voucher-toko" style="background: linear-gradient(135deg, #e8eaf6, #c5cae9); padding: 15px; border-radius: 16px; margin: 20px 0; border-left: 4px solid #1F1B5B;">
-                    <strong style="color: #1F1B5B;">🎫 Voucher Toko</strong>
-                    <p style="margin-top: 5px; font-size: 13px;">Potongan <span id="voucherDiscount">{{ $product->discount ?: 10 }}</span>% untuk pembelian pertama</p>
-                </div>
-                
                 {{-- Shipping Info --}}
                 <div class="shipping-info-card" style="background: linear-gradient(135deg, #e3f2fd, #bbdef5); padding: 15px; border-radius: 16px; margin: 15px 0; border-left: 4px solid #1565c0;">
                     <strong style="color: #1565c0;">🚚 Pengiriman</strong>
@@ -116,6 +102,7 @@
                 @php
                     $colors = $product->variants->where('type', 'color')->pluck('value')->toArray();
                     $sizes = $product->variants->where('type', 'size')->pluck('value')->toArray();
+                    $storages = $product->variants->where('type', 'storage')->pluck('value')->toArray();
                 @endphp
                 
                 @if(count($colors) > 0)
@@ -123,7 +110,7 @@
                     <p><strong>🎨 Warna:</strong></p>
                     <div class="variant-buttons" id="colorOptions" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
                         @foreach($colors as $color)
-                        <button class="variant-btn" onclick="selectColor(this, '{{ $color }}')" style="padding: 8px 20px; border: 1px solid #e9ecef; background: white; border-radius: 30px; cursor: pointer; transition: all 0.3s;">
+                        <button class="variant-btn" data-color="{{ $color }}" onclick="selectColor(this, '{{ $color }}')" style="padding: 8px 20px; border: 1px solid #e9ecef; background: white; border-radius: 30px; cursor: pointer; transition: all 0.3s;">
                             {{ $color }}
                         </button>
                         @endforeach
@@ -131,14 +118,26 @@
                 </div>
                 @endif
                 
-                {{-- Size/Storage Options --}}
                 @if(count($sizes) > 0)
                 <div class="product-variants" style="margin: 20px 0;">
-                    <p><strong>📏 Ukuran / Varian:</strong></p>
+                    <p><strong>📏 Ukuran:</strong></p>
                     <div class="size-options" id="sizeOptions" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
                         @foreach($sizes as $size)
-                        <button class="size-btn" onclick="selectSize(this, '{{ $size }}')" style="padding: 8px 20px; border: 1px solid #e9ecef; background: white; border-radius: 30px; cursor: pointer; transition: all 0.3s;">
+                        <button class="size-btn" data-size="{{ $size }}" onclick="selectSize(this, '{{ $size }}')" style="padding: 8px 20px; border: 1px solid #e9ecef; background: white; border-radius: 30px; cursor: pointer; transition: all 0.3s;">
                             {{ $size }}
+                        </button>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+                
+                @if(count($storages) > 0)
+                <div class="product-variants" style="margin: 20px 0;">
+                    <p><strong>💾 Penyimpanan:</strong></p>
+                    <div class="storage-options" id="storageOptions" style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+                        @foreach($storages as $storage)
+                        <button class="storage-btn" data-storage="{{ $storage }}" onclick="selectStorage(this, '{{ $storage }}')" style="padding: 8px 20px; border: 1px solid #e9ecef; background: white; border-radius: 30px; cursor: pointer; transition: all 0.3s;">
+                            {{ $storage }}
                         </button>
                         @endforeach
                     </div>
@@ -222,7 +221,7 @@
             </div>
         </div>
         
-        {{-- ==================== RELATED PRODUCTS SECTION (FIXED) ==================== --}}
+        {{-- ==================== RELATED PRODUCTS SECTION ==================== --}}
         @if($relatedProducts->count() > 0)
         <div class="related-products" style="margin-top: 50px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
@@ -237,7 +236,6 @@
             <div class="related-products-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px;">
                 @foreach($relatedProducts as $related)
                 @php
-                    // AMBIL GAMBAR DENGAN PRIORITAS YANG BENAR
                     $relatedImage = $related->main_image;
                     if (!$relatedImage && $related->images && $related->images->count() > 0) {
                         $mainImg = $related->images->where('is_main', true)->first();
@@ -246,18 +244,18 @@
                     if (!$relatedImage) {
                         $relatedImage = 'https://placehold.co/400x400/1F1B5B/white?text=' . urlencode($related->name);
                     }
+                    $relatedRating = $related->rating ?? 0;
+                    $relatedSold = $related->sold ?? 0;
                 @endphp
                 <div class="product-card" onclick="window.location.href='{{ url('/product/' . $related->slug) }}'" 
                      style="background: white; border-radius: 20px; overflow: hidden; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(0,0,0,0.04); position: relative;">
                     
-                    {{-- FLASH SALE BADGE --}}
                     @if($related->is_flash_sale)
                     <div class="product-badge flash" style="position: absolute; top: 12px; left: 12px; background: linear-gradient(135deg, #ff4757, #ff6b81); color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; z-index: 1;">
                         🔥 Flash Sale -{{ $related->discount }}%
                     </div>
                     @endif
                     
-                    {{-- GAMBAR - FULL FRAME 100% height & width, object-fit cover --}}
                     <div class="product-image" style="height: 200px; width: 100%; overflow: hidden; background: linear-gradient(135deg, #f5f5f5, #ffffff);">
                         <img src="{{ $relatedImage }}" 
                              alt="{{ $related->name }}" 
@@ -265,14 +263,19 @@
                              onerror="this.onerror=null; this.src='https://placehold.co/400x400/1F1B5B/white?text=' + encodeURIComponent('{{ $related->name }}')">
                     </div>
                     
-                    {{-- INFO PRODUK --}}
                     <div class="product-info" style="padding: 16px;">
                         <h4 class="product-title" style="font-weight: 600; margin-bottom: 5px; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                             {{ $related->name }}
                         </h4>
                         <div class="product-rating" style="display: flex; align-items: center; gap: 5px; margin: 5px 0;">
-                            {!! generateStarRating($related->rating ?? 0) !!}
-                            <span style="font-size: 12px; color: #6c757d;">({{ number_format($related->rating ?? 0, 1) }})</span>
+                            @php
+                                $fullStars = floor($relatedRating);
+                                $halfStar = ($relatedRating - $fullStars) >= 0.5;
+                            @endphp
+                            @for($i = 0; $i < $fullStars; $i++) <i class="fas fa-star"></i> @endfor
+                            @if($halfStar) <i class="fas fa-star-half-alt"></i> @endif
+                            @for($i = 0; $i < 5 - ceil($relatedRating); $i++) <i class="far fa-star"></i> @endfor
+                            <span style="font-size: 12px; color: #6c757d;">({{ number_format($relatedRating, 1) }})</span>
                         </div>
                         <div class="product-price" style="font-size: 18px; font-weight: 700; color: #1F1B5B; margin: 8px 0;">
                             {{ formatRupiah($related->price) }}
@@ -283,7 +286,7 @@
                             @endif
                         </div>
                         <div class="product-sold" style="font-size: 12px; color: #6c757d; margin-bottom: 10px;">
-                            <i class="fas fa-shopping-bag"></i> Terjual {{ number_format($related->sold ?? 0) }}+
+                            <i class="fas fa-shopping-bag"></i> Terjual {{ number_format($relatedSold) }}+
                         </div>
                         <button class="btn-add-cart" onclick="event.stopPropagation(); addToCartLocal({{ $related->id }})" 
                                 style="width: 100%; padding: 10px; background: #1F1B5B; color: white; border: none; border-radius: 30px; font-weight: 600; cursor: pointer; transition: all 0.3s;">
@@ -295,7 +298,6 @@
             </div>
         </div>
         @endif
-        {{-- ==================== END RELATED PRODUCTS ==================== --}}
         
     </div>
 </div>
@@ -315,11 +317,16 @@
         background: #3a3590 !important;
     }
     
-    /* Related Products Grid Responsive */
     .related-products-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
         gap: 25px;
+    }
+    
+    .variant-btn.active, .size-btn.active, .storage-btn.active {
+        background: #1F1B5B !important;
+        color: white !important;
+        border-color: #1F1B5B !important;
     }
     
     @media (max-width: 768px) {
@@ -341,17 +348,82 @@
             grid-template-columns: repeat(2, 1fr);
         }
     }
+    
+    .notification-custom {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: #28a745;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 12px;
+        z-index: 9999;
+        transform: translateX(450px);
+        transition: transform 0.3s;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .notification-custom.error {
+        background: #ff4757;
+    }
+    .notification-custom.show {
+        transform: translateX(0);
+    }
 </style>
 
 <script>
-    // Product detail variables
+    // ==================== PRODUCT DETAIL VARIABLES ====================
     let currentStock = {{ $product->stock }};
     let selectedColor = null;
     let selectedSize = null;
+    let selectedStorage = null;
     let countdownInterval = null;
     let currentQuantity = 1;
+    let allProducts = [];
     
-    // Flash sale countdown timer
+    // ==================== HELPER FUNCTIONS ====================
+    function formatRupiah(price) {
+        if (!price && price !== 0) return 'Rp 0';
+        return 'Rp ' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+    
+    function generateStarRating(rating) {
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 >= 0.5;
+        let stars = '';
+        for (let i = 0; i < fullStars; i++) stars += '<i class="fas fa-star"></i>';
+        if (hasHalfStar) stars += '<i class="fas fa-star-half-alt"></i>';
+        for (let i = 0; i < 5 - Math.ceil(rating); i++) stars += '<i class="far fa-star"></i>';
+        return stars;
+    }
+    
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+    
+    function showNotification(message, type = 'success') {
+        const oldNotif = document.querySelector('.notification-custom');
+        if (oldNotif) oldNotif.remove();
+        
+        const notification = document.createElement('div');
+        notification.className = 'notification-custom';
+        if (type === 'error') notification.classList.add('error');
+        notification.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => notification.classList.add('show'), 10);
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 500);
+        }, 3000);
+    }
+    
+    // ==================== FLASH SALE COUNTDOWN ====================
     @if($product->is_flash_sale && $product->flash_sale_end)
     function startCountdown(endTimeISO) {
         if (countdownInterval) clearInterval(countdownInterval);
@@ -382,13 +454,15 @@
     startCountdown('{{ $product->flash_sale_end }}');
     @endif
     
-    // Color selection function
+    // ==================== VARIANT SELECTION ====================
     function selectColor(button, color) {
         document.querySelectorAll('.variant-btn').forEach(btn => {
+            btn.classList.remove('active');
             btn.style.background = 'white';
             btn.style.color = '#1F1B5B';
             btn.style.border = '1px solid #e9ecef';
         });
+        button.classList.add('active');
         button.style.background = '#1F1B5B';
         button.style.color = 'white';
         button.style.border = '1px solid #1F1B5B';
@@ -396,13 +470,14 @@
         console.log('Selected color:', color);
     }
     
-    // Size selection function
     function selectSize(button, size) {
         document.querySelectorAll('.size-btn').forEach(btn => {
+            btn.classList.remove('active');
             btn.style.background = 'white';
             btn.style.color = '#1F1B5B';
             btn.style.border = '1px solid #e9ecef';
         });
+        button.classList.add('active');
         button.style.background = '#1F1B5B';
         button.style.color = 'white';
         button.style.border = '1px solid #1F1B5B';
@@ -410,7 +485,22 @@
         console.log('Selected size:', size);
     }
     
-    // Quantity functions
+    function selectStorage(button, storage) {
+        document.querySelectorAll('.storage-btn').forEach(btn => {
+            btn.classList.remove('active');
+            btn.style.background = 'white';
+            btn.style.color = '#1F1B5B';
+            btn.style.border = '1px solid #e9ecef';
+        });
+        button.classList.add('active');
+        button.style.background = '#1F1B5B';
+        button.style.color = 'white';
+        button.style.border = '1px solid #1F1B5B';
+        selectedStorage = storage;
+        console.log('Selected storage:', storage);
+    }
+    
+    // ==================== QUANTITY FUNCTIONS ====================
     function decreaseQuantity() {
         if (currentQuantity > 1) {
             currentQuantity--;
@@ -423,15 +513,11 @@
             currentQuantity++;
             document.getElementById('quantity').textContent = currentQuantity;
         } else {
-            if (typeof showNotification === 'function') {
-                showNotification('Stok tidak mencukupi!', 'error');
-            } else {
-                alert('Stok tidak mencukupi!');
-            }
+            showNotification('Stok tidak mencukupi!', 'error');
         }
     }
     
-    // Change main image on thumbnail click
+    // ==================== CHANGE MAIN IMAGE ====================
     function changeMainImage(imageUrl, element) {
         const mainImage = document.getElementById('mainImageImg');
         if (mainImage) mainImage.src = imageUrl;
@@ -442,7 +528,7 @@
         element.style.border = '2px solid #1F1B5B';
     }
     
-    // Add to cart function
+    // ==================== ADD TO CART ====================
     function addToCartFromDetail() {
         const productId = {{ $product->id }};
         const quantity = currentQuantity;
@@ -450,41 +536,93 @@
         let variantText = '';
         if (selectedColor) variantText += selectedColor;
         if (selectedSize) variantText += variantText ? ' - ' + selectedSize : selectedSize;
+        if (selectedStorage) variantText += variantText ? ' - ' + selectedStorage : selectedStorage;
         
-        if (typeof addToCartLocal === 'function') {
-            addToCartLocal(productId, quantity);
+        addToCartLocal(productId, quantity);
+    }
+    
+    function addToCartLocal(productId, quantity = 1) {
+        const product = { 
+            id: {{ $product->id }}, 
+            name: '{{ addslashes($product->name) }}', 
+            price: {{ $product->price }}, 
+            stock: {{ $product->stock }},
+            brand: '{{ addslashes($product->brand) }}',
+            main_image: '{{ $mainImage }}'
+        };
+        
+        let cart = JSON.parse(localStorage.getItem('vintara_cart') || '[]');
+        const existingItem = cart.find(item => item.id === productId);
+        const newQty = (existingItem ? existingItem.quantity : 0) + quantity;
+        
+        if (newQty > product.stock) {
+            showNotification(`Stok produk hanya ${product.stock} item!`, 'error');
+            return;
+        }
+        
+        if (existingItem) {
+            existingItem.quantity += quantity;
         } else {
-            console.log('Add to cart:', productId, quantity);
-            if (typeof showNotification === 'function') {
-                showNotification('{{ $product->name }} ditambahkan ke keranjang!', 'success');
-            } else {
-                alert('{{ $product->name }} ditambahkan ke keranjang!');
-            }
+            cart.push({
+                id: product.id,
+                name: product.name,
+                price: product.price,
+                quantity: quantity,
+                image: product.main_image,
+                stock: product.stock,
+                brand: product.brand
+            });
         }
-    }
-    
-    // Buy now function
-    function buyNow() {
-        const productId = {{ $product->id }};
-        const quantity = currentQuantity;
         
-        if (typeof addToCartLocal === 'function') {
-            addToCartLocal(productId, quantity);
+        localStorage.setItem('vintara_cart', JSON.stringify(cart));
+        showNotification(`${product.name} ditambahkan ke keranjang!`, 'success');
+        
+        const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+        document.querySelectorAll('.cart-count').forEach(el => {
+            el.textContent = totalItems;
+            if (totalItems === 0) {
+                el.style.display = 'none';
+            } else {
+                el.style.display = 'inline-block';
+            }
+        });
+        
+        const cartIcon = document.getElementById('cartIcon');
+        if (cartIcon) {
+            cartIcon.style.transform = 'scale(1.2)';
+            setTimeout(() => cartIcon.style.transform = 'scale(1)', 300);
         }
-        window.location.href = '/checkout';
     }
     
-    // Set first color as selected if available
+    // ==================== BUY NOW ====================
+    function buyNow() {
+        addToCartFromDetail();
+        setTimeout(() => {
+            window.location.href = '/checkout';
+        }, 500);
+    }
+    
+    // ==================== INITIALIZATION ====================
     document.addEventListener('DOMContentLoaded', function() {
+        // Set first color as selected if available
         const firstColorBtn = document.querySelector('.variant-btn');
         if (firstColorBtn) {
             firstColorBtn.click();
         }
+        
+        // Set first size as selected if available
         const firstSizeBtn = document.querySelector('.size-btn');
         if (firstSizeBtn) {
             firstSizeBtn.click();
         }
         
+        // Set first storage as selected if available
+        const firstStorageBtn = document.querySelector('.storage-btn');
+        if (firstStorageBtn) {
+            firstStorageBtn.click();
+        }
+        
+        // Set event listeners
         const addToCartBtn = document.getElementById('addToCartDetail');
         if (addToCartBtn) {
             addToCartBtn.onclick = addToCartFromDetail;
@@ -496,13 +634,18 @@
         }
     });
     
-    // Export functions to global
+    // ==================== EXPORT TO GLOBAL ====================
     window.selectColor = selectColor;
     window.selectSize = selectSize;
+    window.selectStorage = selectStorage;
     window.decreaseQuantity = decreaseQuantity;
     window.increaseQuantity = increaseQuantity;
     window.changeMainImage = changeMainImage;
     window.addToCartFromDetail = addToCartFromDetail;
     window.buyNow = buyNow;
+    window.addToCartLocal = addToCartLocal;
+    window.formatRupiah = formatRupiah;
+    window.showNotification = showNotification;
+    window.generateStarRating = generateStarRating;
 </script>
 @endsection

@@ -7,11 +7,14 @@ use App\Models\OrderItem;
 use App\Models\Cart;
 use App\Models\Product;
 use App\Models\Voucher;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class OrderController extends Controller
 {
@@ -124,8 +127,8 @@ class OrderController extends Controller
             'shipping_address' => 'required|string',
             'shipping_city' => 'required|string|max:100',
             'shipping_postal_code' => 'nullable|string|max:10',
-            'payment_method' => 'required|string|in:COD,Transfer Bank,QRIS,Cicilan 0%',
-            'shipping_method' => 'required|string|in:Regular,Same Day,Instant',
+            'payment_method' => 'required|string|in:TRANSFER_BANK,VIRTUAL_ACCOUNT,QRIS,COD,DANA,OVO,GOPAY,SHOPEEPAY',
+            'shipping_method' => 'required|string|in:REGULAR,EXPRESS,SAME_DAY',
             'voucher_code' => 'nullable|string',
             'customer_email' => 'nullable|email'
         ]);
@@ -199,6 +202,12 @@ class OrderController extends Controller
         // Generate order number
         $orderNumber = 'VIN-' . date('Ymd') . '-' . strtoupper(Str::random(6));
         
+        // Get payment info based on payment method
+        $paymentInfo = $this->getPaymentInfo($request->payment_method, $orderNumber, $total);
+        
+        // Set payment expiry (24 hours from now for non-COD, null for COD)
+        $paymentExpiredAt = ($request->payment_method === 'COD') ? null : Carbon::now()->addHours(24);
+        
         DB::beginTransaction();
         
         try {
@@ -213,6 +222,9 @@ class OrderController extends Controller
                 'shipping_city' => $request->shipping_city,
                 'shipping_postal_code' => $request->shipping_postal_code,
                 'payment_method' => $request->payment_method,
+                'payment_account' => isset($paymentInfo['account']) ? json_encode($paymentInfo['account']) : null,
+                'payment_qr_code' => $paymentInfo['qr_code'] ?? null,
+                'virtual_account_number' => $paymentInfo['va_number'] ?? null,
                 'shipping_method' => $request->shipping_method,
                 'subtotal' => $subtotal,
                 'shipping_cost' => $shippingCost,
@@ -221,6 +233,7 @@ class OrderController extends Controller
                 'voucher_code' => $voucherCodeUsed,
                 'total' => $total,
                 'status' => 'pending',
+                'payment_expired_at' => $paymentExpiredAt,
             ]);
             
             // Create order items and update stock
@@ -244,6 +257,9 @@ class OrderController extends Controller
             
             DB::commit();
             
+            // Send order notification
+            $this->sendOrderNotification($userId, $orderNumber, 'pending');
+            
             return response()->json([
                 'success' => true,
                 'message' => 'Pesanan berhasil dibuat',
@@ -251,7 +267,9 @@ class OrderController extends Controller
                     'order_id' => $order->id,
                     'order_number' => $order->order_number,
                     'total' => $total,
-                    'status' => $order->status
+                    'status' => $order->status,
+                    'payment_expired_at' => $paymentExpiredAt,
+                    'payment_info' => $paymentInfo
                 ]
             ]);
             
@@ -263,6 +281,125 @@ class OrderController extends Controller
                 'message' => 'Gagal membuat pesanan: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Get payment information based on payment method
+     */
+    private function getPaymentInfo($paymentMethod, $orderNumber, $amount)
+    {
+        $paymentInfo = [];
+        
+        switch ($paymentMethod) {
+            case 'TRANSFER_BANK':
+                $paymentInfo = [
+                    'type' => 'bank_transfer',
+                    'account' => [
+                        ['bank' => 'BCA', 'number' => '1234567890', 'name' => 'PT VINTARA INDONESIA'],
+                        ['bank' => 'Mandiri', 'number' => '9876543210', 'name' => 'PT VINTARA INDONESIA'],
+                        ['bank' => 'BNI', 'number' => '5556667777', 'name' => 'PT VINTARA INDONESIA'],
+                        ['bank' => 'BRI', 'number' => '1112223334', 'name' => 'PT VINTARA INDONESIA']
+                    ],
+                    'instructions' => 'Transfer ke salah satu rekening di atas sesuai total pembayaran'
+                ];
+                break;
+                
+            case 'VIRTUAL_ACCOUNT':
+                $vaNumber = '888' . date('Ymd') . str_pad(rand(0, 9999), 4, '0', STR_PAD_LEFT);
+                $paymentInfo = [
+                    'type' => 'virtual_account',
+                    'va_number' => $vaNumber,
+                    'bank' => 'BCA Virtual Account',
+                    'instructions' => 'Bayar melalui BCA Virtual Account dengan nomor VA di atas'
+                ];
+                break;
+                
+            case 'QRIS':
+                $paymentInfo = [
+                    'type' => 'qris',
+                    'qr_code' => 'https://api.qris.id/v1/qr/' . $orderNumber,
+                    'qr_text' => 'QRIS Payment for Order ' . $orderNumber,
+                    'instructions' => 'Scan QR Code menggunakan aplikasi pembayaran (GoPay, OVO, DANA, ShopeePay, LinkAja, dll)'
+                ];
+                break;
+                
+            case 'DANA':
+                $paymentInfo = [
+                    'type' => 'e_wallet',
+                    'wallet_name' => 'DANA',
+                    'number' => '081234567890',
+                    'name' => 'VINTARA Official',
+                    'instructions' => 'Transfer ke akun DANA di atas'
+                ];
+                break;
+                
+            case 'OVO':
+                $paymentInfo = [
+                    'type' => 'e_wallet',
+                    'wallet_name' => 'OVO',
+                    'number' => '081234567890',
+                    'name' => 'VINTARA Official',
+                    'instructions' => 'Transfer ke akun OVO di atas'
+                ];
+                break;
+                
+            case 'GOPAY':
+                $paymentInfo = [
+                    'type' => 'e_wallet',
+                    'wallet_name' => 'GoPay',
+                    'number' => '081234567890',
+                    'name' => 'VINTARA Official',
+                    'instructions' => 'Transfer ke akun GoPay di atas'
+                ];
+                break;
+                
+            case 'SHOPEEPAY':
+                $paymentInfo = [
+                    'type' => 'e_wallet',
+                    'wallet_name' => 'ShopeePay',
+                    'number' => '081234567890',
+                    'name' => 'VINTARA Official',
+                    'instructions' => 'Transfer ke akun ShopeePay di atas'
+                ];
+                break;
+                
+            case 'COD':
+                $paymentInfo = [
+                    'type' => 'cod',
+                    'instructions' => 'Bayar ketika barang sampai di tujuan'
+                ];
+                break;
+        }
+        
+        return $paymentInfo;
+    }
+
+    /**
+     * Send order notification
+     */
+    private function sendOrderNotification($userId, $orderNumber, $status)
+    {
+        $statusMessages = [
+            'pending' => ['title' => '🛍️ Pesanan Dibuat', 'message' => "Pesanan #{$orderNumber} telah dibuat. Silakan selesaikan pembayaran."],
+            'paid' => ['title' => '✅ Pembayaran Diterima', 'message' => "Pembayaran untuk pesanan #{$orderNumber} telah diterima."],
+            'processing' => ['title' => '📦 Pesanan Diproses', 'message' => "Pesanan #{$orderNumber} sedang diproses."],
+            'shipped' => ['title' => '🚚 Pesanan Dikirim', 'message' => "Pesanan #{$orderNumber} telah dikirim."],
+            'delivered' => ['title' => '🎉 Pesanan Selesai', 'message' => "Pesanan #{$orderNumber} telah sampai."],
+            'cancelled' => ['title' => '❌ Pesanan Dibatalkan', 'message' => "Pesanan #{$orderNumber} telah dibatalkan."],
+        ];
+        
+        $info = $statusMessages[$status] ?? $statusMessages['pending'];
+        
+        Notification::create([
+            'user_id' => $userId,
+            'type' => 'order',
+            'title' => $info['title'],
+            'message' => $info['message'],
+            'icon' => 'fas fa-shopping-bag',
+            'color' => '#1F1B5B',
+            'link' => "/order-detail/{$orderNumber}",
+            'is_global' => false,
+        ]);
     }
 
     /**
@@ -303,9 +440,15 @@ class OrderController extends Controller
                 }
             }
             
-            $order->update(['status' => 'cancelled']);
+            $order->update([
+                'status' => 'cancelled',
+                'cancelled_at' => now()
+            ]);
             
             DB::commit();
+            
+            // Send cancellation notification
+            $this->sendOrderNotification($userId, $order->order_number, 'cancelled');
             
             return response()->json([
                 'success' => true,
@@ -320,6 +463,50 @@ class OrderController extends Controller
                 'message' => 'Gagal membatalkan pesanan: ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    /**
+     * Auto cancel expired orders (called by scheduler)
+     */
+    public function autoCancelExpiredOrders()
+    {
+        $expiredOrders = Order::where('status', 'pending')
+            ->whereNotNull('payment_expired_at')
+            ->where('payment_expired_at', '<', now())
+            ->get();
+        
+        $cancelledCount = 0;
+        
+        foreach ($expiredOrders as $order) {
+            DB::beginTransaction();
+            try {
+                // Restore stock
+                foreach ($order->items as $item) {
+                    $product = Product::find($item->product_id);
+                    if ($product) {
+                        $product->increment('stock', $item->quantity);
+                        $product->decrement('sold', $item->quantity);
+                    }
+                }
+                
+                $order->update([
+                    'status' => 'cancelled',
+                    'cancelled_at' => now()
+                ]);
+                
+                DB::commit();
+                $cancelledCount++;
+                
+                // Send notification
+                $this->sendOrderNotification($order->user_id, $order->order_number, 'cancelled');
+                
+            } catch (\Exception $e) {
+                DB::rollBack();
+                Log::error('Auto cancel order failed for order #' . $order->order_number . ': ' . $e->getMessage());
+            }
+        }
+        
+        return $cancelledCount;
     }
 
     /**
@@ -369,6 +556,9 @@ class OrderController extends Controller
             'paid_at' => now(),
         ]);
         
+        // Send notification
+        $this->sendOrderNotification($userId, $order->order_number, 'paid');
+        
         return response()->json([
             'success' => true,
             'message' => 'Bukti pembayaran berhasil diupload, pesanan akan diproses'
@@ -407,9 +597,9 @@ class OrderController extends Controller
         ];
         
         $methodMultiplier = [
-            'Regular' => 1.0,
-            'Same Day' => 1.5,
-            'Instant' => 2.5
+            'REGULAR' => 1.0,
+            'EXPRESS' => 1.5,
+            'SAME_DAY' => 2.5
         ];
         
         // Find which zone the city belongs to
@@ -424,8 +614,8 @@ class OrderController extends Controller
         $baseCost = $baseCosts[$zone] ?? 45000;
         $multiplier = $methodMultiplier[$method] ?? 1.0;
         
-        // Free shipping for Bandung with Regular method
-        if ($city === 'Bandung' && $method === 'Regular') {
+        // Free shipping for Bandung with REGULAR method
+        if ($city === 'Bandung' && $method === 'REGULAR') {
             return 0;
         }
         

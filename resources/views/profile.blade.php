@@ -336,6 +336,48 @@
         box-shadow: 0 8px 20px rgba(31,27,91,0.1);
     }
     
+    /* TAMBAHAN: Style untuk informasi pembayaran di card pesanan */
+    .payment-info-mini {
+        background: #E8E4FF;
+        border-radius: 12px;
+        padding: 10px 15px;
+        margin-top: 10px;
+        font-size: 12px;
+        border-left: 3px solid #1F1B5B;
+    }
+    .payment-info-mini strong {
+        color: #1F1B5B;
+    }
+    .payment-number {
+        font-family: monospace;
+        font-size: 13px;
+        font-weight: 700;
+        background: white;
+        padding: 4px 8px;
+        border-radius: 8px;
+        display: inline-block;
+        margin-top: 5px;
+        letter-spacing: 1px;
+    }
+    .copy-number-btn {
+        background: #1F1B5B;
+        color: white;
+        border: none;
+        padding: 3px 10px;
+        border-radius: 15px;
+        font-size: 10px;
+        cursor: pointer;
+        margin-left: 8px;
+    }
+    .copy-number-btn:hover {
+        background: #3a3590;
+    }
+    .timer-mini {
+        font-size: 11px;
+        color: #ff4757;
+        margin-top: 8px;
+    }
+    
     @media (max-width: 768px) {
         .profile-wrapper {
             flex-direction: column;
@@ -348,6 +390,7 @@
 
 <script>
     let currentUser = null;
+    let paymentTimers = {};
     
     function formatRupiah(price) {
         if (!price && price !== 0) return 'Rp 0';
@@ -371,6 +414,11 @@
         }, 3000);
     }
     
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text);
+        showNotification('Nomor berhasil disalin!');
+    }
+    
     function getStatusInfo(status) {
         const statusMap = {
             'pending': { text: 'Menunggu Pembayaran', class: 'status-pending' },
@@ -382,6 +430,91 @@
             'success': { text: 'Selesai', class: 'status-success' }
         };
         return statusMap[status] || { text: status, class: 'status-pending' };
+    }
+    
+    // ==================== FUNGSI UNTUK MENDAPATKAN INFORMASI PEMBAYARAN ====================
+    function getPaymentInfo(order) {
+        const paymentMethod = order.payment_method;
+        const total = order.total;
+        
+        // TRANSFER BANK
+        if (paymentMethod === 'TRANSFER_BANK') {
+            return {
+                title: 'Transfer Bank',
+                numbers: [
+                    { bank: 'BCA', number: '1234567890', name: 'PT VINTARA INDONESIA' },
+                    { bank: 'Mandiri', number: '9876543210', name: 'PT VINTARA INDONESIA' },
+                    { bank: 'BNI', number: '5556667777', name: 'PT VINTARA INDONESIA' },
+                    { bank: 'BRI', number: '1112223334', name: 'PT VINTARA INDONESIA' }
+                ],
+                instruction: `Transfer ke salah satu rekening di atas sesuai total pembayaran ${formatRupiah(total)}`
+            };
+        }
+        
+        // VIRTUAL ACCOUNT
+        if (paymentMethod === 'VIRTUAL_ACCOUNT') {
+            const vaNumber = order.virtual_account_number || '888' + new Date().toISOString().slice(0,10).replace(/-/g,'') + Math.floor(Math.random()*10000);
+            return {
+                title: 'Virtual Account BCA',
+                numbers: [{ bank: 'BCA Virtual Account', number: vaNumber, name: 'PT VINTARA INDONESIA' }],
+                instruction: `Bayar melalui ATM/Internet Banking BCA dengan nomor VA di atas`
+            };
+        }
+        
+        // QRIS
+        if (paymentMethod === 'QRIS') {
+            return {
+                title: 'QRIS',
+                isQris: true,
+                instruction: `Scan QR Code menggunakan GoPay, OVO, DANA, ShopeePay, atau LinkAja. Total: ${formatRupiah(total)}`
+            };
+        }
+        
+        // DANA
+        if (paymentMethod === 'DANA') {
+            return {
+                title: 'DANA',
+                numbers: [{ bank: 'DANA', number: '081234567890', name: 'VINTARA Official' }],
+                instruction: `Transfer ke nomor DANA di atas sesuai total pembayaran ${formatRupiah(total)}`
+            };
+        }
+        
+        // OVO
+        if (paymentMethod === 'OVO') {
+            return {
+                title: 'OVO',
+                numbers: [{ bank: 'OVO', number: '081234567890', name: 'VINTARA Official' }],
+                instruction: `Transfer ke nomor OVO di atas sesuai total pembayaran ${formatRupiah(total)}`
+            };
+        }
+        
+        // GOPAY
+        if (paymentMethod === 'GOPAY') {
+            return {
+                title: 'GoPay',
+                numbers: [{ bank: 'GoPay', number: '081234567890', name: 'VINTARA Official' }],
+                instruction: `Transfer ke nomor GoPay di atas sesuai total pembayaran ${formatRupiah(total)}`
+            };
+        }
+        
+        // SHOPEEPAY
+        if (paymentMethod === 'SHOPEEPAY') {
+            return {
+                title: 'ShopeePay',
+                numbers: [{ bank: 'ShopeePay', number: '081234567890', name: 'VINTARA Official' }],
+                instruction: `Transfer ke nomor ShopeePay di atas sesuai total pembayaran ${formatRupiah(total)}`
+            };
+        }
+        
+        // COD
+        if (paymentMethod === 'COD') {
+            return {
+                title: 'COD (Bayar di Tempat)',
+                instruction: `Siapkan uang tunai sebesar ${formatRupiah(total)} saat barang sampai`
+            };
+        }
+        
+        return null;
     }
     
     function saveProfile() {
@@ -538,6 +671,7 @@
         document.getElementById('confirmPassword').value = '';
     }
     
+    // ==================== LOAD ORDER HISTORY DENGAN INFORMASI PEMBAYARAN ====================
     function loadOrderHistory() {
         const orders = JSON.parse(localStorage.getItem('vintara_orders') || '[]');
         const container = document.getElementById('orderHistoryList');
@@ -558,6 +692,85 @@
         container.innerHTML = orders.map(order => {
             const statusInfo = getStatusInfo(order.status);
             const orderId = order.order_number || order.id;
+            const paymentInfo = getPaymentInfo(order);
+            
+            // Cek apakah pesanan masih pending dan sudah lewat 24 jam
+            const orderDate = new Date(order.date);
+            const expiredTime = new Date(orderDate.getTime() + 24 * 60 * 60 * 1000);
+            const now = new Date();
+            const isExpired = order.status === 'pending' && now > expiredTime;
+            
+            // Jika expired dan masih pending, batalkan otomatis
+            if (isExpired && order.status === 'pending') {
+                order.status = 'cancelled';
+                // Update di localStorage
+                const orderIndex = orders.findIndex(o => (o.order_number || o.id) === orderId);
+                if (orderIndex !== -1) {
+                    orders[orderIndex].status = 'cancelled';
+                    localStorage.setItem('vintara_orders', JSON.stringify(orders));
+                }
+                statusInfo.text = 'Dibatalkan';
+                statusInfo.class = 'status-cancelled';
+            }
+            
+            // Hitung sisa waktu untuk pending order
+            let timeLeftHtml = '';
+            if (order.status === 'pending' && order.payment_method !== 'COD') {
+                const timeLeft = expiredTime - now;
+                if (timeLeft > 0) {
+                    const hoursLeft = Math.floor(timeLeft / (1000 * 60 * 60));
+                    const minutesLeft = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+                    timeLeftHtml = `<div class="timer-mini"><i class="fas fa-clock"></i> Sisa waktu pembayaran: ${hoursLeft} jam ${minutesLeft} menit</div>`;
+                } else if (!isExpired) {
+                    timeLeftHtml = `<div class="timer-mini" style="color: #ff4757;"><i class="fas fa-hourglass-end"></i> Segera selesaikan pembayaran!</div>`;
+                }
+            }
+            
+            // Build payment info HTML
+            let paymentInfoHtml = '';
+            if (paymentInfo && order.status === 'pending') {
+                if (paymentInfo.isQris) {
+                    paymentInfoHtml = `
+                        <div class="payment-info-mini">
+                            <strong><i class="fas fa-qrcode"></i> ${paymentInfo.title}</strong>
+                            <div style="margin-top: 5px;">${paymentInfo.instruction}</div>
+                        </div>
+                    `;
+                } else if (paymentInfo.numbers && paymentInfo.numbers.length > 0) {
+                    const numbersHtml = paymentInfo.numbers.map(n => `
+                        <div style="margin-top: 8px;">
+                            <strong>${n.bank}:</strong> 
+                            <span class="payment-number">${n.number}</span>
+                            <button class="copy-number-btn" onclick="copyToClipboard('${n.number}')">Salin</button>
+                            <div style="font-size: 10px; color: #6c757d;">a.n ${n.name}</div>
+                        </div>
+                    `).join('');
+                    
+                    paymentInfoHtml = `
+                        <div class="payment-info-mini">
+                            <strong><i class="fas fa-credit-card"></i> ${paymentInfo.title}</strong>
+                            ${numbersHtml}
+                            <div style="margin-top: 8px; font-size: 11px;">${paymentInfo.instruction}</div>
+                            ${timeLeftHtml}
+                        </div>
+                    `;
+                } else {
+                    paymentInfoHtml = `
+                        <div class="payment-info-mini">
+                            <strong><i class="fas fa-money-bill-wave"></i> ${paymentInfo.title}</strong>
+                            <div style="margin-top: 5px;">${paymentInfo.instruction}</div>
+                            ${timeLeftHtml}
+                        </div>
+                    `;
+                }
+            } else if (paymentInfo && order.status !== 'pending') {
+                paymentInfoHtml = `
+                    <div class="payment-info-mini" style="background: #F3F0FF; opacity: 0.7;">
+                        <strong><i class="fas fa-check-circle"></i> ${paymentInfo.title}</strong>
+                        <div style="margin-top: 5px;">Pembayaran telah ${order.status === 'paid' ? 'dikonfirmasi' : (order.status === 'cancelled' ? 'dibatalkan' : 'selesai')}</div>
+                    </div>
+                `;
+            }
             
             return `
                 <div class="order-card" style="background: #F3F0FF; padding: 20px; border-radius: 20px; margin-bottom: 15px; transition: all 0.3s;">
@@ -579,7 +792,10 @@
                         ${order.items && order.items.length > 2 ? `<div style="font-size: 11px; color: #6c757d;">+${order.items.length - 2} produk lainnya</div>` : ''}
                     </div>
                     
-                    <div style="border-top: 1px solid #ddd; padding-top: 12px; display: flex; justify-content: space-between; align-items: center;">
+                    <!-- TAMBAHAN: INFORMASI PEMBAYARAN (NOMOR TUJUAN TRANSFER) -->
+                    ${paymentInfoHtml}
+                    
+                    <div style="border-top: 1px solid #ddd; padding-top: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <div>
                             <span style="font-size: 12px; color: #6c757d;">Total</span>
                             <div style="font-weight: bold; color: #1F1B5B; font-size: 16px;">${formatRupiah(order.total)}</div>
@@ -673,6 +889,14 @@
         }, 2000);
     }
     
+    // Auto refresh order history every 30 seconds
+    setInterval(function() {
+        const activeTab = document.querySelector('.tab-content[style="display: block;"]');
+        if (activeTab && activeTab.id === 'tab-orders') {
+            loadOrderHistory();
+        }
+    }, 30000);
+    
     document.addEventListener('DOMContentLoaded', function() {
         loadProfile();
         checkUrlForTab();
@@ -686,5 +910,6 @@
     window.showTab = showTab;
     window.viewOrderDetail = viewOrderDetail;
     window.formatRupiah = formatRupiah;
+    window.copyToClipboard = copyToClipboard;
 </script>
 @endsection
