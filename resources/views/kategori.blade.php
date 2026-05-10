@@ -18,15 +18,15 @@
                 <div class="filter-title" style="font-weight: 600; margin-bottom: 15px; font-size: 14px;">⭐ Penilaian</div>
                 <div class="rating-options" style="display: flex; flex-direction: column; gap: 12px;">
                     <label class="rating-option" style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 13px; padding: 8px 12px; border-radius: 12px; background: #F3F0FF;">
-                        <input type="radio" name="ratingFilter" value="4.5" onchange="applyFilters()"> 
+                        <input type="radio" name="ratingFilter" value="4.5"> 
                         <span>★★★★★ <span style="color: #6c757d; font-size: 11px;">(4.5 ke atas)</span></span>
                     </label>
                     <label class="rating-option" style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 13px; padding: 8px 12px; border-radius: 12px; background: #F3F0FF;">
-                        <input type="radio" name="ratingFilter" value="4.0" onchange="applyFilters()"> 
+                        <input type="radio" name="ratingFilter" value="4.0"> 
                         <span>★★★★☆ <span style="color: #6c757d; font-size: 11px;">(4.0 ke atas)</span></span>
                     </label>
                     <label class="rating-option" style="display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 13px; padding: 8px 12px; border-radius: 12px; background: #F3F0FF;">
-                        <input type="radio" name="ratingFilter" value="3.5" onchange="applyFilters()"> 
+                        <input type="radio" name="ratingFilter" value="3.5"> 
                         <span>★★★☆☆ <span style="color: #6c757d; font-size: 11px;">(3.5 ke atas)</span></span>
                     </label>
                 </div>
@@ -35,7 +35,7 @@
             {{-- FILTER BRAND --}}
             <div class="filter-group" style="margin-bottom: 25px;">
                 <div class="filter-title" style="font-weight: 600; margin-bottom: 15px; font-size: 14px;">🏷️ Brand</div>
-                <select id="brandFilter" class="brand-select" onchange="applyFilters()" style="width: 100%; padding: 10px 12px; border: 1px solid #e9ecef; border-radius: 12px;">
+                <select id="brandFilter" style="width: 100%; padding: 10px 12px; border: 1px solid #e9ecef; border-radius: 12px;">
                     <option value="">Semua Brand</option>
                     <option value="Apple">Apple</option>
                     <option value="Samsung">Samsung</option>
@@ -45,16 +45,8 @@
                     <option value="Lenovo">Lenovo</option>
                     <option value="Dell">Dell</option>
                     <option value="Asus">Asus</option>
-                    <option value="HP">HP</option>
-                    <option value="Realme">Realme</option>
-                    <option value="OnePlus">OnePlus</option>
-                    <option value="Google">Google</option>
                     <option value="Anker">Anker</option>
                     <option value="Spigen">Spigen</option>
-                    <option value="Aukey">Aukey</option>
-                    <option value="Mophie">Mophie</option>
-                    <option value="Baseus">Baseus</option>
-                    <option value="Belkin">Belkin</option>
                 </select>
             </div>
 
@@ -62,9 +54,9 @@
             <div class="filter-group" style="margin-bottom: 25px;">
                 <div class="filter-title" style="font-weight: 600; margin-bottom: 15px; font-size: 14px;">💰 Rentang Harga</div>
                 <div class="price-range">
-                    <input type="range" id="priceRange" min="0" max="50000000" step="100000" value="50000000" onchange="applyFilters()" style="width: 100%;">
+                    <input type="range" id="priceRange" min="0" max="50000000" step="1000000" value="50000000" style="width: 100%;">
                     <div class="price-values" style="display: flex; justify-content: space-between; margin-top: 10px; font-size: 12px;">
-                        <span id="minPriceLabel">Rp 0</span>
+                        <span>Rp 0</span>
                         <span id="maxPriceLabel">Rp 50 Juta</span>
                     </div>
                 </div>
@@ -74,7 +66,7 @@
             <div class="filter-result" style="margin-top: 20px; padding-top: 15px; border-top: 1px solid #e9ecef;">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span style="font-weight: 600; font-size: 13px;"><i class="fas fa-box"></i> Jumlah produk:</span>
-                    <span id="filteredCount" style="background: #1F1B5B; color: white; padding: 2px 10px; border-radius: 20px; font-size: 12px;">0</span>
+                    <span id="filteredCount" style="background: #1F1B5B; color: white; padding: 2px 10px; border-radius: 20px; font-size: 12px;">{{ $products->count() }}</span>
                 </div>
             </div>
         </aside>
@@ -82,10 +74,12 @@
         {{-- PRODUCT GRID KANAN --}}
         <div class="kategori-product-main">
             <div class="kategori-product-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
-                <h2 id="kategoriTitle" style="font-size: 24px; color: #1F1B5B; margin: 0;">{{ isset($selectedCategory) ? $selectedCategory->name : 'Semua Produk' }}</h2>
-                <div class="sort-section" style="display: flex; align-items: center; gap: 12px; background: white; padding: 6px 16px; border-radius: 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-                    <span style="font-size: 13px; color: #6c757d; font-weight: 500;">Urutkan:</span>
-                    <select id="sortProductsKategori" class="sort-select" onchange="applyFilters()" style="border: none; background: transparent; padding: 8px 12px; font-weight: 600; color: #1F1B5B; cursor: pointer;">
+                <h2 id="kategoriTitle" style="font-size: 24px; color: #1F1B5B; margin: 0;">
+                    {{ isset($selectedCategory) ? $selectedCategory->name : 'Semua Produk' }}
+                </h2>
+                <div class="sort-section" style="display: flex; align-items: center; gap: 12px; background: white; padding: 6px 16px; border-radius: 40px;">
+                    <span style="font-size: 13px; color: #6c757d;">Urutkan:</span>
+                    <select id="sortProductsKategori" style="border: none; background: transparent; padding: 8px 12px; font-weight: 600; color: #1F1B5B; cursor: pointer;">
                         <option value="default">Rekomendasi</option>
                         <option value="price-asc">Termurah</option>
                         <option value="price-desc">Termahal</option>
@@ -95,15 +89,13 @@
                 </div>
             </div>
             
-            {{-- SEARCH BAR DI DALAM KATEGORI PAGE --}}
+            {{-- SEARCH BAR --}}
             <div style="margin-bottom: 20px;">
                 <div style="display: flex; gap: 10px; background: white; border-radius: 50px; padding: 5px 5px 5px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
                     <i class="fas fa-search" style="color: #6c757d; align-self: center;"></i>
                     <input type="text" id="kategoriSearchInput" placeholder="Cari produk di kategori ini..." 
                            style="flex: 1; border: none; outline: none; padding: 12px 0; font-size: 14px;">
-                    <button id="kategoriSearchBtn" style="background: #1F1B5B; color: white; border: none; padding: 8px 25px; border-radius: 40px; cursor: pointer;">
-                        Cari
-                    </button>
+                    <button id="kategoriSearchBtn" style="background: #1F1B5B; color: white; border: none; padding: 8px 25px; border-radius: 40px; cursor: pointer;">Cari</button>
                     <button id="kategoriClearSearch" style="background: transparent; border: none; color: #6c757d; cursor: pointer; display: none;">
                         <i class="fas fa-times"></i>
                     </button>
@@ -111,17 +103,69 @@
                 <div id="kategoriSearchInfo" style="margin-top: 8px; font-size: 12px; color: #6c757d; display: none;"></div>
             </div>
             
-            <div class="kategori-product-grid" id="kategoriProductGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px;">
-                <div class="loading-spinner" style="text-align: center; padding: 40px;">
-                    <i class="fas fa-spinner fa-pulse" style="font-size: 40px; color: #1F1B5B;"></i>
+            {{-- PRODUCT GRID - LANGSUNG DARI SERVER --}}
+            <div class="kategori-product-grid" id="kategoriProductGrid">
+                @forelse($products as $product)
+                @php
+                    $productImage = $product->main_image;
+                    if (!$productImage && $product->images && $product->images->count() > 0) {
+                        $mainImg = $product->images->where('is_main', true)->first();
+                        $productImage = $mainImg ? $mainImg->image_url : $product->images->first()->image_url;
+                    }
+                    if (!$productImage) {
+                        $productImage = 'https://placehold.co/400x400/1F1B5B/white?text=' . urlencode($product->name);
+                    }
+                    $rating = $product->rating ?? 0;
+                    $sold = $product->sold ?? 0;
+                    $price = $product->price;
+                    $originalPrice = $product->original_price;
+                    $discount = $product->discount ?? 0;
+                    $isFlashSale = $product->is_flash_sale ?? false;
+                @endphp
+                <div class="product-card" data-product-id="{{ $product->id }}" data-product-name="{{ $product->name }}" data-product-brand="{{ $product->brand }}" data-product-price="{{ $price }}" data-product-rating="{{ $rating }}" data-product-sold="{{ $sold }}">
+                    @if($isFlashSale)
+                        <div class="product-badge flash">🔥 Flash Sale -{{ $discount }}%</div>
+                    @endif
+                    <div class="product-image" onclick="window.location.href='{{ url('/product/' . $product->slug) }}'">
+                        <img src="{{ $productImage }}" 
+                             alt="{{ $product->name }}" 
+                             loading="lazy"
+                             onerror="this.src='https://placehold.co/400x400/1F1B5B/white?text=' + encodeURIComponent('{{ $product->name }}')">
+                    </div>
+                    <div class="product-info">
+                        <h4 class="product-title" onclick="window.location.href='{{ url('/product/' . $product->slug) }}'">{{ $product->name }}</h4>
+                        <div class="product-rating">
+                            @php
+                                $fullStars = floor($rating);
+                                $halfStar = ($rating - $fullStars) >= 0.5;
+                            @endphp
+                            @for($i = 0; $i < $fullStars; $i++) <i class="fas fa-star"></i> @endfor
+                            @if($halfStar) <i class="fas fa-star-half-alt"></i> @endif
+                            @for($i = 0; $i < 5 - ceil($rating); $i++) <i class="far fa-star"></i> @endfor
+                            <span style="color: #6c757d;">({{ number_format($rating, 1) }})</span>
+                        </div>
+                        <div class="product-price">
+                            Rp {{ number_format($price, 0, ',', '.') }}
+                            @if($originalPrice && $originalPrice > $price)
+                                <span class="product-old-price">Rp {{ number_format($originalPrice, 0, ',', '.') }}</span>
+                            @endif
+                        </div>
+                        <div class="product-sold">
+                            <i class="fas fa-shopping-bag"></i> Terjual {{ number_format($sold) }}+
+                        </div>
+                        <button class="btn-add-cart" onclick="event.stopPropagation(); addToCartFromKategori({{ $product->id }})">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                    </div>
                 </div>
-            </div>
-            
-            <div id="noProductsMessage" style="display: none; text-align: center; padding: 60px; background: white; border-radius: 20px;">
-                <i class="fas fa-search" style="font-size: 60px; color: #ccc;"></i>
-                <h3 style="margin-top: 15px;">Tidak ada produk ditemukan</h3>
-                <p id="kategoriSearchKeywordDisplay"></p>
-                <button onclick="resetAllFiltersAndSearch()" class="btn-primary" style="background: #1F1B5B; color: white; border: none; padding: 10px 25px; border-radius: 30px; cursor: pointer; margin-top: 15px;">Lihat Semua Produk</button>
+                @empty
+                <div class="no-products" style="grid-column: 1/-1; text-align: center; padding: 60px; background: white; border-radius: 20px;">
+                    <i class="fas fa-box-open" style="font-size: 60px; color: #ccc;"></i>
+                    <h3 style="margin-top: 15px;">Belum Ada Produk</h3>
+                    <p>Silakan cek kembali nanti</p>
+                    <a href="{{ url('/') }}" class="btn-primary" style="display: inline-block; background: #1F1B5B; color: white; padding: 10px 25px; border-radius: 30px; text-decoration: none; margin-top: 15px;">Kembali ke Beranda</a>
+                </div>
+                @endforelse
             </div>
         </div>
     </div>
@@ -163,6 +207,7 @@
         background: linear-gradient(135deg, #f5f5f5, #ffffff);
         overflow: hidden;
         position: relative;
+        cursor: pointer;
     }
     .product-image img {
         width: 100%;
@@ -195,6 +240,7 @@
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        cursor: pointer;
     }
     .product-rating {
         display: flex;
@@ -236,20 +282,15 @@
         background: #3a3590;
         transform: scale(1.02);
     }
-    .rating-option:hover {
-        background: white;
-        border: 1px solid #e9ecef;
-    }
-    .rating-option input {
-        accent-color: #1F1B5B;
-    }
     .filter-sidebar {
         position: sticky;
         top: 90px;
         height: fit-content;
     }
-    .loading-spinner {
-        grid-column: 1/-1;
+    .kategori-product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 25px;
     }
     @media (max-width: 992px) {
         .kategori-layout {
@@ -298,54 +339,29 @@
 </style>
 
 <script>
-    // ==================== DATA PRODUK ====================
-    let allProductsData = @json(isset($products) ? $products : []);
-    let originalProducts = [];
-    let filteredProducts = [];
-    let currentSearchKeyword = '';
+    // ==================== DATA PRODUK DARI SERVER ====================
+    let allProductsFromServer = @json($products->values());
+    let originalProductsArray = [...allProductsFromServer];
+    let filteredProductsArray = [...allProductsFromServer];
+    let currentSearchKeywordKategori = '';
     
-    // ==================== FUNGSI GET GAMBAR PRODUK (PRIORITAS BENAR) ====================
-    function getProductImage(product) {
-        // 1. PRIORITAS UTAMA: main_image dari object
-        if (product.main_image && product.main_image !== '' && product.main_image !== null) {
-            return product.main_image;
-        }
-        
-        // 2. KEDUA: Cek dari array images
-        if (product.images && Array.isArray(product.images) && product.images.length > 0) {
-            // Cari gambar dengan is_main = true
-            const mainImg = product.images.find(img => img.is_main === true || img.is_main === 1);
-            if (mainImg && mainImg.image_url) {
-                return mainImg.image_url;
-            }
-            // Jika tidak ada gambar utama, ambil gambar pertama
-            if (product.images[0] && product.images[0].image_url) {
-                return product.images[0].image_url;
-            }
-        }
-        
-        // 3. FALLBACK TERAKHIR: placeholder dengan nama produk (agar tetap informatif)
-        return 'https://placehold.co/400x400/1F1B5B/white?text=' + encodeURIComponent(product.name || 'Product');
-    }
-    
-    // ==================== FUNGSI FORMAT ====================
-    function formatRupiah(price) {
+    // ==================== HELPER FUNCTIONS ====================
+    function formatRupiahKategori(price) {
         if (!price && price !== 0) return 'Rp 0';
         return 'Rp ' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     }
     
-    function generateStarRating(rating) {
-        const numericRating = parseFloat(rating) || 0;
-        const fullStars = Math.floor(numericRating);
-        const hasHalfStar = numericRating % 1 >= 0.5;
+    function generateStarRatingKategori(rating) {
+        const fullStars = Math.floor(rating);
+        const hasHalfStar = rating % 1 >= 0.5;
         let stars = '';
         for (let i = 0; i < fullStars; i++) stars += '<i class="fas fa-star"></i>';
         if (hasHalfStar) stars += '<i class="fas fa-star-half-alt"></i>';
-        for (let i = 0; i < 5 - Math.ceil(numericRating); i++) stars += '<i class="far fa-star"></i>';
+        for (let i = 0; i < 5 - Math.ceil(rating); i++) stars += '<i class="far fa-star"></i>';
         return stars;
     }
     
-    function escapeHtml(str) {
+    function escapeHtmlKategori(str) {
         if (!str) return '';
         return str.replace(/[&<>]/g, function(m) {
             if (m === '&') return '&amp;';
@@ -355,7 +371,7 @@
         });
     }
     
-    function showNotification(message, isError = false) {
+    function showNotificationKategori(message, isError = false) {
         const oldNotif = document.querySelector('.notification-custom');
         if (oldNotif) oldNotif.remove();
         
@@ -372,62 +388,69 @@
         }, 3000);
     }
     
-    // ==================== RENDER PRODUK (DENGAN PERBAIKAN GAMBAR FULL FRAME) ====================
-    function renderProducts() {
+    function getProductImageKategori(product) {
+        if (product.main_image && product.main_image !== '') return product.main_image;
+        if (product.images && product.images.length > 0) {
+            const mainImg = product.images.find(img => img.is_main === true);
+            if (mainImg) return mainImg.image_url;
+            return product.images[0].image_url;
+        }
+        return 'https://placehold.co/400x400/1F1B5B/white?text=' + encodeURIComponent(product.name);
+    }
+    
+    // ==================== RENDER FILTERED PRODUCTS ====================
+    function renderFilteredProducts() {
         const grid = document.getElementById('kategoriProductGrid');
-        const noMessage = document.getElementById('noProductsMessage');
-        const searchKeywordDisplay = document.getElementById('kategoriSearchKeywordDisplay');
-        
         if (!grid) return;
         
-        if (!filteredProducts || filteredProducts.length === 0) {
-            grid.style.display = 'none';
-            if (noMessage) {
-                noMessage.style.display = 'block';
-                if (searchKeywordDisplay && currentSearchKeyword) {
-                    searchKeywordDisplay.innerHTML = `Kata kunci: "<strong>${escapeHtml(currentSearchKeyword)}</strong>"`;
-                } else {
-                    searchKeywordDisplay.innerHTML = '';
-                }
-            }
-            const countEl = document.getElementById('filteredCount');
-            if (countEl) countEl.textContent = '0';
+        if (filteredProductsArray.length === 0) {
+            grid.innerHTML = `
+                <div class="no-products" style="grid-column: 1/-1; text-align: center; padding: 60px; background: white; border-radius: 20px;">
+                    <i class="fas fa-search" style="font-size: 60px; color: #ccc;"></i>
+                    <h3 style="margin-top: 15px;">Tidak ada produk ditemukan</h3>
+                    <button onclick="resetAllFiltersKategori()" class="btn-primary" style="margin-top: 15px;">Reset Filter</button>
+                </div>
+            `;
+            document.getElementById('filteredCount').textContent = '0';
             return;
         }
         
-        grid.style.display = 'grid';
-        if (noMessage) noMessage.style.display = 'none';
-        const countEl = document.getElementById('filteredCount');
-        if (countEl) countEl.textContent = filteredProducts.length;
+        document.getElementById('filteredCount').textContent = filteredProductsArray.length;
         
-        grid.innerHTML = filteredProducts.map(product => {
-            const productImage = getProductImage(product);
-            const escapedProductName = escapeHtml(product.name);
-            const encodedProductName = encodeURIComponent(product.name);
+        grid.innerHTML = filteredProductsArray.map(product => {
+            const productImage = getProductImageKategori(product);
+            const productName = escapeHtmlKategori(product.name);
+            const productBrand = product.brand || 'VINTARA';
+            const productRating = product.rating || 0;
+            const productPrice = product.price;
+            const productOriginalPrice = product.original_price;
+            const productSold = product.sold || 0;
+            const isFlashSale = product.is_flash_sale || false;
+            const discount = product.discount || 0;
             
             return `
-            <div class="product-card" onclick="goToProductDetail(${product.id})" data-product-id="${product.id}">
-                ${product.is_flash_sale ? `<div class="product-badge flash">🔥 Flash Sale -${product.discount || 0}%</div>` : ''}
+            <div class="product-card" onclick="window.location.href='/product/${product.id}'" data-product-id="${product.id}">
+                ${isFlashSale ? `<div class="product-badge flash">🔥 Flash Sale -${discount}%</div>` : ''}
                 <div class="product-image">
                     <img src="${productImage}" 
-                         alt="${escapedProductName}"
+                         alt="${productName}"
                          loading="lazy"
-                         onerror="this.onerror=null; this.src='https://placehold.co/400x400/1F1B5B/white?text=${encodedProductName}'">
+                         onerror="this.src='https://placehold.co/400x400/1F1B5B/white?text=${encodeURIComponent(product.name)}'">
                 </div>
                 <div class="product-info">
-                    <h4 class="product-title">${escapedProductName}</h4>
+                    <h4 class="product-title">${productName}</h4>
                     <div class="product-rating">
-                        ${generateStarRating(product.rating || 0)}
-                        <span style="color: #6c757d;">(${product.rating || 0})</span>
+                        ${generateStarRatingKategori(productRating)}
+                        <span style="color: #6c757d;">(${productRating})</span>
                     </div>
                     <div class="product-price">
-                        ${formatRupiah(product.price)}
-                        ${(product.original_price && product.original_price > product.price) ? `<span class="product-old-price">${formatRupiah(product.original_price)}</span>` : ''}
+                        ${formatRupiahKategori(productPrice)}
+                        ${(productOriginalPrice && productOriginalPrice > productPrice) ? `<span class="product-old-price">${formatRupiahKategori(productOriginalPrice)}</span>` : ''}
                     </div>
                     <div class="product-sold">
-                        <i class="fas fa-shopping-bag"></i> Terjual ${product.sold || 0}+
+                        <i class="fas fa-shopping-bag"></i> Terjual ${productSold.toLocaleString()}+
                     </div>
-                    <button class="btn-add-cart" onclick="event.stopPropagation(); addToCartLocal(${product.id})">
+                    <button class="btn-add-cart" onclick="event.stopPropagation(); addToCartFromKategori(${product.id})">
                         <i class="fas fa-shopping-cart"></i> Add to Cart
                     </button>
                 </div>
@@ -435,18 +458,75 @@
         `}).join('');
     }
     
-    // ==================== SEARCH FUNCTION FOR KATEGORI PAGE (STAY ON PAGE) ====================
+    // ==================== APPLY FILTERS ====================
+    function applyFiltersKategori() {
+        let filtered = [...originalProductsArray];
+        
+        // Filter berdasarkan kata kunci pencarian
+        if (currentSearchKeywordKategori) {
+            filtered = filtered.filter(product => 
+                (product.name && product.name.toLowerCase().includes(currentSearchKeywordKategori.toLowerCase())) ||
+                (product.brand && product.brand.toLowerCase().includes(currentSearchKeywordKategori.toLowerCase()))
+            );
+        }
+        
+        // Filter Rating
+        const selectedRating = document.querySelector('input[name="ratingFilter"]:checked');
+        if (selectedRating && selectedRating.value) {
+            const minRating = parseFloat(selectedRating.value);
+            filtered = filtered.filter(p => (p.rating || 0) >= minRating);
+        }
+        
+        // Filter Brand
+        const brandFilter = document.getElementById('brandFilter');
+        if (brandFilter && brandFilter.value) {
+            filtered = filtered.filter(p => p.brand === brandFilter.value);
+        }
+        
+        // Filter Harga
+        const priceRange = document.getElementById('priceRange');
+        if (priceRange) {
+            const maxPrice = parseInt(priceRange.value);
+            filtered = filtered.filter(p => (p.price || 0) <= maxPrice);
+            document.getElementById('maxPriceLabel').textContent = formatRupiahKategori(maxPrice);
+        }
+        
+        // Sorting
+        const sortSelect = document.getElementById('sortProductsKategori');
+        if (sortSelect && sortSelect.value !== 'default') {
+            switch(sortSelect.value) {
+                case 'price-asc':
+                    filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+                    break;
+                case 'price-desc':
+                    filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+                    break;
+                case 'rating':
+                    filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+                    break;
+                case 'popular':
+                    filtered.sort((a, b) => (b.sold || 0) - (a.sold || 0));
+                    break;
+                default: break;
+            }
+        }
+        
+        filteredProductsArray = filtered;
+        renderFilteredProducts();
+    }
+    
+    // ==================== SEARCH FUNCTION ====================
     function searchKategoriProducts(keyword) {
         const titleElement = document.getElementById('kategoriTitle');
         const searchInfo = document.getElementById('kategoriSearchInfo');
         const clearBtn = document.getElementById('kategoriClearSearch');
         const searchInput = document.getElementById('kategoriSearchInput');
         
-        currentSearchKeyword = keyword.trim();
+        currentSearchKeywordKategori = keyword.trim();
         
-        if (!currentSearchKeyword) {
-            // Reset to original products
-            filteredProducts = [...originalProducts];
+        if (!currentSearchKeywordKategori) {
+            // Reset ke semua produk
+            filteredProductsArray = [...originalProductsArray];
             if (titleElement) {
                 const categoryName = '{{ isset($selectedCategory) ? $selectedCategory->name : 'Semua Produk' }}';
                 titleElement.innerHTML = categoryName;
@@ -455,51 +535,51 @@
             if (clearBtn) clearBtn.style.display = 'none';
             if (searchInput) searchInput.value = '';
             
-            // Reset filters
+            // Reset semua filter
             document.querySelectorAll('input[name="ratingFilter"]').forEach(r => r.checked = false);
             const brandFilter = document.getElementById('brandFilter');
             if (brandFilter) brandFilter.value = '';
             const priceRange = document.getElementById('priceRange');
             if (priceRange) {
                 priceRange.value = priceRange.max || 50000000;
-                document.getElementById('maxPriceLabel').textContent = formatRupiah(parseInt(priceRange.value));
+                document.getElementById('maxPriceLabel').textContent = formatRupiahKategori(parseInt(priceRange.value));
             }
             const sortSelect = document.getElementById('sortProductsKategori');
             if (sortSelect) sortSelect.value = 'default';
             
-            renderProducts();
+            renderFilteredProducts();
             return;
         }
         
-        const filtered = originalProducts.filter(product => 
-            (product.name && product.name.toLowerCase().includes(currentSearchKeyword.toLowerCase())) ||
-            (product.brand && product.brand.toLowerCase().includes(currentSearchKeyword.toLowerCase()))
+        const filtered = originalProductsArray.filter(product => 
+            (product.name && product.name.toLowerCase().includes(currentSearchKeywordKategori.toLowerCase())) ||
+            (product.brand && product.brand.toLowerCase().includes(currentSearchKeywordKategori.toLowerCase()))
         );
         
-        filteredProducts = filtered;
+        filteredProductsArray = filtered;
         
         if (titleElement) {
             const categoryName = '{{ isset($selectedCategory) ? $selectedCategory->name : 'Semua Produk' }}';
-            titleElement.innerHTML = `🔍 Hasil Pencarian: "${escapeHtml(currentSearchKeyword)}" - ${categoryName}`;
+            titleElement.innerHTML = `🔍 Hasil Pencarian: "${escapeHtmlKategori(currentSearchKeywordKategori)}" - ${categoryName}`;
         }
         
         if (searchInfo) {
             searchInfo.style.display = 'block';
-            searchInfo.innerHTML = `<i class="fas fa-search"></i> Menampilkan ${filtered.length} hasil untuk "${escapeHtml(currentSearchKeyword)}"`;
+            searchInfo.innerHTML = `<i class="fas fa-search"></i> Menampilkan ${filtered.length} hasil untuk "${escapeHtmlKategori(currentSearchKeywordKategori)}"`;
         }
         
-        if (clearBtn && filtered.length !== originalProducts.length) {
+        if (clearBtn && filtered.length !== originalProductsArray.length) {
             clearBtn.style.display = 'block';
         } else if (clearBtn) {
             clearBtn.style.display = 'none';
         }
         
-        renderProducts();
+        renderFilteredProducts();
     }
     
-    // ==================== RESET ALL FILTERS AND SEARCH ====================
-    function resetAllFiltersAndSearch() {
-        currentSearchKeyword = '';
+    // ==================== RESET ALL FILTERS ====================
+    function resetAllFiltersKategori() {
+        currentSearchKeywordKategori = '';
         
         // Reset search input
         const searchInput = document.getElementById('kategoriSearchInput');
@@ -533,7 +613,7 @@
         const priceRange = document.getElementById('priceRange');
         if (priceRange) {
             priceRange.value = priceRange.max || 50000000;
-            document.getElementById('maxPriceLabel').textContent = formatRupiah(parseInt(priceRange.value));
+            document.getElementById('maxPriceLabel').textContent = formatRupiahKategori(parseInt(priceRange.value));
         }
         
         // Reset sort
@@ -541,202 +621,27 @@
         if (sortSelect) sortSelect.value = 'default';
         
         // Reset products
-        filteredProducts = [...originalProducts];
-        renderProducts();
+        filteredProductsArray = [...originalProductsArray];
+        renderFilteredProducts();
         
-        showNotification('Filter dan pencarian direset!');
+        showNotificationKategori('Filter dan pencarian direset!');
     }
     
-    // ==================== FUNGSI FILTER ====================
-    function applyFilters() {
-        if (!originalProducts.length) {
-            filteredProducts = [];
-            renderProducts();
-            return;
-        }
-        
-        let filtered = [...originalProducts];
-        
-        // Filter berdasarkan kata kunci pencarian (jika ada)
-        if (currentSearchKeyword) {
-            filtered = filtered.filter(product => 
-                (product.name && product.name.toLowerCase().includes(currentSearchKeyword.toLowerCase())) ||
-                (product.brand && product.brand.toLowerCase().includes(currentSearchKeyword.toLowerCase()))
-            );
-        }
-        
-        // Filter Rating
-        const selectedRating = document.querySelector('input[name="ratingFilter"]:checked');
-        if (selectedRating && selectedRating.value) {
-            const minRating = parseFloat(selectedRating.value);
-            filtered = filtered.filter(p => (p.rating || 0) >= minRating);
-        }
-        
-        // Filter Brand
-        const brandFilter = document.getElementById('brandFilter');
-        if (brandFilter && brandFilter.value) {
-            filtered = filtered.filter(p => p.brand === brandFilter.value);
-        }
-        
-        // Filter Harga
-        const priceRange = document.getElementById('priceRange');
-        if (priceRange) {
-            const maxPrice = parseInt(priceRange.value);
-            filtered = filtered.filter(p => (p.price || 0) <= maxPrice);
-            document.getElementById('maxPriceLabel').textContent = formatRupiah(maxPrice);
-        }
-        
-        // Filter Sorting
-        const sortSelect = document.getElementById('sortProductsKategori');
-        if (sortSelect && sortSelect.value !== 'default') {
-            switch(sortSelect.value) {
-                case 'price-asc':
-                    filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
-                    break;
-                case 'price-desc':
-                    filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
-                    break;
-                case 'rating':
-                    filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-                    break;
-                case 'popular':
-                    filtered.sort((a, b) => (b.sold || 0) - (a.sold || 0));
-                    break;
-                default:
-                    break;
-            }
-        }
-        
-        filteredProducts = filtered;
-        renderProducts();
-    }
-    
-    function resetAllFilters() {
-        resetAllFiltersAndSearch();
-    }
-    
-    // ==================== UPDATE MAX PRICE LABEL ====================
-    const priceRangeInput = document.getElementById('priceRange');
-    if (priceRangeInput) {
-        priceRangeInput.addEventListener('input', function() {
-            document.getElementById('maxPriceLabel').textContent = formatRupiah(parseInt(this.value));
-            applyFilters();
-        });
-    }
-    
-    // ==================== SETUP KATEGORI SEARCH ====================
-    function setupKategoriSearch() {
-        const searchInput = document.getElementById('kategoriSearchInput');
-        const searchBtn = document.getElementById('kategoriSearchBtn');
-        const clearBtn = document.getElementById('kategoriClearSearch');
-        
-        if (!searchInput) return;
-        
-        let searchTimeout;
-        
-        searchInput.addEventListener('input', function(e) {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                const keyword = e.target.value.trim();
-                searchKategoriProducts(keyword);
-            }, 500);
-        });
-        
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                clearTimeout(searchTimeout);
-                const keyword = e.target.value.trim();
-                searchKategoriProducts(keyword);
-            }
-        });
-        
-        if (searchBtn) {
-            searchBtn.addEventListener('click', function() {
-                const keyword = searchInput.value.trim();
-                searchKategoriProducts(keyword);
-            });
-        }
-        
-        if (clearBtn) {
-            clearBtn.addEventListener('click', function() {
-                searchInput.value = '';
-                searchKategoriProducts('');
-            });
-        }
-    }
-    
-    // Reset button
-    const resetBtn = document.getElementById('resetFilterBtn');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', resetAllFiltersAndSearch);
-    }
-    
-    // ==================== FUNGSI PENCARIAN DARI URL ====================
-    function loadSearchFromUrl() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const searchKeyword = urlParams.get('search');
-        
-        if (searchKeyword && searchKeyword.trim() !== '') {
-            currentSearchKeyword = searchKeyword.trim();
-            
-            // Set search input value
-            const searchInput = document.getElementById('kategoriSearchInput');
-            if (searchInput) searchInput.value = currentSearchKeyword;
-            
-            // Perform search
-            searchKategoriProducts(currentSearchKeyword);
-        }
-    }
-    
-    // ==================== INISIALISASI ====================
-    document.addEventListener('DOMContentLoaded', function() {
-        // Konversi data dari server
-        if (allProductsData && allProductsData.length > 0) {
-            originalProducts = [...allProductsData];
-            filteredProducts = [...originalProducts];
-            
-            // Update max price range berdasarkan produk tertinggi
-            const maxProductPrice = Math.max(...originalProducts.map(p => p.price || 0), 0);
-            const priceRangeEl = document.getElementById('priceRange');
-            if (priceRangeEl && maxProductPrice > 0) {
-                const newMax = Math.ceil(maxProductPrice / 100000) * 100000;
-                priceRangeEl.max = newMax;
-                priceRangeEl.value = newMax;
-                document.getElementById('maxPriceLabel').textContent = formatRupiah(newMax);
-            }
-        } else {
-            originalProducts = [];
-            filteredProducts = [];
-        }
-        
-        renderProducts();
-        loadSearchFromUrl();
-        setupKategoriSearch();
-    });
-    
-    // ==================== FUNGSI GLOBAL ====================
-    function goToProductDetail(productId) {
-        window.location.href = `/product/${productId}`;
-    }
-    
-    function addToCartLocal(productId, quantity = 1) {
-        const product = originalProducts.find(p => p.id === productId);
+    // ==================== ADD TO CART ====================
+    function addToCartFromKategori(productId, quantity = 1) {
+        const product = originalProductsArray.find(p => p.id === productId);
         if (!product) {
-            showNotification('Produk tidak ditemukan!', true);
+            showNotificationKategori('Produk tidak ditemukan!', true);
             return;
         }
-        
-        // Cek stok
-        const stockAvailable = product.stock || 100;
         
         let cart = JSON.parse(localStorage.getItem('vintara_cart') || '[]');
         const existingItem = cart.find(item => item.id === productId);
-        const currentQty = existingItem ? existingItem.quantity : 0;
-        const newQty = currentQty + quantity;
+        const stockAvailable = product.stock || 100;
+        const newQty = (existingItem ? existingItem.quantity : 0) + quantity;
         
         if (newQty > stockAvailable) {
-            showNotification(`Stok produk hanya ${stockAvailable} item!`, true);
+            showNotificationKategori(`Stok produk hanya ${stockAvailable} item!`, true);
             return;
         }
         
@@ -748,16 +653,15 @@
                 name: product.name,
                 price: product.price,
                 quantity: quantity,
-                image: getProductImage(product),
+                image: getProductImageKategori(product),
                 stock: product.stock,
                 brand: product.brand
             });
         }
         
         localStorage.setItem('vintara_cart', JSON.stringify(cart));
-        showNotification(`${product.name} ditambahkan ke keranjang!`);
+        showNotificationKategori(`${product.name} ditambahkan ke keranjang!`);
         
-        // Update cart count di navbar
         const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
         document.querySelectorAll('.cart-count').forEach(el => {
             el.textContent = totalItems;
@@ -775,29 +679,103 @@
         }
     }
     
-    // Subscribe newsletter
+    // ==================== EVENT LISTENERS ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        // Update max price range
+        const maxProductPrice = Math.max(...originalProductsArray.map(p => p.price || 0), 0);
+        const priceRangeEl = document.getElementById('priceRange');
+        if (priceRangeEl && maxProductPrice > 0) {
+            const newMax = Math.ceil(maxProductPrice / 1000000) * 1000000;
+            priceRangeEl.max = newMax;
+            priceRangeEl.value = newMax;
+            document.getElementById('maxPriceLabel').textContent = formatRupiahKategori(newMax);
+        }
+        
+        // Filter listeners
+        document.querySelectorAll('input[name="ratingFilter"]').forEach(radio => {
+            radio.addEventListener('change', applyFiltersKategori);
+        });
+        
+        const brandFilter = document.getElementById('brandFilter');
+        if (brandFilter) {
+            brandFilter.addEventListener('change', applyFiltersKategori);
+        }
+        
+        const priceRange = document.getElementById('priceRange');
+        if (priceRange) {
+            priceRange.addEventListener('input', function() {
+                document.getElementById('maxPriceLabel').textContent = formatRupiahKategori(parseInt(this.value));
+                applyFiltersKategori();
+            });
+        }
+        
+        const sortSelect = document.getElementById('sortProductsKategori');
+        if (sortSelect) {
+            sortSelect.addEventListener('change', applyFiltersKategori);
+        }
+        
+        const resetBtn = document.getElementById('resetFilterBtn');
+        if (resetBtn) {
+            resetBtn.addEventListener('click', resetAllFiltersKategori);
+        }
+        
+        // Search functionality
+        const searchInput = document.getElementById('kategoriSearchInput');
+        const searchBtn = document.getElementById('kategoriSearchBtn');
+        const clearBtn = document.getElementById('kategoriClearSearch');
+        
+        if (searchInput) {
+            let searchTimeout;
+            searchInput.addEventListener('input', function(e) {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchKategoriProducts(e.target.value.trim());
+                }, 500);
+            });
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    clearTimeout(searchTimeout);
+                    searchKategoriProducts(searchInput.value.trim());
+                }
+            });
+        }
+        
+        if (searchBtn) {
+            searchBtn.addEventListener('click', function() {
+                if (searchInput) searchKategoriProducts(searchInput.value.trim());
+            });
+        }
+        
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function() {
+                if (searchInput) {
+                    searchInput.value = '';
+                    searchKategoriProducts('');
+                }
+            });
+        }
+    });
+    
+    // Newsletter
     const subscribeBtn = document.getElementById('subscribeBtn');
     if (subscribeBtn) {
         subscribeBtn.onclick = function() {
             const email = document.getElementById('newsletterEmail')?.value;
             if (email && email.includes('@')) {
-                showNotification('Terima kasih telah berlangganan!');
+                showNotificationKategori('Terima kasih telah berlangganan!');
                 document.getElementById('newsletterEmail').value = '';
             } else {
-                showNotification('Masukkan email yang valid!', true);
+                showNotificationKategori('Masukkan email yang valid!', true);
             }
         };
     }
     
     // Export ke global
-    window.applyFilters = applyFilters;
-    window.resetAllFilters = resetAllFilters;
-    window.resetAllFiltersAndSearch = resetAllFiltersAndSearch;
+    window.applyFiltersKategori = applyFiltersKategori;
+    window.resetAllFiltersKategori = resetAllFiltersKategori;
     window.searchKategoriProducts = searchKategoriProducts;
-    window.goToProductDetail = goToProductDetail;
-    window.addToCartLocal = addToCartLocal;
-    window.formatRupiah = formatRupiah;
-    window.showNotification = showNotification;
-    window.getProductImage = getProductImage;
+    window.addToCartFromKategori = addToCartFromKategori;
 </script>
 @endsection

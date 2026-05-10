@@ -14,7 +14,9 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->string('icon_class')->nullable();
+            $table->string('image')->nullable();
             $table->integer('product_count')->default(0);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }

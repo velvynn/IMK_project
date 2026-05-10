@@ -10,17 +10,19 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        // Admin utama
-        User::create([
-            'name' => 'Administrator',
-            'email' => 'admin@vintara.com',
-            'password' => Hash::make('admin123'),
-            'is_admin' => true,
-            'phone' => '081234567891',
-            'address' => 'Jl. Sudirman No. 50, Bandung',
-            'city' => 'Bandung',
-            'province' => 'Jawa Barat',
-        ]);
+        // Admin utama - menggunakan updateOrCreate untuk menghindari duplikasi
+        User::updateOrCreate(
+            ['email' => 'admin@vintara.com'],
+            [
+                'name' => 'Administrator',
+                'password' => Hash::make('admin123'),
+                'is_admin' => true,
+                'phone' => '081234567891',
+                'address' => 'Jl. Sudirman No. 50, Bandung',
+                'city' => 'Bandung',
+                'province' => 'Jawa Barat',
+            ]
+        );
 
         // Regular Customers
         $customers = [
@@ -32,16 +34,18 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($customers as $customer) {
-            User::create([
-                'name' => $customer['name'],
-                'email' => $customer['email'],
-                'password' => Hash::make('password123'),
-                'is_admin' => false,
-                'phone' => $customer['phone'],
-                'city' => $customer['city'],
-                'province' => $customer['province'],
-                'address' => "Jl. " . $customer['name'] . " No. " . rand(1, 100),
-            ]);
+            User::updateOrCreate(
+                ['email' => $customer['email']],
+                [
+                    'name' => $customer['name'],
+                    'password' => Hash::make('password123'),
+                    'is_admin' => false,
+                    'phone' => $customer['phone'],
+                    'city' => $customer['city'],
+                    'province' => $customer['province'],
+                    'address' => "Jl. " . $customer['name'] . " No. " . rand(1, 100),
+                ]
+            );
         }
     }
 }

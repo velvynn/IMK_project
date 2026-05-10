@@ -21,9 +21,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     const currentPath = window.location.pathname;
     const isDealsPage = currentPath.includes('/deals') || currentPath === '/deals' || currentPath === '/deals.html';
+    const isKategoriPage = currentPath.includes('/kategori');
     
-    // ONLY RENDER FOR SPECIFIC PAGES, NOT DEALS PAGE
-    if (document.getElementById('berandaProductGrid') && !isDealsPage) {
+    // ONLY RENDER FOR BERANDA PAGE, NOT FOR KATEGORI PAGE
+    if (document.getElementById('berandaProductGrid') && !isDealsPage && !isKategoriPage) {
         console.log('Rendering beranda products');
         renderBerandaProducts();
         setupBerandaSort();
@@ -31,20 +32,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         setupBerandaSearch();
     }
     
+    // JANGAN RENDER ULANG KATEGORI PAGE - biarkan server yang render
     if (document.getElementById('kategoriProductGrid') && !isDealsPage) {
-        console.log('Rendering kategori products');
-        initKategoriPage();
+        console.log('Kategori page detected - SKIPPING JavaScript render to preserve server content');
+        // Kategori page sudah di-render oleh server, JavaScript hanya untuk filter dan search
+        // Fungsi filter dan search sudah ada di kategori.blade.php
     }
     
     // IMPORTANT: DO NOT RENDER FLASH PRODUCTS ON DEALS PAGE
-    // Biarkan konten dari Blade yang tampil, jangan di-render ulang oleh JavaScript
-    if (document.getElementById('flashProductsGrid') && !isDealsPage) {
+    if (document.getElementById('flashProductsGrid') && !isDealsPage && !isKategoriPage) {
         console.log('Rendering flash products (not on deals page)');
         renderFlashProductsLocal();
         setupDealsSearch();
     } else if (document.getElementById('flashProductsGrid') && isDealsPage) {
         console.log('DEALS PAGE DETECTED - SKIPPING JavaScript render to preserve server content');
-        // Hanya setup search functionality, tidak merender ulang produk
         setupDealsSearchOnly();
     }
     
@@ -84,7 +85,8 @@ async function loadProductsFromAPI() {
                 console.log('Products loaded from API:', allProducts.length);
                 const currentPath = window.location.pathname;
                 const isDealsPage = currentPath.includes('/deals');
-                if (document.getElementById('berandaProductGrid') && !isDealsPage) {
+                const isKategoriPage = currentPath.includes('/kategori');
+                if (document.getElementById('berandaProductGrid') && !isDealsPage && !isKategoriPage) {
                     renderBerandaProducts();
                 }
             }
@@ -130,16 +132,16 @@ function initDefaultCart() {
 // ==================== FALLBACK PRODUCTS ====================
 function getFallbackProducts() {
     return [
-        { id: 1, name: "iPhone 16 Pro Max", slug: "iphone-16-pro-max", category_slug: "handphone", brand: "Apple", price: 18000000, original_price: 25000000, stock: 50, sold: 1234, rating: 4.8, description: "iPhone 16 Pro Max dengan chip A18 Pro.", is_flash_sale: true, discount: 28, main_image: "https://picsum.photos/id/0/400/400" },
-        { id: 2, name: "Samsung Galaxy S24 Ultra", slug: "samsung-galaxy-s24-ultra", category_slug: "handphone", brand: "Samsung", price: 19000000, original_price: 24000000, stock: 45, sold: 2345, rating: 4.7, is_flash_sale: true, discount: 21, main_image: "https://picsum.photos/id/1/400/400" },
-        { id: 3, name: "Xiaomi 14 Pro", slug: "xiaomi-14-pro", category_slug: "handphone", brand: "Xiaomi", price: 12000000, original_price: 16000000, stock: 60, sold: 3456, rating: 4.6, is_flash_sale: false, discount: 0, main_image: "https://picsum.photos/id/2/400/400" },
-        { id: 4, name: "MacBook Air M3", slug: "macbook-air-m3", category_slug: "laptop", brand: "Apple", price: 35000000, original_price: 42000000, stock: 30, sold: 567, rating: 4.9, is_flash_sale: false, discount: 0, main_image: "https://picsum.photos/id/8/400/400" },
-        { id: 5, name: "ASUS ROG Zephyrus G14", slug: "asus-rog-zephyrus-g14", category_slug: "laptop", brand: "Asus", price: 22000000, original_price: 28000000, stock: 25, sold: 789, rating: 4.7, is_flash_sale: true, discount: 21, main_image: "https://picsum.photos/id/9/400/400" },
-        { id: 6, name: "Sony WH-1000XM5", slug: "sony-wh-1000xm5", category_slug: "headset", brand: "Sony", price: 7000000, original_price: 9500000, stock: 45, sold: 1234, rating: 4.9, is_flash_sale: true, discount: 26, main_image: "https://picsum.photos/id/13/400/400" },
-        { id: 7, name: "Apple Watch Ultra 2", slug: "apple-watch-ultra-2", category_slug: "smartwatch", brand: "Apple", price: 12000000, original_price: 15000000, stock: 25, sold: 567, rating: 4.9, is_flash_sale: true, discount: 20, main_image: "https://picsum.photos/id/14/400/400" },
-        { id: 8, name: "Samsung Galaxy Watch 6 Classic", slug: "samsung-galaxy-watch-6", category_slug: "smartwatch", brand: "Samsung", price: 6000000, original_price: 8000000, stock: 50, sold: 1234, rating: 4.7, is_flash_sale: true, discount: 25, main_image: "https://picsum.photos/id/15/400/400" },
-        { id: 9, name: "JBL Flip 6", slug: "jbl-flip-6", category_slug: "headset", brand: "JBL", price: 1800000, original_price: 2800000, stock: 150, sold: 4567, rating: 4.8, is_flash_sale: false, discount: 0, main_image: "https://picsum.photos/id/16/400/400" },
-        { id: 10, name: "Anker Power Bank 26800", slug: "anker-power-bank", category_slug: "adaptor", brand: "Anker", price: 850000, original_price: 1200000, stock: 100, sold: 7890, rating: 4.7, is_flash_sale: true, discount: 29, main_image: "https://picsum.photos/id/17/400/400" }
+        { id: 1, name: "iPhone 16 Pro Max", slug: "iphone-16-pro-max", category_slug: "handphone", brand: "Apple", price: 18000000, original_price: 25000000, stock: 50, sold: 1234, rating: 4.8, description: "iPhone 16 Pro Max dengan chip A18 Pro.", is_flash_sale: true, discount: 28, main_image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&h=400&fit=crop" },
+        { id: 2, name: "Samsung Galaxy S24 Ultra", slug: "samsung-galaxy-s24-ultra", category_slug: "handphone", brand: "Samsung", price: 19000000, original_price: 24000000, stock: 45, sold: 2345, rating: 4.7, is_flash_sale: true, discount: 21, main_image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&h=400&fit=crop" },
+        { id: 3, name: "Xiaomi 14 Pro", slug: "xiaomi-14-pro", category_slug: "handphone", brand: "Xiaomi", price: 12000000, original_price: 16000000, stock: 60, sold: 3456, rating: 4.6, is_flash_sale: false, discount: 0, main_image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop" },
+        { id: 4, name: "MacBook Air M3", slug: "macbook-air-m3", category_slug: "laptop", brand: "Apple", price: 35000000, original_price: 42000000, stock: 30, sold: 567, rating: 4.9, is_flash_sale: false, discount: 0, main_image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop" },
+        { id: 5, name: "ASUS ROG Zephyrus G14", slug: "asus-rog-zephyrus-g14", category_slug: "laptop", brand: "Asus", price: 22000000, original_price: 28000000, stock: 25, sold: 789, rating: 4.7, is_flash_sale: true, discount: 21, main_image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&h=400&fit=crop" },
+        { id: 6, name: "Sony WH-1000XM5", slug: "sony-wh-1000xm5", category_slug: "headset", brand: "Sony", price: 7000000, original_price: 9500000, stock: 45, sold: 1234, rating: 4.9, is_flash_sale: true, discount: 26, main_image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&h=400&fit=crop" },
+        { id: 7, name: "Apple Watch Ultra 2", slug: "apple-watch-ultra-2", category_slug: "smartwatch", brand: "Apple", price: 12000000, original_price: 15000000, stock: 25, sold: 567, rating: 4.9, is_flash_sale: true, discount: 20, main_image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400&h=400&fit=crop" },
+        { id: 8, name: "Samsung Galaxy Watch 6 Classic", slug: "samsung-galaxy-watch-6", category_slug: "smartwatch", brand: "Samsung", price: 6000000, original_price: 8000000, stock: 50, sold: 1234, rating: 4.7, is_flash_sale: true, discount: 25, main_image: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400&h=400&fit=crop" },
+        { id: 9, name: "JBL Flip 6", slug: "jbl-flip-6", category_slug: "headset", brand: "JBL", price: 1800000, original_price: 2800000, stock: 150, sold: 4567, rating: 4.8, is_flash_sale: false, discount: 0, main_image: "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=400&h=400&fit=crop" },
+        { id: 10, name: "Anker Power Bank 26800", slug: "anker-power-bank", category_slug: "adaptor", brand: "Anker", price: 850000, original_price: 1200000, stock: 100, sold: 7890, rating: 4.7, is_flash_sale: true, discount: 29, main_image: "https://images.unsplash.com/photo-1609592423409-3b5c58570cac?w=400&h=400&fit=crop" }
     ];
 }
 
@@ -285,7 +287,7 @@ function renderCartSidebarLocal() {
     }
 }
 
-// ==================== RENDER FUNCTIONS (UNTUK BERANDA & KATEGORI) ====================
+// ==================== RENDER FUNCTIONS (UNTUK BERANDA SAJA) ====================
 function renderBerandaProducts() {
     const grid = document.getElementById('berandaProductGrid');
     if (!grid) return;
@@ -448,7 +450,7 @@ function resetBerandaSearch() {
     }
 }
 
-// ==================== DEALS SEARCH ONLY (TIDAK MERENDER ULANG) ====================
+// ==================== DEALS SEARCH ONLY ====================
 function setupDealsSearchOnly() {
     const searchInput = document.getElementById('dealsSearchInput');
     const searchBtn = document.getElementById('dealsSearchBtn');
@@ -457,7 +459,6 @@ function setupDealsSearchOnly() {
     
     if (!searchInput) return;
     
-    // Get existing product cards from DOM (already rendered by Blade)
     const getAllProductCards = () => {
         return Array.from(document.querySelectorAll('.product-card'));
     };
@@ -510,13 +511,11 @@ function setupDealsSearchOnly() {
     console.log('Deals search only initialized - preserves server-rendered content');
 }
 
-// ==================== DEALS SEARCH (UNTUK NON-DEALS PAGE) ====================
 function setupDealsSearch() {
     setupDealsSearchOnly();
 }
 
 function searchDealsProducts(keyword) {
-    // This function is kept for compatibility but does nothing special on deals page
     console.log('searchDealsProducts called');
 }
 
@@ -535,7 +534,7 @@ function resetDealsSearch() {
     }
 }
 
-// ==================== FLASH PRODUCTS RENDER (TIDAK UNTUK DEALS PAGE) ====================
+// ==================== FLASH PRODUCTS RENDER ====================
 function renderFlashProductsLocal() {
     const grid = document.getElementById('flashProductsGrid');
     if (!grid) return;
@@ -543,7 +542,6 @@ function renderFlashProductsLocal() {
     const currentPath = window.location.pathname;
     const isDealsPage = currentPath.includes('/deals');
     
-    // DO NOT RENDER ON DEALS PAGE - KEEP SERVER CONTENT
     if (isDealsPage) {
         console.log('renderFlashProductsLocal SKIPPED on deals page - preserving server content');
         return;
@@ -791,95 +789,20 @@ function initCheckoutLocal() {
     };
 }
 
-// ==================== KATEGORI PAGE ====================
+// ==================== KATEGORI PAGE - DINONAKTIFKAN ====================
+// Fungsi initKategoriPage dan renderKategoriProducts DINONAKTIFKAN
+// karena kategori page sudah di-render oleh server
 function initKategoriPage() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const categorySlug = urlParams.get('category');
-    
-    if (categorySlug) {
-        currentKategoriProducts = allProducts.filter(p => p.category_slug === categorySlug);
-    } else {
-        const pathSegments = window.location.pathname.split('/');
-        const categoryFromPath = pathSegments[pathSegments.length - 1];
-        if (categoryFromPath && categoryFromPath !== 'kategori') {
-            currentKategoriProducts = allProducts.filter(p => p.category_slug === categoryFromPath);
-        } else {
-            currentKategoriProducts = [...allProducts];
-        }
-    }
-    
-    renderKategoriProducts();
-    setupKategoriFilters();
+    console.log('Kategori page - using server render, JavaScript filters only');
+    // Fungsi filter sudah ada di kategori.blade.php
 }
 
 function renderKategoriProducts() {
-    const grid = document.getElementById('kategoriProductGrid');
-    if (!grid) return;
-    
-    const productsToShow = currentKategoriProducts.length > 0 ? currentKategoriProducts : allProducts;
-    
-    if (!productsToShow || productsToShow.length === 0) {
-        grid.innerHTML = `<div class="no-products" style="text-align:center; padding:60px;"><i class="fas fa-search" style="font-size:60px; color:var(--text-light);"></i><h3>Tidak ada produk ditemukan</h3></div>`;
-        return;
-    }
-    
-    grid.innerHTML = productsToShow.map(product => `
-        <div class="product-card" onclick="goToProductDetail(${product.id}, '${product.slug}')" style="cursor:pointer;">
-            ${product.is_flash_sale ? `<div class="product-badge flash" style="position:absolute; top:12px; left:12px; background:#ff4757; color:white; padding:4px 10px; border-radius:20px; font-size:11px; z-index:1;">🔥 Flash Sale -${product.discount}%</div>` : ''}
-            <div class="product-image" style="height:200px; overflow:hidden; background:#f5f5f5;">
-                <img src="${product.main_image || 'https://placehold.co/400x400/e9ecef/1F1B5B?text=' + encodeURIComponent(product.name)}" 
-                     alt="${product.name}" 
-                     style="width:100%; height:100%; object-fit:cover;"
-                     onerror="this.src='https://placehold.co/400x400/e9ecef/1F1B5B?text=No+Image'">
-            </div>
-            <div class="product-info" style="padding:16px;">
-                <h4 class="product-title">${escapeHtml(product.name)}</h4>
-                <div class="product-rating">${generateStarRating(product.rating || 0)} <span>(${product.rating || 0})</span></div>
-                <div class="product-price">${formatRupiah(product.price)}${product.original_price > product.price ? `<span class="product-old-price">${formatRupiah(product.original_price)}</span>` : ''}</div>
-                <div class="product-sold"><i class="fas fa-shopping-bag"></i> Terjual ${product.sold || 0}+</div>
-                <button class="btn-add-cart" onclick="event.stopPropagation(); addToCartLocal(${product.id})"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
-            </div>
-        </div>
-    `).join('');
+    console.log('Kategori page - no JavaScript render needed');
 }
 
 function setupKategoriFilters() {
-    const sortSelect = document.getElementById('sortProductsKategori');
-    if (sortSelect) {
-        sortSelect.addEventListener('change', (e) => {
-            let sorted = [...currentKategoriProducts];
-            switch(e.target.value) {
-                case 'price-asc': sorted.sort((a, b) => a.price - b.price); break;
-                case 'price-desc': sorted.sort((a, b) => b.price - a.price); break;
-                case 'rating': sorted.sort((a, b) => (b.rating || 0) - (a.rating || 0)); break;
-                case 'popular': sorted.sort((a, b) => (b.sold || 0) - (a.sold || 0)); break;
-                default: sorted = [...currentKategoriProducts];
-            }
-            currentKategoriProducts = sorted;
-            renderKategoriProducts();
-        });
-    }
-    
-    const resetBtn = document.getElementById('resetFilterBtn');
-    if (resetBtn) {
-        resetBtn.addEventListener('click', () => {
-            currentKategoriProducts = [...allProducts];
-            if (sortSelect) sortSelect.value = 'default';
-            renderKategoriProducts();
-            showNotification('Filter direset!', 'success');
-        });
-    }
-    
-    const priceRange = document.getElementById('priceRange');
-    if (priceRange) {
-        priceRange.addEventListener('input', (e) => {
-            const maxPrice = parseInt(e.target.value);
-            const maxPriceLabel = document.getElementById('maxPriceLabel');
-            if (maxPriceLabel) maxPriceLabel.textContent = formatRupiah(maxPrice);
-            currentKategoriProducts = allProducts.filter(p => p.price <= maxPrice);
-            renderKategoriProducts();
-        });
-    }
+    console.log('Kategori filters - handled by kategori.blade.php');
 }
 
 function setupBerandaSort() {
@@ -943,11 +866,11 @@ function setupNewsletter() {
     if (subscribeBtn) {
         subscribeBtn.onclick = () => {
             const email = document.getElementById('newsletterEmail')?.value;
-            if (email) {
+            if (email && email.includes('@')) {
                 showNotification('Terima kasih telah berlangganan!', 'success');
                 document.getElementById('newsletterEmail').value = '';
             } else {
-                showNotification('Masukkan email Anda!', 'error');
+                showNotification('Masukkan email yang valid!', 'error');
             }
         };
     }
@@ -1075,7 +998,7 @@ function closeCartSidebar() {
     }
 }
 
-// ==================== VOUCHER DI MAIN.JS (DINONAKTIFKAN) ====================
+// ==================== VOUCHER ====================
 window.applyVoucher = function() {
     if (typeof window.showNotification === 'function') {
         window.showNotification('⚠️ Voucher hanya bisa digunakan di halaman Checkout!', 'error');
@@ -1105,4 +1028,4 @@ window.searchDealsProducts = searchDealsProducts;
 window.resetDealsSearch = resetDealsSearch;
 window.applyVoucher = window.applyVoucher;
 
-console.log('✅ main.js loaded - DEALS PAGE JavaScript render DISABLED');
+console.log('✅ main.js loaded - KATEGORI PAGE JavaScript render DISABLED');

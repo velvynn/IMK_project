@@ -69,22 +69,40 @@
         </div>
         <div class="category-grid" id="categoryGrid">
             @php
-                $categoriesList = [
-                    ['slug' => 'handphone', 'name' => 'Handphone', 'icon' => 'fas fa-mobile-alt', 'count' => 15],
-                    ['slug' => 'laptop', 'name' => 'Laptop', 'icon' => 'fas fa-laptop', 'count' => 12],
-                    ['slug' => 'headset', 'name' => 'Headset', 'icon' => 'fas fa-headphones', 'count' => 10],
-                    ['slug' => 'smartwatch', 'name' => 'Smartwatch', 'icon' => 'fas fa-clock', 'count' => 8],
-                    ['slug' => 'adaptor', 'name' => 'Adaptor', 'icon' => 'fas fa-plug', 'count' => 10],
-                    ['slug' => 'case', 'name' => 'Case HP', 'icon' => 'fas fa-mobile', 'count' => 15],
-                ];
+                // Mengambil kategori dari database
+                $categoriesFromDb = \App\Models\Category::all();
             @endphp
-            @foreach($categoriesList as $category)
-            <div class="category-card" onclick="goToCategory('{{ $category['slug'] }}')">
-                <div class="category-icon"><i class="{{ $category['icon'] }}"></i></div>
-                <h4>{{ $category['name'] }}</h4>
-                <p>{{ $category['count'] }}+ produk</p>
-            </div>
-            @endforeach
+            
+            @if($categoriesFromDb->count() > 0)
+                @foreach($categoriesFromDb as $cat)
+                <div class="category-card" data-category="{{ $cat->slug }}" onclick="goToCategory('{{ $cat->slug }}')">
+                    <div class="category-icon">
+                        <i class="{{ $cat->icon_class ?? 'fas fa-box' }}"></i>
+                    </div>
+                    <h4>{{ $cat->name }}</h4>
+                    <p>{{ $cat->product_count ?? 0 }}+ produk</p>
+                </div>
+                @endforeach
+            @else
+                {{-- Fallback categories jika database kosong --}}
+                @php
+                    $fallbackCategories = [
+                        ['slug' => 'handphone', 'name' => 'Handphone', 'icon' => 'fas fa-mobile-alt', 'count' => 15],
+                        ['slug' => 'laptop', 'name' => 'Laptop', 'icon' => 'fas fa-laptop', 'count' => 12],
+                        ['slug' => 'headset', 'name' => 'Headset', 'icon' => 'fas fa-headphones', 'count' => 10],
+                        ['slug' => 'smartwatch', 'name' => 'Smartwatch', 'icon' => 'fas fa-clock', 'count' => 8],
+                        ['slug' => 'adaptor', 'name' => 'Adaptor', 'icon' => 'fas fa-plug', 'count' => 10],
+                        ['slug' => 'case', 'name' => 'Case HP', 'icon' => 'fas fa-mobile', 'count' => 15],
+                    ];
+                @endphp
+                @foreach($fallbackCategories as $category)
+                <div class="category-card" onclick="goToCategory('{{ $category['slug'] }}')">
+                    <div class="category-icon"><i class="{{ $category['icon'] }}"></i></div>
+                    <h4>{{ $category['name'] }}</h4>
+                    <p>{{ $category['count'] }}+ produk</p>
+                </div>
+                @endforeach
+            @endif
         </div>
     </div>
 </section>
@@ -211,6 +229,7 @@
 </section>
 
 <style>
+/* CSS Styles tetap sama seperti sebelumnya */
 .hero-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -738,8 +757,7 @@ function searchHomeProducts(keyword) {
     
     const filtered = originalHomeProducts.filter(product => 
         (product.name && product.name.toLowerCase().includes(searchKeyword)) ||
-        (product.brand && product.brand.toLowerCase().includes(searchKeyword)) ||
-        (product.category && product.category.toLowerCase().includes(searchKeyword))
+        (product.brand && product.brand.toLowerCase().includes(searchKeyword))
     );
     
     currentHomeProducts = filtered;
@@ -803,6 +821,7 @@ function goToProductDetail(productId) {
     window.location.href = `/product/${productId}`;
 }
 
+// ==================== GO TO CATEGORY ====================
 function goToCategory(categorySlug) {
     window.location.href = `/kategori/${categorySlug}`;
 }
@@ -825,16 +844,23 @@ async function loadHomeProductsFromAPI() {
         console.log('API not available, using fallback');
     }
     
-    // Fallback products
+    // Fallback products dengan kategori yang benar
     originalHomeProducts = [
-        { id: 1, name: "iPhone 16 Pro Max", price: 18000000, original_price: 25000000, rating: 4.8, sold: 1234, stock: 50, brand: "Apple", is_flash_sale: true, discount: 28, main_image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&h=400&fit=crop" },
-        { id: 2, name: "Samsung Galaxy S24 Ultra", price: 19000000, original_price: 24000000, rating: 4.7, sold: 2345, stock: 45, brand: "Samsung", is_flash_sale: true, discount: 21, main_image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&h=400&fit=crop" },
-        { id: 3, name: "Xiaomi 14 Pro", price: 12000000, original_price: 16000000, rating: 4.6, sold: 3456, stock: 60, brand: "Xiaomi", main_image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop" },
-        { id: 4, name: "MacBook Air M3", price: 35000000, original_price: 42000000, rating: 4.9, sold: 567, stock: 30, brand: "Apple", main_image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop" },
-        { id: 5, name: "ASUS ROG Zephyrus G14", price: 22000000, original_price: 28000000, rating: 4.7, sold: 789, stock: 25, brand: "Asus", is_flash_sale: true, discount: 21, main_image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&h=400&fit=crop" },
-        { id: 6, name: "Sony WH-1000XM5", price: 7000000, original_price: 9500000, rating: 4.9, sold: 1234, stock: 45, brand: "Sony", is_flash_sale: true, discount: 26, main_image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&h=400&fit=crop" },
-        { id: 7, name: "Apple Watch Ultra 2", price: 12000000, original_price: 15000000, rating: 4.9, sold: 567, stock: 25, brand: "Apple", is_flash_sale: true, discount: 20, main_image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400&h=400&fit=crop" },
-        { id: 8, name: "Samsung Galaxy Watch 6", price: 6000000, original_price: 8000000, rating: 4.7, sold: 1234, stock: 50, brand: "Samsung", is_flash_sale: true, discount: 25, main_image: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400&h=400&fit=crop" }
+        { id: 1, name: "iPhone 16 Pro Max", category_id: 1, category_slug: "handphone", price: 18000000, original_price: 25000000, rating: 4.8, sold: 1234, stock: 50, brand: "Apple", is_flash_sale: true, discount: 28, main_image: "https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&h=400&fit=crop" },
+        { id: 2, name: "Samsung Galaxy S24 Ultra", category_id: 1, category_slug: "handphone", price: 19000000, original_price: 24000000, rating: 4.7, sold: 2345, stock: 45, brand: "Samsung", is_flash_sale: true, discount: 21, main_image: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&h=400&fit=crop" },
+        { id: 3, name: "Xiaomi 14 Pro", category_id: 1, category_slug: "handphone", price: 12000000, original_price: 16000000, rating: 4.6, sold: 3456, stock: 60, brand: "Xiaomi", main_image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400&h=400&fit=crop" },
+        { id: 4, name: "MacBook Air M3", category_id: 2, category_slug: "laptop", price: 35000000, original_price: 42000000, rating: 4.9, sold: 567, stock: 30, brand: "Apple", main_image: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400&h=400&fit=crop" },
+        { id: 5, name: "ASUS ROG Zephyrus G14", category_id: 2, category_slug: "laptop", price: 22000000, original_price: 28000000, rating: 4.7, sold: 789, stock: 25, brand: "Asus", is_flash_sale: true, discount: 21, main_image: "https://images.unsplash.com/photo-1603302576837-37561b2e2302?w=400&h=400&fit=crop" },
+        { id: 6, name: "Sony WH-1000XM5", category_id: 3, category_slug: "headset", price: 7000000, original_price: 9500000, rating: 4.9, sold: 1234, stock: 45, brand: "Sony", is_flash_sale: true, discount: 26, main_image: "https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?w=400&h=400&fit=crop" },
+        { id: 7, name: "Apple Watch Ultra 2", category_id: 4, category_slug: "smartwatch", price: 12000000, original_price: 15000000, rating: 4.9, sold: 567, stock: 25, brand: "Apple", is_flash_sale: true, discount: 20, main_image: "https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=400&h=400&fit=crop" },
+        { id: 8, name: "Samsung Galaxy Watch 6", category_id: 4, category_slug: "smartwatch", price: 6000000, original_price: 8000000, rating: 4.7, sold: 1234, stock: 50, brand: "Samsung", is_flash_sale: true, discount: 25, main_image: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400&h=400&fit=crop" },
+        { id: 9, name: "JBL Flip 6", category_id: 3, category_slug: "headset", price: 1800000, original_price: 2800000, rating: 4.8, sold: 4567, stock: 150, brand: "JBL", main_image: "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=400&h=400&fit=crop" },
+        { id: 10, name: "Anker Power Bank 26800", category_id: 5, category_slug: "adaptor", price: 850000, original_price: 1200000, rating: 4.7, sold: 7890, stock: 100, brand: "Anker", is_flash_sale: true, discount: 29, main_image: "https://images.unsplash.com/photo-1609592423409-3b5c58570cac?w=400&h=400&fit=crop" },
+        { id: 11, name: "Dell XPS 15", category_id: 2, category_slug: "laptop", price: 28000000, original_price: 35000000, rating: 4.8, sold: 456, stock: 15, brand: "Dell", main_image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&h=400&fit=crop" },
+        { id: 12, name: "Lenovo Legion 9i", category_id: 2, category_slug: "laptop", price: 40000000, original_price: 48000000, rating: 4.8, sold: 123, stock: 10, brand: "Lenovo", main_image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=400&h=400&fit=crop" },
+        { id: 13, name: "AirPods Pro 2", category_id: 3, category_slug: "headset", price: 3500000, original_price: 4500000, rating: 4.8, sold: 3456, stock: 100, brand: "Apple", is_flash_sale: true, discount: 22, main_image: "https://images.unsplash.com/photo-1600294037681-c80b4a3b4b19?w=400&h=400&fit=crop" },
+        { id: 14, name: "Garmin Fenix 7X", category_id: 4, category_slug: "smartwatch", price: 15000000, original_price: 18000000, rating: 4.9, sold: 234, stock: 20, brand: "Garmin", main_image: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400&h=400&fit=crop" },
+        { id: 15, name: "Spigen Ultra Hybrid Case", category_id: 6, category_slug: "case", price: 200000, original_price: 350000, rating: 4.7, sold: 4567, stock: 300, brand: "Spigen", main_image: "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=400&h=400&fit=crop" }
     ];
     
     currentHomeProducts = [...originalHomeProducts];
