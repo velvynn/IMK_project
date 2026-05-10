@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\VoucherController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChatController; // TAMBAHKAN INI
 
 // ==================== AUTHENTICATION ====================
 Route::post('/auth/login', [AuthController::class, 'login']);
@@ -35,3 +36,11 @@ Route::post('/orders', [OrderController::class, 'store']);
 // ==================== VOUCHERS ====================
 Route::get('/vouchers', [VoucherController::class, 'index']);
 Route::post('/vouchers/validate', [VoucherController::class, 'validateVoucher']);
+
+// ==================== CHAT API ROUTES ====================
+Route::get('/chat/{id}', [ChatController::class, 'getChat']);
+Route::post('/chat/{id}/send', [ChatController::class, 'sendMessage']);
+Route::post('/chat/{id}/pin', [ChatController::class, 'togglePin']);
+Route::post('/chat/{id}/archive', [ChatController::class, 'archive']);
+Route::delete('/chat/{id}', [ChatController::class, 'destroy']);
+Route::get('/chat/unread-count', [ChatController::class, 'getUnreadCount']);

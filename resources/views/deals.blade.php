@@ -51,8 +51,9 @@
                                     </span>
                                 @endif
                             </div>
+                            {{-- HANYA INI YANG DIUBAH: "Beli Sekarang" menjadi "Add to Cart" --}}
                             <button class="btn-add-cart" onclick="event.stopPropagation(); addToCart({{ $product->id }})" style="width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: 30px; font-weight: 600; cursor: pointer;">
-                                <i class="fas fa-shopping-cart"></i> Beli Sekarang
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
                             </button>
                         </div>
                     </div>
@@ -194,6 +195,10 @@
     .voucher-card:hover {
         transform: translateY(-3px);
         box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    .btn-add-cart:hover {
+        background: #3a3590 !important;
+        transform: scale(1.02);
     }
     @media (max-width: 768px) {
         .steps-grid {

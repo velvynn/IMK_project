@@ -23,13 +23,15 @@ class DatabaseSeeder extends Seeder
         // DB::table('categories')->truncate();
         // DB::table('vouchers')->truncate();
         // DB::table('users')->truncate();
+        // DB::table('chats')->truncate(); // UNTUK CHAT
+        // DB::table('messages')->truncate(); // UNTUK MESSAGES
         
         // Jalankan seeders dengan urutan yang benar
         $this->call(CategorySeeder::class);
         $this->call(UserSeeder::class);
         $this->call(VoucherSeeder::class);
         $this->call(ProductSeeder::class);
-        $this->call(AdminSeeder::class);
+        $this->call(ChatSeeder::class); // TAMBAHKAN INI UNTUK SEEDER CHAT
         
         // Enable back foreign key checks
         DB::statement('SET FOREIGN_KEY_CHECKS=1');

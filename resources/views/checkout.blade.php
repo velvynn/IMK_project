@@ -50,8 +50,7 @@
                                 Nama Lengkap <span style="color: #ff4757;">*</span>
                             </label>
                             <input type="text" id="fullName" class="checkout-input" placeholder="Masukkan nama lengkap" 
-                                   style="width: 100%; padding: 14px 16px; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 14px; transition: all 0.3s;">
-                            <div class="error-msg" id="fullNameError" style="color: #ff4757; font-size: 11px; margin-top: 5px; display: none;"></div>
+                                   style="width: 100%; padding: 14px 16px; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 14px;">
                         </div>
                         <div>
                             <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 13px; color: #333;">
@@ -59,7 +58,6 @@
                             </label>
                             <input type="email" id="email" class="checkout-input" placeholder="email@example.com" 
                                    style="width: 100%; padding: 14px 16px; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 14px;">
-                            <div class="error-msg" id="emailError" style="color: #ff4757; font-size: 11px; margin-top: 5px; display: none;"></div>
                         </div>
                     </div>
                     
@@ -69,7 +67,6 @@
                         </label>
                         <input type="tel" id="phone" class="checkout-input" placeholder="081234567890" 
                                style="width: 100%; padding: 14px 16px; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 14px;">
-                        <div class="error-msg" id="phoneError" style="color: #ff4757; font-size: 11px; margin-top: 5px; display: none;"></div>
                     </div>
                 </div>
                 
@@ -85,7 +82,6 @@
                         </label>
                         <textarea id="address" rows="3" class="checkout-input" placeholder="Jl. Contoh No. 123, RT/RW, Kelurahan, Kecamatan" 
                                   style="width: 100%; padding: 14px 16px; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 14px; resize: vertical;"></textarea>
-                        <div class="error-msg" id="addressError" style="color: #ff4757; font-size: 11px; margin-top: 5px; display: none;"></div>
                     </div>
                     
                     <div style="margin-top: 20px;">
@@ -94,11 +90,10 @@
                         </label>
                         <div style="position: relative;">
                             <input type="text" id="citySearchInput" placeholder="Cari kota atau kabupaten..." 
-                                   style="width: 100%; padding: 14px 16px; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 14px; cursor: pointer;"
-                                   autocomplete="off">
+                                   style="width: 100%; padding: 14px 16px; border: 1px solid #e0e0e0; border-radius: 12px; font-size: 14px; cursor: pointer;">
                             <i class="fas fa-chevron-down" style="position: absolute; right: 16px; top: 50%; transform: translateY(-50%); color: #999; pointer-events: none;"></i>
-                            <div id="cityDropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #e0e0e0; border-radius: 12px; max-height: 250px; overflow-y: auto; z-index: 100; margin-top: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
-                                <div style="padding: 10px 15px; background: #F8F9FA; border-bottom: 1px solid #e0e0e0;">
+                            <div id="cityDropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #e0e0e0; border-radius: 12px; max-height: 300px; overflow-y: auto; z-index: 100; margin-top: 5px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                <div style="padding: 10px 15px; background: #F8F9FA; border-bottom: 1px solid #e0e0e0; position: sticky; top: 0;">
                                     <i class="fas fa-search" style="color: #999; margin-right: 8px;"></i>
                                     <input type="text" id="cityFilterInput" placeholder="Filter kota..." style="border: none; background: transparent; width: calc(100% - 30px); outline: none;">
                                 </div>
@@ -106,7 +101,6 @@
                             </div>
                         </div>
                         <input type="hidden" id="selectedCity" value="">
-                        <div class="error-msg" id="cityError" style="color: #ff4757; font-size: 11px; margin-top: 5px; display: none;"></div>
                     </div>
                     
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
@@ -143,39 +137,40 @@
                         <i class="fas fa-credit-card"></i> Metode Pembayaran
                     </h3>
                     
-                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-                        <div class="payment-method" data-method="TRANSFER_BANK" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 15px;">
+                        <div class="payment-method" data-method="TRANSFER_BANK" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer;">
                             <i class="fas fa-university" style="font-size: 24px; color: #1F1B5B;"></i>
                             <div style="font-size: 11px; margin-top: 8px;">Transfer Bank</div>
                         </div>
-                        <div class="payment-method" data-method="VA" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                        <div class="payment-method" data-method="VIRTUAL_ACCOUNT" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer;">
                             <i class="fas fa-qrcode" style="font-size: 24px; color: #1F1B5B;"></i>
                             <div style="font-size: 11px; margin-top: 8px;">Virtual Account</div>
                         </div>
-                        <div class="payment-method" data-method="QRIS" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                        <div class="payment-method" data-method="QRIS" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer;">
                             <i class="fas fa-qrcode" style="font-size: 24px; color: #1F1B5B;"></i>
                             <div style="font-size: 11px; margin-top: 8px;">QRIS</div>
                         </div>
-                        <div class="payment-method" data-method="COD" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                        <div class="payment-method" data-method="COD" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer;">
                             <i class="fas fa-money-bill-wave" style="font-size: 24px; color: #1F1B5B;"></i>
                             <div style="font-size: 11px; margin-top: 8px;">COD</div>
                         </div>
                     </div>
-                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 12px;">
-                        <div class="payment-method" data-method="DANA" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                    
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
+                        <div class="payment-method" data-method="DANA" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer;">
                             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/DANA_logo.svg/1200px-DANA_logo.svg.png" style="width: 30px; height: 30px; object-fit: contain; margin: 0 auto;" alt="DANA">
                             <div style="font-size: 11px; margin-top: 8px;">DANA</div>
                         </div>
-                        <div class="payment-method" data-method="OVO" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                        <div class="payment-method" data-method="OVO" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer;">
                             <i class="fas fa-leaf" style="font-size: 24px; color: #5C2D91;"></i>
                             <div style="font-size: 11px; margin-top: 8px;">OVO</div>
                         </div>
-                        <div class="payment-method" data-method="GOPAY" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s;">
+                        <div class="payment-method" data-method="GOPAY" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer;">
                             <i class="fas fa-wallet" style="font-size: 24px; color: #00AA5E;"></i>
                             <div style="font-size: 11px; margin-top: 8px;">GoPay</div>
                         </div>
-                        <div class="payment-method" data-method="SHOPEEPAY" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer; transition: all 0.3s;">
-                            <i class="fas fa-shop" style="font-size: 24px; color: #EE4D2D;"></i>
+                        <div class="payment-method" data-method="SHOPEEPAY" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px 10px; text-align: center; cursor: pointer;">
+                            <i class="fas fa-store" style="font-size: 24px; color: #EE4D2D;"></i>
                             <div style="font-size: 11px; margin-top: 8px;">ShopeePay</div>
                         </div>
                     </div>
@@ -187,7 +182,7 @@
                 </button>
             </div>
             
-            {{-- RIGHT COLUMN: RINGKASAN BELANJA (STICKY) --}}
+            {{-- RIGHT COLUMN: RINGKASAN BELANJA --}}
             <div style="flex: 1.2; min-width: 320px;">
                 <div class="checkout-card" style="background: white; border-radius: 20px; padding: 25px; position: sticky; top: 90px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
                     <h3 style="color: #1F1B5B; font-size: 18px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
@@ -202,22 +197,26 @@
                     </div>
                     
                     <div style="margin-top: 15px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; padding: 8px 0;">
                             <span style="color: #6c757d;">Subtotal</span>
                             <span id="orderSubtotal" style="font-weight: 600;">Rp 0</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 12px; font-size: 14px; padding: 8px 0;">
                             <span style="color: #6c757d;">Ongkos Kirim</span>
                             <span id="orderShipping" style="font-weight: 600;">Rp 0</span>
                         </div>
-                        <div id="voucherDiscountRow" style="display: none; justify-content: space-between; margin-bottom: 12px; font-size: 14px; color: #28a745;">
+                        <div id="voucherDiscountRow" style="display: none; justify-content: space-between; margin-bottom: 12px; font-size: 14px; padding: 8px 0; color: #28a745;">
                             <span><i class="fas fa-ticket-alt"></i> Diskon Voucher</span>
-                            <span id="voucherDiscountAmount">-Rp 0</span>
+                            <span id="voucherDiscountAmount" style="font-weight: 600;">-Rp 0</span>
+                        </div>
+                        <div id="freeShippingRow" style="display: none; justify-content: space-between; margin-bottom: 12px; font-size: 14px; padding: 8px 0; color: #28a745;">
+                            <span><i class="fas fa-truck"></i> Diskon Ongkir (Voucher)</span>
+                            <span id="freeShippingLabel" style="font-weight: 600;">Gratis</span>
                         </div>
                         
-                        <div style="border-top: 1px solid #e9ecef; margin: 15px 0;"></div>
+                        <div style="border-top: 2px solid #e9ecef; margin: 15px 0;"></div>
                         
-                        <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: 700; color: #1F1B5B;">
+                        <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: 700; color: #1F1B5B; margin-bottom: 8px;">
                             <span>Total Pembayaran</span>
                             <span id="orderTotal" style="color: #1F1B5B;">Rp 0</span>
                         </div>
@@ -233,16 +232,16 @@
                         <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                             <input type="text" id="voucherInput" placeholder="Masukkan kode voucher (VIN10, VIN20, VIN50, GRATISONGKIR)" 
                                    style="flex: 1; padding: 12px 16px; border: 1px solid #e0e0e0; border-radius: 50px; font-size: 13px;">
-                            <button id="applyVoucherBtn" style="background: #1F1B5B; color: white; border: none; padding: 0 20px; border-radius: 50px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+                            <button id="applyVoucherBtn" style="background: #1F1B5B; color: white; border: none; padding: 0 20px; border-radius: 50px; cursor: pointer; font-weight: 600;">
                                 Pakai
                             </button>
                         </div>
-                        <div id="voucherMessage" style="font-size: 11px;"></div>
+                        <div id="voucherMessage" style="font-size: 11px; min-height: 30px;"></div>
                         <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
-                            <span onclick="setVoucher('VIN10')" style="background: #F3F0FF; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer;">VIN10 (10%)</span>
-                            <span onclick="setVoucher('VIN20')" style="background: #F3F0FF; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer;">VIN20 (20%)</span>
-                            <span onclick="setVoucher('VIN50')" style="background: #F3F0FF; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer;">VIN50 (50%)</span>
-                            <span onclick="setVoucher('GRATISONGKIR')" style="background: #F3F0FF; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer;">GRATISONGKIR</span>
+                            <span onclick="window.setVoucher('VIN10')" style="background: #F3F0FF; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer;">VIN10 (10%)</span>
+                            <span onclick="window.setVoucher('VIN20')" style="background: #F3F0FF; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer;">VIN20 (20%)</span>
+                            <span onclick="window.setVoucher('VIN50')" style="background: #F3F0FF; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer;">VIN50 (50%)</span>
+                            <span onclick="window.setVoucher('GRATISONGKIR')" style="background: #F3F0FF; padding: 5px 12px; border-radius: 20px; font-size: 11px; cursor: pointer;">GRATISONGKIR</span>
                         </div>
                     </div>
                 </div>
@@ -252,15 +251,15 @@
 </div>
 
 <style>
-    .checkout-input:focus {
+    .checkout-input:focus, .checkout-input:focus-visible {
         outline: none;
         border-color: #1F1B5B;
         box-shadow: 0 0 0 3px rgba(31,27,91,0.1);
     }
     
     .payment-method.selected {
-        border-color: #1F1B5B;
-        background: #F3F0FF;
+        border-color: #1F1B5B !important;
+        background: #F3F0FF !important;
         transform: translateY(-2px);
     }
     
@@ -280,10 +279,6 @@
         box-shadow: 0 4px 15px rgba(31,27,91,0.3);
     }
     
-    .city-item {
-        transition: background 0.2s;
-    }
-    
     .city-item:hover {
         background: #F3F0FF;
     }
@@ -291,17 +286,6 @@
     @media (max-width: 992px) {
         .shipping-options-grid {
             grid-template-columns: 1fr !important;
-        }
-        .payment-method {
-            padding: 10px 5px !important;
-        }
-        .payment-method i, .payment-method img {
-            font-size: 18px !important;
-            width: 20px !important;
-            height: 20px !important;
-        }
-        .payment-method div {
-            font-size: 9px !important;
         }
     }
     
@@ -327,620 +311,653 @@
 </style>
 
 <script>
-    // ==================== DATA ====================
-    let checkoutProducts = [];
-    let subtotal = 0;
-    let selectedCity = '';
-    let selectedShippingMethod = 'REGULAR';
-    let selectedPaymentMethod = 'TRANSFER_BANK';
-    let shippingCost = 0;
-    let shippingOptions = {
-        REGULAR: { name: 'Reguler', price: 0, days: '2-4 hari', icon: 'fa-truck' },
-        EXPRESS: { name: 'Express', price: 0, days: '1-2 hari', icon: 'fa-bolt' },
-        SAME_DAY: { name: 'Same Day', price: 0, days: 'Sampai hari ini', icon: 'fa-clock' }
-    };
-    let voucherDiscount = 0;
-    let voucherCode = null;
-    let freeShipping = false;
-    
-    const vouchersData = {
-        'VIN10': { type: 'percentage', value: 10, min: 100000, name: 'Diskon 10%' },
-        'VIN20': { type: 'percentage', value: 20, min: 300000, name: 'Diskon 20%' },
-        'VIN50': { type: 'percentage', value: 50, min: 500000, name: 'Diskon 50%', max: 500000 },
-        'GRATISONGKIR': { type: 'freeshipping', min: 150000, name: 'Gratis Ongkir' }
-    };
-    
-    // ==================== DATA KOTA SELURUH INDONESIA ====================
-    const kotaIndonesia = [
-        "Bandung", "Cimahi", "Bogor", "Depok", "Bekasi", "Tangerang", "Jakarta", "Cirebon", "Sukabumi", "Garut", 
-        "Tasikmalaya", "Purwakarta", "Karawang", "Subang", "Indramayu", "Majalengka", "Kuningan", "Ciamis", "Banjar",
-        "Semarang", "Yogyakarta", "Solo", "Purwokerto", "Pekalongan", "Tegal", "Magelang", "Salatiga", "Surakarta", 
-        "Kudus", "Jepara", "Demak", "Rembang", "Blora", "Grobogan", "Sragen", "Karanganyar", "Wonogiri", "Sukoharjo",
-        "Klaten", "Boyolali", "Temanggung", "Wonosobo", "Kebumen", "Cilacap", "Banyumas", "Purbalingga", "Banjarnegara",
-        "Surabaya", "Malang", "Kediri", "Blitar", "Madiun", "Jember", "Banyuwangi", "Probolinggo", "Pasuruan", "Mojokerto",
-        "Sidoarjo", "Gresik", "Lamongan", "Bojonegoro", "Ngawi", "Magetan", "Ponorogo", "Trenggalek", "Tulungagung",
-        "Lumajang", "Bondowoso", "Situbondo", "Sumenep", "Pamekasan", "Sampang", "Bangkalan",
-        "Medan", "Palembang", "Pekanbaru", "Padang", "Lampung", "Jambi", "Bengkulu", "Banda Aceh", "Batam", "Tanjung Pinang",
-        "Pangkal Pinang", "Bandar Lampung", "Metro", "Batu", "Binjai", "Tebing Tinggi", "Pematang Siantar", "Sibolga",
-        "Pontianak", "Balikpapan", "Samarinda", "Banjarmasin", "Palangkaraya", "Singkawang", "Tarakan", "Bontang",
-        "Makassar", "Manado", "Palu", "Kendari", "Gorontalo", "Bitung", "Tomohon", "Kotamobagu", "Palopo", "Parepare",
-        "Denpasar", "Mataram", "Kupang", "Singaraja", "Negara", "Tabanan", "Gianyar", "Bangli", "Klungkung", "Karangasem",
-        "Ambon", "Jayapura", "Sorong", "Ternate", "Tidore", "Banda", "Merauke", "Timika", "Nabire", "Biak", "Manokwari"
-    ];
-    
-    const shippingCostData = {
-        'Bandung': { regular: 10000, express: 15000, sameday: 20000 },
-        'Cimahi': { regular: 10000, express: 15000, sameday: 20000 },
-        'Cirebon': { regular: 15000, express: 25000, sameday: 40000 },
-        'Jakarta': { regular: 15000, express: 25000, sameday: 40000 },
-        'Bogor': { regular: 12000, express: 20000, sameday: 30000 },
-        'Depok': { regular: 12000, express: 20000, sameday: 30000 },
-        'Bekasi': { regular: 12000, express: 20000, sameday: 30000 },
-        'Tangerang': { regular: 12000, express: 20000, sameday: 30000 },
-        'Semarang': { regular: 20000, express: 35000, sameday: 60000 },
-        'Yogyakarta': { regular: 20000, express: 35000, sameday: 60000 },
-        'Surabaya': { regular: 25000, express: 40000, sameday: 70000 },
-        'Malang': { regular: 25000, express: 40000, sameday: 70000 },
-        'Medan': { regular: 35000, express: 55000, sameday: 90000 },
-        'Makassar': { regular: 45000, express: 70000, sameday: 120000 },
-        'Denpasar': { regular: 35000, express: 55000, sameday: 90000 },
-        'Pontianak': { regular: 40000, express: 60000, sameday: 100000 },
-        'Balikpapan': { regular: 40000, express: 60000, sameday: 100000 },
-        'Ambon': { regular: 65000, express: 90000, sameday: 150000 },
-        'Jayapura': { regular: 75000, express: 100000, sameday: 180000 }
-    };
-    
-    const defaultShipping = { regular: 30000, express: 50000, sameday: 80000 };
-    
-    // ==================== HELPER FUNCTIONS ====================
-    function formatRupiah(price) {
-        if (!price && price !== 0) return 'Rp 0';
-        return 'Rp ' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-    }
-    
-    function showNotification(message, isError = false) {
-        const oldNotif = document.querySelector('.notification-custom');
-        if (oldNotif) oldNotif.remove();
+    (function() {
+        'use strict';
         
-        const notification = document.createElement('div');
-        notification.className = 'notification-custom';
-        if (isError) notification.classList.add('error');
-        notification.innerHTML = `<i class="fas ${isError ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${message}`;
-        document.body.appendChild(notification);
+        // ==================== DATA ====================
+        let checkoutProducts = [];
+        let subtotal = 0;
+        let selectedCity = '';
+        let selectedShippingMethod = 'REGULAR';
+        let selectedPaymentMethod = 'TRANSFER_BANK';
+        let voucherDiscount = 0;
+        let voucherCode = null;
+        let freeShipping = false;
         
-        setTimeout(() => notification.classList.add('show'), 10);
-        setTimeout(() => {
-            notification.classList.remove('show');
-            setTimeout(() => notification.remove(), 500);
-        }, 3000);
-    }
-    
-    function updateCheckoutButtonState() {
-        const fullName = document.getElementById('fullName').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const address = document.getElementById('address').value.trim();
-        const city = selectedCity;
+        const vouchersData = {
+            'VIN10': { type: 'percentage', value: 10, min: 100000, name: 'Diskon 10%', max: 0 },
+            'VIN20': { type: 'percentage', value: 20, min: 300000, name: 'Diskon 20%', max: 0 },
+            'VIN50': { type: 'percentage', value: 50, min: 500000, name: 'Diskon 50%', max: 500000 },
+            'GRATISONGKIR': { type: 'freeshipping', min: 150000, name: 'Gratis Ongkir', max: 0 }
+        };
         
-        const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        const isPhoneValid = /^[0-9]{10,13}$/.test(phone);
+        const semuaKotaIndonesia = [
+            "Banda Aceh", "Langsa", "Lhokseumawe", "Sabang", "Subulussalam", "Medan", "Binjai", "Pematang Siantar", "Tebing Tinggi", "Tanjung Balai", "Sibolga", "Padang Sidempuan", "Gunungsitoli", "Padang", "Bukittinggi", "Payakumbuh", "Pariaman", "Solok", "Sawahlunto", "Padang Panjang", "Pekanbaru", "Dumai", "Tanjung Pinang", "Batam", "Jambi", "Sungai Penuh", "Bengkulu", "Palembang", "Lubuklinggau", "Pagar Alam", "Prabumulih", "Pangkal Pinang", "Bandar Lampung", "Metro", "Serang", "Cilegon", "Tangerang", "Tangerang Selatan", "Jakarta", "Jakarta Pusat", "Jakarta Utara", "Jakarta Barat", "Jakarta Selatan", "Jakarta Timur", "Bandung", "Cimahi", "Bogor", "Depok", "Bekasi", "Cirebon", "Sukabumi", "Garut", "Tasikmalaya", "Purwakarta", "Karawang", "Subang", "Indramayu", "Majalengka", "Kuningan", "Ciamis", "Banjar", "Semarang", "Salatiga", "Surakarta", "Magelang", "Pekalongan", "Tegal", "Kudus", "Jepara", "Demak", "Rembang", "Blora", "Yogyakarta", "Sleman", "Bantul", "Kulon Progo", "Gunung Kidul", "Surabaya", "Malang", "Kediri", "Blitar", "Madiun", "Jember", "Banyuwangi", "Probolinggo", "Pasuruan", "Mojokerto", "Sidoarjo", "Gresik", "Lamongan", "Bojonegoro", "Denpasar", "Singaraja", "Mataram", "Praya", "Kupang", "Soe", "Pontianak", "Singkawang", "Palangkaraya", "Banjarmasin", "Banjarbaru", "Balikpapan", "Samarinda", "Bontang", "Tarakan", "Makassar", "Parepare", "Palopo", "Manado", "Bitung", "Tomohon", "Palu", "Kendari", "Baubau", "Gorontalo", "Ambon", "Tual", "Ternate", "Tidore", "Jayapura", "Sentani", "Merauke", "Timika", "Sorong", "Manokwari"
+        ];
         
-        const isValid = fullName && email && isEmailValid && phone && isPhoneValid && address && city;
+        const ongkirData = {
+            default: { regular: 50000, express: 80000, sameday: 150000 },
+            "Jakarta": { regular: 15000, express: 25000, sameday: 40000 },
+            "Jakarta Pusat": { regular: 15000, express: 25000, sameday: 40000 },
+            "Jakarta Utara": { regular: 15000, express: 25000, sameday: 40000 },
+            "Jakarta Barat": { regular: 15000, express: 25000, sameday: 40000 },
+            "Jakarta Selatan": { regular: 15000, express: 25000, sameday: 40000 },
+            "Jakarta Timur": { regular: 15000, express: 25000, sameday: 40000 },
+            "Bandung": { regular: 10000, express: 15000, sameday: 20000 },
+            "Cimahi": { regular: 10000, express: 15000, sameday: 20000 },
+            "Bogor": { regular: 12000, express: 20000, sameday: 30000 },
+            "Depok": { regular: 12000, express: 20000, sameday: 30000 },
+            "Bekasi": { regular: 12000, express: 20000, sameday: 30000 },
+            "Tangerang": { regular: 12000, express: 20000, sameday: 30000 },
+            "Tangerang Selatan": { regular: 12000, express: 20000, sameday: 30000 },
+            "Semarang": { regular: 20000, express: 35000, sameday: 60000 },
+            "Yogyakarta": { regular: 20000, express: 35000, sameday: 60000 },
+            "Surabaya": { regular: 25000, express: 40000, sameday: 70000 },
+            "Malang": { regular: 25000, express: 40000, sameday: 70000 },
+            "Medan": { regular: 35000, express: 55000, sameday: 90000 }
+        };
         
-        const submitBtn = document.getElementById('submitOrderBtn');
-        if (submitBtn) {
-            if (isValid) {
-                submitBtn.disabled = false;
-                submitBtn.style.opacity = '1';
-                submitBtn.innerHTML = '<i class="fas fa-credit-card"></i> Buat Pesanan Sekarang';
-            } else {
-                submitBtn.disabled = true;
-                submitBtn.style.opacity = '0.6';
-                submitBtn.innerHTML = '<i class="fas fa-lock"></i> Lengkapi Data untuk Checkout';
-            }
-        }
-    }
-    
-    function validateField(fieldId, errorId, validator, message) {
-        const value = document.getElementById(fieldId).value.trim();
-        const isValid = validator(value);
-        const errorDiv = document.getElementById(errorId);
-        
-        if (!value || !isValid) {
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            return false;
-        } else {
-            errorDiv.style.display = 'none';
-            return true;
-        }
-    }
-    
-    function validateRealtime() {
-        validateField('fullName', 'fullNameError', v => v.length >= 3, 'Nama lengkap minimal 3 karakter');
-        validateField('email', 'emailError', v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), 'Format email tidak valid');
-        validateField('phone', 'phoneError', v => /^[0-9]{10,13}$/.test(v), 'Nomor telepon harus berupa angka (10-13 digit)');
-        validateField('address', 'addressError', v => v.length >= 10, 'Alamat minimal 10 karakter');
-        
-        if (!selectedCity) {
-            document.getElementById('cityError').textContent = 'Kota wajib dipilih';
-            document.getElementById('cityError').style.display = 'block';
-        } else {
-            document.getElementById('cityError').style.display = 'none';
+        function getOngkir(city, method) {
+            var data = ongkirData[city] || ongkirData.default;
+            if (method === 'REGULAR') return data.regular;
+            if (method === 'EXPRESS') return data.express;
+            if (method === 'SAME_DAY') return data.sameday;
+            return data.regular;
         }
         
-        updateCheckoutButtonState();
-    }
-    
-    // ==================== LOAD CHECKOUT DATA ====================
-    function loadCheckoutData() {
-        const savedProducts = localStorage.getItem('checkout_products');
-        if (savedProducts) {
-            checkoutProducts = JSON.parse(savedProducts);
-        } else {
-            const cartData = JSON.parse(localStorage.getItem('vintara_cart') || '[]');
-            const savedSelected = JSON.parse(localStorage.getItem('vintara_cart_selected') || '[]');
-            if (savedSelected.length > 0) {
-                checkoutProducts = cartData.filter(item => savedSelected.includes(item.id));
-            } else {
-                checkoutProducts = cartData;
-            }
+        function formatRupiah(price) {
+            if (!price && price !== 0) return 'Rp 0';
+            return 'Rp ' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
         }
         
-        subtotal = checkoutProducts.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-        renderOrderItems();
-        updateOrderSummary();
-    }
-    
-    function renderOrderItems() {
-        const container = document.getElementById('orderItemsList');
-        if (!container) return;
-        
-        if (checkoutProducts.length === 0) {
-            container.innerHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <i class="fas fa-shopping-cart" style="font-size: 50px; color: #ccc;"></i>
-                    <p style="margin-top: 15px; color: #6c757d;">Keranjang belanja kosong</p>
-                    <button onclick="window.location.href='/kategori'" style="background: #1F1B5B; color: white; border: none; padding: 10px 25px; border-radius: 30px; cursor: pointer; margin-top: 15px;">Mulai Belanja</button>
-                </div>
-            `;
-            document.getElementById('itemCountBadge').textContent = '0 item';
-            return;
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
         }
         
-        const totalItems = checkoutProducts.reduce((sum, item) => sum + item.quantity, 0);
-        document.getElementById('itemCountBadge').textContent = totalItems + ' item';
-        
-        container.innerHTML = checkoutProducts.map(item => `
-            <div style="display: flex; gap: 12px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e9ecef;">
-                <div style="width: 60px; height: 60px; background: #F3F0FF; border-radius: 12px; overflow: hidden;">
-                    <img src="${item.image || 'https://placehold.co/400x400/e9ecef/1F1B5B?text=' + encodeURIComponent(item.name)}" 
-                         style="width: 100%; height: 100%; object-fit: cover;"
-                         onerror="this.src='https://placehold.co/400x400/e9ecef/1F1B5B?text=No+Image'">
-                </div>
-                <div style="flex: 1;">
-                    <div style="font-weight: 600; font-size: 14px;">${escapeHtml(item.name)}</div>
-                    <div style="font-size: 12px; color: #6c757d;">${item.quantity} x ${formatRupiah(item.price)}</div>
-                </div>
-                <div style="font-weight: 700; color: #1F1B5B;">${formatRupiah(item.price * item.quantity)}</div>
-            </div>
-        `).join('');
-    }
-    
-    // ==================== KOTA DROPDOWN ====================
-    function initCityDropdown() {
-        const searchInput = document.getElementById('citySearchInput');
-        const dropdown = document.getElementById('cityDropdown');
-        const cityList = document.getElementById('cityList');
-        const filterInput = document.getElementById('cityFilterInput');
-        
-        function renderCityList(filter = '') {
-            const filtered = kotaIndonesia.filter(city => 
-                city.toLowerCase().includes(filter.toLowerCase())
-            );
+        function showNotification(message, isError) {
+            if (isError === undefined) isError = false;
+            var oldNotif = document.querySelector('.notification-custom');
+            if (oldNotif) oldNotif.remove();
             
-            cityList.innerHTML = filtered.map(city => `
-                <div class="city-item" data-city="${city}" style="padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #f0f0f0;">
-                    <i class="fas fa-map-marker-alt" style="color: #1F1B5B; margin-right: 10px; font-size: 12px;"></i>
-                    ${city}
-                </div>
-            `).join('');
+            var notification = document.createElement('div');
+            notification.className = 'notification-custom';
+            if (isError) notification.classList.add('error');
+            notification.innerHTML = '<i class="fas ' + (isError ? 'fa-exclamation-circle' : 'fa-check-circle') + '"></i> ' + message;
+            document.body.appendChild(notification);
             
-            document.querySelectorAll('.city-item').forEach(item => {
-                item.addEventListener('click', () => {
-                    const city = item.getAttribute('data-city');
-                    selectCity(city);
-                });
-            });
+            setTimeout(function() { notification.classList.add('show'); }, 10);
+            setTimeout(function() {
+                notification.classList.remove('show');
+                setTimeout(function() { notification.remove(); }, 500);
+            }, 3000);
         }
         
-        searchInput.addEventListener('click', () => {
-            dropdown.style.display = 'block';
-            renderCityList();
-        });
-        
-        filterInput.addEventListener('input', (e) => {
-            renderCityList(e.target.value);
-        });
-        
-        document.addEventListener('click', (e) => {
-            if (!dropdown.contains(e.target) && e.target !== searchInput) {
-                dropdown.style.display = 'none';
-            }
-        });
-    }
-    
-    function selectCity(city) {
-        selectedCity = city;
-        document.getElementById('citySearchInput').value = city;
-        document.getElementById('selectedCity').value = city;
-        document.getElementById('cityDropdown').style.display = 'none';
-        
-        validateRealtime();
-        updateShippingCost();
-    }
-    
-    // ==================== SHIPPING ====================
-    function getCityShippingCost() {
-        if (!selectedCity) return defaultShipping;
-        return shippingCostData[selectedCity] || defaultShipping;
-    }
-    
-    function updateShippingCost() {
-        if (!selectedCity) {
-            document.getElementById('shippingOptionsContainer').innerHTML = `
-                <div style="text-align: center; padding: 30px; color: #999;">
-                    <i class="fas fa-map-marker-alt fa-2x"></i>
-                    <p style="margin-top: 10px;">Silakan pilih kota terlebih dahulu</p>
-                </div>
-            `;
-            return;
-        }
-        
-        const costs = getCityShippingCost();
-        shippingOptions.REGULAR.price = costs.regular;
-        shippingOptions.EXPRESS.price = costs.express;
-        shippingOptions.SAME_DAY.price = costs.sameday;
-        
-        const container = document.getElementById('shippingOptionsContainer');
-        container.innerHTML = `
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;" class="shipping-options-grid">
-                ${renderShippingOption('REGULAR', shippingOptions.REGULAR)}
-                ${renderShippingOption('EXPRESS', shippingOptions.EXPRESS)}
-                ${renderShippingOption('SAME_DAY', shippingOptions.SAME_DAY)}
-            </div>
-            <div id="estimatedDelivery" style="margin-top: 15px; padding: 12px; background: #F3F0FF; border-radius: 12px; font-size: 12px; text-align: center;">
-                <i class="fas fa-calendar-alt"></i> Estimasi tiba: -
-            </div>
-        `;
-        
-        document.querySelectorAll('.shipping-option').forEach(opt => {
-            opt.addEventListener('click', () => {
-                document.querySelectorAll('.shipping-option').forEach(o => o.classList.remove('selected'));
-                opt.classList.add('selected');
-                selectedShippingMethod = opt.getAttribute('data-method');
-                updateEstimatedDelivery();
-                updateOrderSummary();
-            });
-        });
-        
-        const defaultOption = document.querySelector('.shipping-option');
-        if (defaultOption) {
-            defaultOption.classList.add('selected');
-            selectedShippingMethod = 'REGULAR';
-        }
-        
-        updateEstimatedDelivery();
-        updateOrderSummary();
-    }
-    
-    function renderShippingOption(method, data) {
-        return `
-            <div class="shipping-option" data-method="${method}" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s;">
-                <i class="fas ${data.icon}" style="font-size: 24px; color: #1F1B5B;"></i>
-                <div style="font-weight: 600; margin-top: 8px;">${data.name}</div>
-                <div style="font-size: 11px; color: #6c757d;">${data.days}</div>
-                <div style="font-weight: 700; color: #1F1B5B; margin-top: 5px;">${formatRupiah(data.price)}</div>
-            </div>
-        `;
-    }
-    
-    function updateEstimatedDelivery() {
-        const days = shippingOptions[selectedShippingMethod]?.days || '2-4 hari';
-        const deliveryDiv = document.getElementById('estimatedDelivery');
-        if (deliveryDiv) {
-            let estimateText = '';
-            const now = new Date();
-            if (selectedShippingMethod === 'SAME_DAY') {
-                estimateText = 'Hari ini, ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            } else if (selectedShippingMethod === 'EXPRESS') {
-                const date = new Date(now.setDate(now.getDate() + 1));
-                estimateText = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long' });
+        // ==================== LOAD CHECKOUT DATA ====================
+        function loadCheckoutData() {
+            var savedProducts = localStorage.getItem('checkout_products');
+            if (savedProducts) {
+                checkoutProducts = JSON.parse(savedProducts);
             } else {
-                const date = new Date(now.setDate(now.getDate() + 3));
-                estimateText = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long' });
-            }
-            deliveryDiv.innerHTML = `<i class="fas fa-calendar-alt"></i> Estimasi tiba: ${estimateText} (${days})`;
-        }
-    }
-    
-    function getCurrentShippingCost() {
-        const costs = getCityShippingCost();
-        if (selectedShippingMethod === 'REGULAR') return costs.regular;
-        if (selectedShippingMethod === 'EXPRESS') return costs.express;
-        if (selectedShippingMethod === 'SAME_DAY') return costs.sameday;
-        return costs.regular;
-    }
-    
-    // ==================== VOUCHER ====================
-    function applyVoucher() {
-        const input = document.getElementById('voucherInput');
-        const code = input.value.toUpperCase();
-        const messageDiv = document.getElementById('voucherMessage');
-        
-        if (!code) {
-            messageDiv.innerHTML = '<span style="color: red;">✗ Masukkan kode voucher!</span>';
-            return;
-        }
-        
-        const voucher = vouchersData[code];
-        if (!voucher) {
-            messageDiv.innerHTML = '<span style="color: red;">✗ Kode voucher tidak valid!</span>';
-            showNotification('Kode voucher tidak valid!', true);
-            return;
-        }
-        
-        const purchaseAmount = subtotal;
-        
-        if (purchaseAmount < voucher.min) {
-            const kurang = formatRupiah(voucher.min - purchaseAmount);
-            messageDiv.innerHTML = `<span style="color: red;">✗ Minimal belanja ${formatRupiah(voucher.min)}! Kurang ${kurang}</span>`;
-            showNotification(`Minimal belanja ${formatRupiah(voucher.min)}!`, true);
-            return;
-        }
-        
-        if (voucher.type === 'freeshipping') {
-            freeShipping = true;
-            voucherDiscount = 0;
-            voucherCode = code;
-            messageDiv.innerHTML = '<span style="color: green;">✓ Voucher GRATISONGKIR berhasil! Ongkir gratis.</span>';
-            showNotification('Voucher GRATISONGKIR berhasil dipakai!');
-        } else {
-            let discount = purchaseAmount * voucher.value / 100;
-            if (voucher.max && discount > voucher.max) discount = voucher.max;
-            voucherDiscount = Math.floor(discount);
-            freeShipping = false;
-            voucherCode = code;
-            messageDiv.innerHTML = `<span style="color: green;">✓ Voucher ${voucher.name} berhasil! Potongan ${formatRupiah(voucherDiscount)}</span>`;
-            showNotification(`Voucher ${code} berhasil! Potongan ${formatRupiah(voucherDiscount)}`);
-        }
-        
-        updateOrderSummary();
-    }
-    
-    function setVoucher(code) {
-        document.getElementById('voucherInput').value = code;
-        applyVoucher();
-    }
-    
-    // ==================== ORDER SUMMARY ====================
-    function updateOrderSummary() {
-        let shipping = getCurrentShippingCost();
-        if (freeShipping && subtotal >= 150000) {
-            shipping = 0;
-        }
-        
-        const total = subtotal + shipping - voucherDiscount;
-        
-        document.getElementById('orderSubtotal').innerHTML = formatRupiah(subtotal);
-        document.getElementById('orderShipping').innerHTML = shipping === 0 ? 'Gratis' : formatRupiah(shipping);
-        
-        if (voucherDiscount > 0) {
-            document.getElementById('voucherDiscountRow').style.display = 'flex';
-            document.getElementById('voucherDiscountAmount').innerHTML = `-${formatRupiah(voucherDiscount)}`;
-        } else {
-            document.getElementById('voucherDiscountRow').style.display = 'none';
-        }
-        
-        document.getElementById('orderTotal').innerHTML = formatRupiah(total);
-        
-        const totalSaved = voucherDiscount + (shipping === 0 && getCurrentShippingCost() > 0 ? getCurrentShippingCost() : 0);
-        if (totalSaved > 0) {
-            document.getElementById('savingBadge').style.display = 'block';
-            document.getElementById('totalSaving').innerHTML = formatRupiah(totalSaved);
-        } else {
-            document.getElementById('savingBadge').style.display = 'none';
-        }
-    }
-    
-    // ==================== PAYMENT METHOD ====================
-    function initPaymentMethods() {
-        document.querySelectorAll('.payment-method').forEach(method => {
-            method.addEventListener('click', () => {
-                document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
-                method.classList.add('selected');
-                selectedPaymentMethod = method.getAttribute('data-method');
-            });
-        });
-        
-        document.querySelector('.payment-method').classList.add('selected');
-        selectedPaymentMethod = 'TRANSFER_BANK';
-    }
-    
-    // ==================== SUBMIT ORDER (DENGAN PENGURANGAN STOK) ====================
-    function submitOrder() {
-        const fullName = document.getElementById('fullName').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const address = document.getElementById('address').value.trim();
-        const postalCode = document.getElementById('postalCode').value.trim();
-        const notes = document.getElementById('notes').value;
-        
-        // Validasi ulang
-        if (!fullName || !email || !phone || !address || !selectedCity) {
-            showNotification('Mohon lengkapi semua data!', true);
-            return;
-        }
-        
-        const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-        const phoneValid = /^[0-9]{10,13}$/.test(phone);
-        
-        if (!emailValid) {
-            showNotification('Format email tidak valid!', true);
-            return;
-        }
-        
-        if (!phoneValid) {
-            showNotification('Nomor telepon harus 10-13 digit angka!', true);
-            return;
-        }
-        
-        let shipping = getCurrentShippingCost();
-        if (freeShipping && subtotal >= 150000) shipping = 0;
-        
-        const total = subtotal + shipping - voucherDiscount;
-        
-        const orderNumber = 'VIN-' + new Date().getFullYear() + 
-                           (new Date().getMonth()+1).toString().padStart(2,'0') + 
-                           new Date().getDate().toString().padStart(2,'0') + '-' +
-                           Math.random().toString(36).substring(2, 8).toUpperCase();
-        
-        // ==================== KURANGI STOK PRODUK ====================
-        // 1. Ambil data produk dari localStorage
-        let allProducts = JSON.parse(localStorage.getItem('vintara_products') || '[]');
-        let stockUpdated = true;
-        let stockErrors = [];
-        
-        // 2. Cek stok sebelum mengurangi
-        for (let item of checkoutProducts) {
-            const product = allProducts.find(p => p.id === item.id);
-            if (!product) {
-                stockErrors.push(`Produk ${item.name} tidak ditemukan`);
-                stockUpdated = false;
-            } else if (product.stock < item.quantity) {
-                stockErrors.push(`${item.name}: stok tersisa ${product.stock}, Anda memesan ${item.quantity}`);
-                stockUpdated = false;
-            }
-        }
-        
-        // 3. Jika stok cukup, kurangi stok
-        if (stockUpdated) {
-            for (let item of checkoutProducts) {
-                const productIndex = allProducts.findIndex(p => p.id === item.id);
-                if (productIndex !== -1) {
-                    // Kurangi stok
-                    allProducts[productIndex].stock -= item.quantity;
-                    // Tambah sold/terjual
-                    allProducts[productIndex].sold = (allProducts[productIndex].sold || 0) + item.quantity;
-                    console.log(`✅ Stok ${allProducts[productIndex].name} berkurang ${item.quantity}, sisa: ${allProducts[productIndex].stock}`);
+                var cartData = JSON.parse(localStorage.getItem('vintara_cart') || '[]');
+                var savedSelected = JSON.parse(localStorage.getItem('vintara_cart_selected') || '[]');
+                if (savedSelected.length > 0) {
+                    checkoutProducts = cartData.filter(function(item) { return savedSelected.includes(item.id); });
+                } else {
+                    checkoutProducts = cartData;
                 }
             }
             
-            // Simpan kembali ke localStorage
+            subtotal = 0;
+            for (var i = 0; i < checkoutProducts.length; i++) {
+                subtotal += checkoutProducts[i].price * checkoutProducts[i].quantity;
+            }
+            renderOrderItems();
+            refreshTotalDisplay();
+        }
+        
+        function renderOrderItems() {
+            var container = document.getElementById('orderItemsList');
+            if (!container) return;
+            
+            if (checkoutProducts.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 40px;"><i class="fas fa-shopping-cart" style="font-size: 50px; color: #ccc;"></i><p style="margin-top: 15px;">Keranjang belanja kosong</p><button onclick="window.location.href=\'/kategori\'" style="background: #1F1B5B; color: white; border: none; padding: 10px 25px; border-radius: 30px; cursor: pointer; margin-top: 15px;">Mulai Belanja</button></div>';
+                document.getElementById('itemCountBadge').textContent = '0 item';
+                return;
+            }
+            
+            var totalItems = 0;
+            for (var i = 0; i < checkoutProducts.length; i++) {
+                totalItems += checkoutProducts[i].quantity;
+            }
+            document.getElementById('itemCountBadge').textContent = totalItems + ' item';
+            
+            var html = '';
+            for (var i = 0; i < checkoutProducts.length; i++) {
+                var item = checkoutProducts[i];
+                var itemTotal = item.price * item.quantity;
+                html += '<div style="display: flex; gap: 12px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #e9ecef;">';
+                html += '<div style="width: 60px; height: 60px; background: #F3F0FF; border-radius: 12px; overflow: hidden;">';
+                html += '<img src="' + (item.image || 'https://placehold.co/400x400/e9ecef/1F1B5B?text=' + encodeURIComponent(item.name)) + '" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src=\'https://placehold.co/400x400/e9ecef/1F1B5B?text=No+Image\'">';
+                html += '</div>';
+                html += '<div style="flex: 1;">';
+                html += '<div style="font-weight: 600; font-size: 14px;">' + escapeHtml(item.name) + '</div>';
+                html += '<div style="font-size: 12px; color: #6c757d;">' + item.quantity + ' x ' + formatRupiah(item.price) + '</div>';
+                html += '</div>';
+                html += '<div style="font-weight: 700; color: #1F1B5B;">' + formatRupiah(itemTotal) + '</div>';
+                html += '</div>';
+            }
+            container.innerHTML = html;
+        }
+        
+        // ==================== KOTA DROPDOWN ====================
+        function initCityDropdown() {
+            var searchInput = document.getElementById('citySearchInput');
+            var dropdown = document.getElementById('cityDropdown');
+            var cityList = document.getElementById('cityList');
+            var filterInput = document.getElementById('cityFilterInput');
+            
+            function renderCityList(filter) {
+                if (filter === undefined) filter = '';
+                var filtered = [];
+                for (var i = 0; i < semuaKotaIndonesia.length; i++) {
+                    if (semuaKotaIndonesia[i].toLowerCase().indexOf(filter.toLowerCase()) !== -1) {
+                        filtered.push(semuaKotaIndonesia[i]);
+                    }
+                }
+                
+                var html = '';
+                for (var i = 0; i < filtered.length; i++) {
+                    html += '<div class="city-item" data-city="' + filtered[i] + '" style="padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #f0f0f0;">';
+                    html += '<i class="fas fa-map-marker-alt" style="color: #1F1B5B; margin-right: 10px; font-size: 12px;"></i>';
+                    html += filtered[i];
+                    html += '</div>';
+                }
+                cityList.innerHTML = html;
+                
+                var cityItems = document.querySelectorAll('.city-item');
+                for (var i = 0; i < cityItems.length; i++) {
+                    cityItems[i].addEventListener('click', function() {
+                        var city = this.getAttribute('data-city');
+                        selectCity(city);
+                    });
+                }
+            }
+            
+            searchInput.addEventListener('click', function() {
+                dropdown.style.display = 'block';
+                renderCityList('');
+            });
+            
+            if (filterInput) {
+                filterInput.addEventListener('input', function(e) {
+                    renderCityList(e.target.value);
+                });
+            }
+            
+            document.addEventListener('click', function(e) {
+                if (dropdown && !dropdown.contains(e.target) && e.target !== searchInput) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        }
+        
+        function selectCity(city) {
+            selectedCity = city;
+            document.getElementById('citySearchInput').value = city;
+            document.getElementById('selectedCity').value = city;
+            document.getElementById('cityDropdown').style.display = 'none';
+            
+            validateRealtime();
+            updateShippingOptions();
+        }
+        
+        // ==================== SHIPPING ====================
+        function updateShippingOptions() {
+            if (!selectedCity) {
+                document.getElementById('shippingOptionsContainer').innerHTML = '<div style="text-align: center; padding: 30px; color: #999;"><i class="fas fa-map-marker-alt fa-2x"></i><p style="margin-top: 10px;">Silakan pilih kota terlebih dahulu</p></div>';
+                return;
+            }
+            
+            var costs = ongkirData[selectedCity] || ongkirData.default;
+            
+            var container = document.getElementById('shippingOptionsContainer');
+            var html = '<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;" class="shipping-options-grid">';
+            
+            var methods = [
+                { key: 'REGULAR', name: 'Reguler', price: costs.regular, days: '2-4 hari', icon: 'fa-truck' },
+                { key: 'EXPRESS', name: 'Express', price: costs.express, days: '1-2 hari', icon: 'fa-bolt' },
+                { key: 'SAME_DAY', name: 'Same Day', price: costs.sameday, days: 'Sampai hari ini', icon: 'fa-clock' }
+            ];
+            
+            for (var i = 0; i < methods.length; i++) {
+                var m = methods[i];
+                html += '<div class="shipping-option" data-method="' + m.key + '" data-price="' + m.price + '" style="border: 2px solid #e0e0e0; border-radius: 12px; padding: 15px; text-align: center; cursor: pointer; transition: all 0.3s;">';
+                html += '<i class="fas ' + m.icon + '" style="font-size: 24px; color: #1F1B5B;"></i>';
+                html += '<div style="font-weight: 600; margin-top: 8px;">' + m.name + '</div>';
+                html += '<div style="font-size: 11px; color: #6c757d;">' + m.days + '</div>';
+                html += '<div style="font-weight: 700; color: #1F1B5B; margin-top: 5px;">' + formatRupiah(m.price) + '</div>';
+                html += '</div>';
+            }
+            html += '</div>';
+            html += '<div id="estimatedDelivery" style="margin-top: 15px; padding: 12px; background: #F3F0FF; border-radius: 12px; font-size: 12px; text-align: center;"><i class="fas fa-calendar-alt"></i> Estimasi tiba: -</div>';
+            container.innerHTML = html;
+            
+            var shippingOptionsEl = document.querySelectorAll('.shipping-option');
+            for (var i = 0; i < shippingOptionsEl.length; i++) {
+                shippingOptionsEl[i].addEventListener('click', function() {
+                    var allOptions = document.querySelectorAll('.shipping-option');
+                    for (var j = 0; j < allOptions.length; j++) {
+                        allOptions[j].classList.remove('selected');
+                    }
+                    this.classList.add('selected');
+                    selectedShippingMethod = this.getAttribute('data-method');
+                    updateEstimatedDelivery();
+                    refreshTotalDisplay();
+                });
+            }
+            
+            var defaultOption = document.querySelector('.shipping-option');
+            if (defaultOption) {
+                defaultOption.classList.add('selected');
+                selectedShippingMethod = 'REGULAR';
+            }
+            
+            updateEstimatedDelivery();
+            refreshTotalDisplay();
+        }
+        
+        function updateEstimatedDelivery() {
+            var now = new Date();
+            var estimateText = '';
+            
+            if (selectedShippingMethod === 'SAME_DAY') {
+                estimateText = 'Hari ini, ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+            } else if (selectedShippingMethod === 'EXPRESS') {
+                var date = new Date(now);
+                date.setDate(date.getDate() + 1);
+                estimateText = date.toLocaleDateString('id-ID', { day: 'numeric', month: 'long' });
+            } else {
+                var date3 = new Date(now);
+                date3.setDate(date3.getDate() + 3);
+                estimateText = date3.toLocaleDateString('id-ID', { day: 'numeric', month: 'long' });
+            }
+            
+            var deliveryDiv = document.getElementById('estimatedDelivery');
+            if (deliveryDiv) {
+                deliveryDiv.innerHTML = '<i class="fas fa-calendar-alt"></i> Estimasi tiba: ' + estimateText;
+            }
+        }
+        
+        function getCurrentShippingCost() {
+            if (!selectedCity) return 0;
+            
+            var costs = ongkirData[selectedCity] || ongkirData.default;
+            var normalCost = 0;
+            if (selectedShippingMethod === 'REGULAR') normalCost = costs.regular;
+            else if (selectedShippingMethod === 'EXPRESS') normalCost = costs.express;
+            else if (selectedShippingMethod === 'SAME_DAY') normalCost = costs.sameday;
+            else normalCost = costs.regular;
+            
+            // PERBAIKAN UTAMA: Jika free shipping aktif, ongkir = 0
+            if (freeShipping === true && subtotal >= 150000) {
+                console.log('🔥 FREE SHIPPING ACTIVE! Ongkir menjadi 0');
+                return 0;
+            }
+            return normalCost;
+        }
+        
+        // ==================== REFRESH TOTAL DISPLAY ====================
+        function refreshTotalDisplay() {
+            if (!selectedCity) {
+                return;
+            }
+            
+            var shippingCost = getCurrentShippingCost();
+            
+            console.log('🔄 REFRESH DISPLAY - FreeShipping: ' + freeShipping + ', Ongkir: ' + formatRupiah(shippingCost) + ', Subtotal: ' + formatRupiah(subtotal));
+            
+            // Update shipping display
+            var shippingDisplay = document.getElementById('orderShipping');
+            if (shippingDisplay) {
+                if (freeShipping === true && subtotal >= 150000) {
+                    shippingDisplay.innerHTML = '<span style="color: #28a745; font-weight: 600;">Gratis (Voucher GRATISONGKIR)</span>';
+                    document.getElementById('freeShippingRow').style.display = 'flex';
+                } else {
+                    shippingDisplay.innerHTML = formatRupiah(shippingCost);
+                    document.getElementById('freeShippingRow').style.display = 'none';
+                }
+            }
+            
+            // Calculate total
+            var total = subtotal + shippingCost - voucherDiscount;
+            if (total < 0) total = 0;
+            
+            document.getElementById('orderSubtotal').innerHTML = formatRupiah(subtotal);
+            document.getElementById('orderTotal').innerHTML = formatRupiah(total);
+            
+            // Voucher discount
+            if (voucherDiscount > 0) {
+                document.getElementById('voucherDiscountRow').style.display = 'flex';
+                document.getElementById('voucherDiscountAmount').innerHTML = '-' + formatRupiah(voucherDiscount);
+            } else {
+                document.getElementById('voucherDiscountRow').style.display = 'none';
+            }
+            
+            // Saving badge
+            var totalSaved = voucherDiscount;
+            if (freeShipping === true && subtotal >= 150000) {
+                var originalShipping = getOriginalShippingCost();
+                totalSaved += originalShipping;
+            }
+            
+            var savingBadge = document.getElementById('savingBadge');
+            var totalSaving = document.getElementById('totalSaving');
+            if (totalSaved > 0 && savingBadge && totalSaving) {
+                savingBadge.style.display = 'block';
+                totalSaving.innerHTML = formatRupiah(totalSaved);
+            } else if (savingBadge) {
+                savingBadge.style.display = 'none';
+            }
+        }
+        
+        function getOriginalShippingCost() {
+            if (!selectedCity) return 0;
+            var costs = ongkirData[selectedCity] || ongkirData.default;
+            if (selectedShippingMethod === 'REGULAR') return costs.regular;
+            if (selectedShippingMethod === 'EXPRESS') return costs.express;
+            if (selectedShippingMethod === 'SAME_DAY') return costs.sameday;
+            return costs.regular;
+        }
+        
+        // ==================== VOUCHER ====================
+        function applyVoucher() {
+            var input = document.getElementById('voucherInput');
+            var code = input.value.toUpperCase();
+            var messageDiv = document.getElementById('voucherMessage');
+            
+            if (!code) {
+                messageDiv.innerHTML = '<span style="color: red;">✗ Masukkan kode voucher!</span>';
+                showNotification('Masukkan kode voucher!', true);
+                return;
+            }
+            
+            var voucher = vouchersData[code];
+            if (!voucher) {
+                messageDiv.innerHTML = '<span style="color: red;">✗ Kode voucher tidak valid!</span>';
+                showNotification('Kode voucher tidak valid!', true);
+                return;
+            }
+            
+            var purchaseAmount = subtotal;
+            
+            if (purchaseAmount < voucher.min) {
+                var kurang = formatRupiah(voucher.min - purchaseAmount);
+                messageDiv.innerHTML = '<span style="color: red;">✗ Minimal belanja ' + formatRupiah(voucher.min) + '! Kurang ' + kurang + '</span>';
+                showNotification('Minimal belanja ' + formatRupiah(voucher.min) + '!', true);
+                return;
+            }
+            
+            if (voucher.type === 'freeshipping') {
+                // FREE SHIPPING
+                voucherDiscount = 0;
+                freeShipping = true;
+                voucherCode = code;
+                messageDiv.innerHTML = '<span style="color: green;">✓ Voucher GRATISONGKIR berhasil! Ongkir menjadi GRATIS!</span>';
+                showNotification('Voucher GRATISONGKIR berhasil dipakai! Ongkir gratis.');
+                console.log('🎉 GRATISONGKIR APPLIED - freeShipping = TRUE');
+            } else {
+                // PERCENTAGE DISCOUNT
+                var discount = purchaseAmount * voucher.value / 100;
+                if (voucher.max && discount > voucher.max) discount = voucher.max;
+                voucherDiscount = Math.floor(discount);
+                freeShipping = false;
+                voucherCode = code;
+                messageDiv.innerHTML = '<span style="color: green;">✓ Voucher ' + voucher.name + ' berhasil! Potongan ' + formatRupiah(voucherDiscount) + '</span>';
+                showNotification('Voucher ' + code + ' berhasil! Potongan ' + formatRupiah(voucherDiscount));
+                console.log('🎫 Voucher ' + code + ' applied - discount: ' + formatRupiah(voucherDiscount));
+            }
+            
+            // FORCE REFRESH UI
+            refreshTotalDisplay();
+            
+            // Update shipping options display to show free shipping
+            if (freeShipping === true && selectedCity) {
+                updateShippingOptions();
+            }
+        }
+        
+        function setVoucher(code) {
+            var input = document.getElementById('voucherInput');
+            if (input) {
+                input.value = code;
+            }
+            applyVoucher();
+        }
+        
+        // ==================== PAYMENT METHOD ====================
+        function initPaymentMethods() {
+            var methods = document.querySelectorAll('.payment-method');
+            for (var i = 0; i < methods.length; i++) {
+                methods[i].addEventListener('click', function() {
+                    var allMethods = document.querySelectorAll('.payment-method');
+                    for (var j = 0; j < allMethods.length; j++) {
+                        allMethods[j].classList.remove('selected');
+                    }
+                    this.classList.add('selected');
+                    selectedPaymentMethod = this.getAttribute('data-method');
+                    console.log('Payment method selected:', selectedPaymentMethod);
+                });
+            }
+            
+            var firstMethod = document.querySelector('.payment-method');
+            if (firstMethod) {
+                firstMethod.classList.add('selected');
+                selectedPaymentMethod = firstMethod.getAttribute('data-method');
+            }
+        }
+        
+        // ==================== VALIDATION ====================
+        function validateRealtime() {
+            var fullName = document.getElementById('fullName').value.trim();
+            var email = document.getElementById('email').value.trim();
+            var phone = document.getElementById('phone').value.trim();
+            var address = document.getElementById('address').value.trim();
+            
+            var isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            var isPhoneValid = /^[0-9]{10,13}$/.test(phone);
+            
+            var isValid = fullName && email && isEmailValid && phone && isPhoneValid && address && selectedCity;
+            
+            var submitBtn = document.getElementById('submitOrderBtn');
+            if (submitBtn) {
+                if (isValid) {
+                    submitBtn.disabled = false;
+                    submitBtn.style.opacity = '1';
+                    submitBtn.innerHTML = '<i class="fas fa-credit-card"></i> Buat Pesanan Sekarang';
+                } else {
+                    submitBtn.disabled = true;
+                    submitBtn.style.opacity = '0.6';
+                    submitBtn.innerHTML = '<i class="fas fa-lock"></i> Lengkapi Data untuk Checkout';
+                }
+            }
+        }
+        
+        // ==================== SUBMIT ORDER ====================
+        function submitOrder() {
+            var fullName = document.getElementById('fullName').value.trim();
+            var email = document.getElementById('email').value.trim();
+            var phone = document.getElementById('phone').value.trim();
+            var address = document.getElementById('address').value.trim();
+            var postalCode = document.getElementById('postalCode').value.trim();
+            var notes = document.getElementById('notes').value;
+            
+            if (!fullName || !email || !phone || !address || !selectedCity) {
+                showNotification('Mohon lengkapi semua data!', true);
+                return;
+            }
+            
+            var emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            var phoneValid = /^[0-9]{10,13}$/.test(phone);
+            
+            if (!emailValid) {
+                showNotification('Format email tidak valid!', true);
+                return;
+            }
+            
+            if (!phoneValid) {
+                showNotification('Nomor telepon harus 10-13 digit angka!', true);
+                return;
+            }
+            
+            var shippingCost = getCurrentShippingCost();
+            var total = subtotal + shippingCost - voucherDiscount;
+            if (total < 0) total = 0;
+            
+            var orderNumber = 'VIN-' + new Date().getFullYear() + 
+                               (new Date().getMonth()+1).toString().padStart(2,'0') + 
+                               new Date().getDate().toString().padStart(2,'0') + '-' +
+                               Math.random().toString(36).substring(2, 8).toUpperCase();
+            
+            var allProducts = JSON.parse(localStorage.getItem('vintara_products') || '[]');
+            
+            for (var i = 0; i < checkoutProducts.length; i++) {
+                var item = checkoutProducts[i];
+                var productIndex = -1;
+                for (var j = 0; j < allProducts.length; j++) {
+                    if (allProducts[j].id === item.id) {
+                        productIndex = j;
+                        break;
+                    }
+                }
+                if (productIndex !== -1) {
+                    allProducts[productIndex].stock -= item.quantity;
+                    allProducts[productIndex].sold = (allProducts[productIndex].sold || 0) + item.quantity;
+                }
+            }
             localStorage.setItem('vintara_products', JSON.stringify(allProducts));
-        } else {
-            // Jika stok tidak cukup, tampilkan error dan batalkan pesanan
-            showNotification('Stok tidak mencukupi: ' + stockErrors.join(', '), true);
-            return;
+            
+            var order = {
+                order_number: orderNumber,
+                date: new Date().toISOString(),
+                customer_name: fullName,
+                customer_email: email,
+                customer_phone: phone,
+                shipping_address: address,
+                shipping_city: selectedCity,
+                shipping_postal_code: postalCode,
+                notes: notes,
+                payment_method: selectedPaymentMethod,
+                shipping_method: selectedShippingMethod,
+                items: checkoutProducts,
+                subtotal: subtotal,
+                shipping_cost: shippingCost,
+                voucher_discount: voucherDiscount,
+                free_shipping_applied: freeShipping,
+                voucher_code: voucherCode,
+                total: total,
+                status: 'pending'
+            };
+            
+            var orders = JSON.parse(localStorage.getItem('vintara_orders') || '[]');
+            orders.unshift(order);
+            localStorage.setItem('vintara_orders', JSON.stringify(orders));
+            localStorage.setItem('last_order', JSON.stringify(order));
+            localStorage.setItem('last_order_number', orderNumber);
+            
+            var cart = JSON.parse(localStorage.getItem('vintara_cart') || '[]');
+            var remainingCart = [];
+            for (var i = 0; i < cart.length; i++) {
+                var found = false;
+                for (var j = 0; j < checkoutProducts.length; j++) {
+                    if (cart[i].id === checkoutProducts[j].id) {
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) remainingCart.push(cart[i]);
+            }
+            localStorage.setItem('vintara_cart', JSON.stringify(remainingCart));
+            
+            localStorage.removeItem('checkout_products');
+            localStorage.removeItem('voucher_discount');
+            localStorage.removeItem('voucher_free_shipping');
+            localStorage.removeItem('voucher_code');
+            
+            showNotification('✅ Pesanan berhasil dibuat!');
+            setTimeout(function() {
+                window.location.href = '/order-success';
+            }, 1500);
         }
         
-        // ==================== BUAT ORDER ====================
-        const order = {
-            order_number: orderNumber,
-            date: new Date().toISOString(),
-            customer_name: fullName,
-            customer_email: email,
-            customer_phone: phone,
-            shipping_address: address,
-            shipping_city: selectedCity,
-            shipping_postal_code: postalCode,
-            notes: notes,
-            payment_method: selectedPaymentMethod,
-            shipping_method: selectedShippingMethod,
-            items: checkoutProducts.map(item => ({
-                ...item,
-                stock_before: (allProducts.find(p => p.id === item.id)?.stock || 0) + item.quantity
-            })),
-            subtotal: subtotal,
-            shipping_cost: shipping,
-            voucher_discount: voucherDiscount,
-            voucher_code: voucherCode,
-            total: total,
-            status: 'pending'
-        };
+        // ==================== LOAD USER DATA ====================
+        function loadUserData() {
+            var user = localStorage.getItem('vintara_user');
+            if (user) {
+                try {
+                    var userData = JSON.parse(user);
+                    document.getElementById('fullName').value = userData.name || '';
+                    document.getElementById('email').value = userData.email || '';
+                } catch(e) {}
+            }
+        }
         
-        const orders = JSON.parse(localStorage.getItem('vintara_orders') || '[]');
-        orders.unshift(order);
-        localStorage.setItem('vintara_orders', JSON.stringify(orders));
-        localStorage.setItem('last_order', JSON.stringify(order));
-        localStorage.setItem('last_order_number', orderNumber);
+        // ==================== EVENT LISTENERS ====================
+        function initEventListeners() {
+            var fields = ['fullName', 'email', 'phone', 'address'];
+            for (var i = 0; i < fields.length; i++) {
+                var el = document.getElementById(fields[i]);
+                if (el) {
+                    el.addEventListener('input', validateRealtime);
+                    el.addEventListener('blur', validateRealtime);
+                }
+            }
+            
+            var applyBtn = document.getElementById('applyVoucherBtn');
+            if (applyBtn) {
+                applyBtn.onclick = function(e) {
+                    e.preventDefault();
+                    applyVoucher();
+                };
+            }
+            
+            var submitBtn = document.getElementById('submitOrderBtn');
+            if (submitBtn) {
+                submitBtn.onclick = function(e) {
+                    e.preventDefault();
+                    submitOrder();
+                };
+            }
+        }
         
-        // Hapus produk yang sudah di-checkout dari cart
-        const cart = JSON.parse(localStorage.getItem('vintara_cart') || '[]');
-        const remainingCart = cart.filter(item => !checkoutProducts.some(cp => cp.id === item.id));
-        localStorage.setItem('vintara_cart', JSON.stringify(remainingCart));
-        localStorage.removeItem('checkout_products');
-        localStorage.removeItem('voucher_discount');
-        localStorage.removeItem('voucher_free_shipping');
-        localStorage.removeItem('voucher_code');
-        
-        showNotification('✅ Pesanan berhasil dibuat! Stok berkurang.');
-        setTimeout(() => {
-            window.location.href = '/order-success';
-        }, 1500);
-    }
-    
-    function escapeHtml(str) {
-        if (!str) return '';
-        return str.replace(/[&<>]/g, function(m) {
-            if (m === '&') return '&amp;';
-            if (m === '<') return '&lt;';
-            if (m === '>') return '&gt;';
-            return m;
+        // ==================== INIT ====================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCheckoutData();
+            loadUserData();
+            initCityDropdown();
+            initPaymentMethods();
+            initEventListeners();
+            validateRealtime();
+            
+            if (checkoutProducts.length === 0) {
+                var submitBtn = document.getElementById('submitOrderBtn');
+                if (submitBtn) {
+                    submitBtn.disabled = true;
+                    submitBtn.style.opacity = '0.6';
+                    submitBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Keranjang Kosong';
+                }
+            }
         });
-    }
-    
-    // ==================== LOAD USER DATA ====================
-    function loadUserData() {
-        const user = localStorage.getItem('vintara_user');
-        if (user) {
-            try {
-                const userData = JSON.parse(user);
-                document.getElementById('fullName').value = userData.name || '';
-                document.getElementById('email').value = userData.email || '';
-            } catch(e) {}
-        }
-    }
-    
-    // ==================== EVENT LISTENERS ====================
-    function initEventListeners() {
-        const fields = ['fullName', 'email', 'phone', 'address'];
-        fields.forEach(field => {
-            document.getElementById(field).addEventListener('input', validateRealtime);
-            document.getElementById(field).addEventListener('blur', validateRealtime);
-        });
         
-        document.getElementById('applyVoucherBtn').addEventListener('click', applyVoucher);
-        document.getElementById('submitOrderBtn').addEventListener('click', submitOrder);
-    }
-    
-    // ==================== INIT ====================
-    document.addEventListener('DOMContentLoaded', function() {
-        loadCheckoutData();
-        loadUserData();
-        initCityDropdown();
-        initPaymentMethods();
-        initEventListeners();
-        validateRealtime();
-        
-        if (checkoutProducts.length === 0) {
-            document.getElementById('submitOrderBtn').disabled = true;
-            document.getElementById('submitOrderBtn').style.opacity = '0.6';
-            document.getElementById('submitOrderBtn').innerHTML = '<i class="fas fa-exclamation-circle"></i> Keranjang Kosong';
-        }
-    });
-    
-    window.setVoucher = setVoucher;
-    window.formatRupiah = formatRupiah;
+        // Export ke global
+        window.setVoucher = setVoucher;
+        window.formatRupiah = formatRupiah;
+        window.applyVoucher = applyVoucher;
+    })();
 </script>
 @endsection

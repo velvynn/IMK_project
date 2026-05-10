@@ -55,6 +55,7 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 40px;
+            cursor: pointer;
         }
         
         .logo-icon {
@@ -150,6 +151,7 @@
             color: #6c757d;
             font-size: 13px;
             text-decoration: none;
+            cursor: pointer;
         }
         
         .forgot-password a:hover {
@@ -199,6 +201,7 @@
         .google-btn:hover {
             background: #f8f9fa;
             border-color: #1F1B5B;
+            transform: translateY(-2px);
         }
         
         .google-btn i {
@@ -217,6 +220,11 @@
             color: #1F1B5B;
             font-weight: 600;
             text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .signup-prompt a:hover {
+            text-decoration: underline;
         }
         
         .error-message {
@@ -227,6 +235,110 @@
             font-size: 13px;
             margin-bottom: 20px;
             display: none;
+        }
+        
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        /* MODAL STYLES - TETAP PERTAHANKAN DESAIN */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 32px;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 28px;
+            cursor: pointer;
+            color: #999;
+            transition: all 0.3s;
+        }
+        
+        .modal-close:hover {
+            color: #1F1B5B;
+        }
+        
+        .modal-content h2 {
+            color: #1F1B5B;
+            margin-bottom: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+        
+        .modal-content p {
+            color: #6c757d;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .modal-content input {
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+        
+        .modal-content input:focus {
+            outline: none;
+            border-color: #1F1B5B;
+        }
+        
+        .modal-content button {
+            width: 100%;
+            background: #1F1B5B;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 40px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .modal-content button:hover {
+            background: #3a3590;
         }
         
         .notification-custom {
@@ -299,7 +411,7 @@
 <body>
     <div class="login-wrapper">
         <div class="login-card">
-            <div class="logo">
+            <div class="logo" onclick="goToHome()">
                 <div class="logo-icon">V</div>
                 <span class="logo-text">VINTARA</span>
             </div>
@@ -310,22 +422,23 @@
             </div>
             
             <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
             
             <form id="loginForm">
                 <div class="input-group">
                     <label>Email</label>
-                    <input type="email" id="loginEmail" placeholder="admin@vintara.com" required>
+                    <input type="email" id="loginEmail" placeholder="admin@vintara.com" value="admin@vintara.com" required>
                 </div>
                 
                 <div class="input-group">
                     <label>Password</label>
-                    <input type="password" id="loginPassword" placeholder="••••••" required>
+                    <input type="password" id="loginPassword" placeholder="••••••" value="admin123" required>
                 </div>
                 
                 <button type="submit" class="login-btn">Login →</button>
                 
                 <div class="forgot-password">
-                    <a href="#">Forgot Password?</a>
+                    <a id="forgotPasswordBtn">Forgot Password?</a>
                 </div>
             </form>
             
@@ -336,12 +449,37 @@
             </button>
             
             <div class="signup-prompt">
-                Belum Punya akun? <a href="{{ url('/register') }}">Sign Up</a>
+                Belum Punya akun? <a id="signupBtn">Sign Up</a>
             </div>
         </div>
     </div>
     
+    <!-- MODAL FORGOT PASSWORD -->
+    <div id="forgotModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeForgotModal">&times;</span>
+            <h2>Lupa Password?</h2>
+            <p>Masukkan email Anda, kami akan mengirimkan instruksi reset password.</p>
+            <input type="email" id="forgotEmail" placeholder="Email Anda">
+            <button id="sendResetLinkBtn">Kirim Instruksi</button>
+        </div>
+    </div>
+    
+    <!-- MODAL SIGN UP -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeSignupModal">&times;</span>
+            <h2>Daftar Akun Baru</h2>
+            <input type="text" id="signupName" placeholder="Nama Lengkap">
+            <input type="email" id="signupEmail" placeholder="Email">
+            <input type="password" id="signupPassword" placeholder="Password (min. 4 karakter)">
+            <input type="password" id="signupConfirm" placeholder="Konfirmasi Password">
+            <button id="registerBtn">Daftar Sekarang</button>
+        </div>
+    </div>
+    
     <script>
+        // ==================== FUNGSI NOTIFIKASI ====================
         function showNotification(message, isError = false) {
             const oldNotif = document.querySelector('.notification-custom');
             if (oldNotif) oldNotif.remove();
@@ -359,12 +497,30 @@
             }, 3000);
         }
         
+        function goToHome() {
+            window.location.href = '/';
+        }
+        
+        // ==================== AKUN DEMO ====================
+        const demoAccounts = [
+            { email: "admin@vintara.com", password: "admin123", name: "Administrator", isAdmin: true },
+            { email: "user@vintara.com", password: "user123", name: "User Biasa", isAdmin: false },
+            { email: "budi@vintara.com", password: "budi123", name: "Budi Santoso", isAdmin: false },
+            { email: "siti@vintara.com", password: "siti123", name: "Siti Aminah", isAdmin: false },
+            { email: "andro@vintara.com", password: "andro123", name: "Andro Pratama", isAdmin: false }
+        ];
+        
+        // ==================== LOGIN FORM ====================
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const email = document.getElementById('loginEmail').value;
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
             const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
             
             if (!email || !password) {
                 errorDiv.textContent = 'Email dan password harus diisi!';
@@ -372,16 +528,6 @@
                 showNotification('Email dan password harus diisi!', true);
                 return;
             }
-            
-            errorDiv.style.display = 'none';
-            
-            const demoAccounts = [
-                { email: "admin@vintara.com", password: "admin123", name: "Administrator", isAdmin: true },
-                { email: "user@vintara.com", password: "user123", name: "User Biasa", isAdmin: false },
-                { email: "budi@vintara.com", password: "budi123", name: "Budi Santoso", isAdmin: false },
-                { email: "siti@vintara.com", password: "siti123", name: "Siti Aminah", isAdmin: false },
-                { email: "andro@vintara.com", password: "andro123", name: "Andro Pratama", isAdmin: false }
-            ];
             
             const user = demoAccounts.find(u => u.email === email && u.password === password);
             
@@ -396,6 +542,8 @@
                 localStorage.setItem('vintara_user', JSON.stringify(userData));
                 localStorage.setItem('vintara_member_since', new Date().toISOString());
                 
+                successDiv.textContent = `Selamat datang kembali, ${user.name}!`;
+                successDiv.style.display = 'block';
                 showNotification(`Selamat datang kembali, ${user.name}!`);
                 
                 setTimeout(() => {
@@ -408,9 +556,175 @@
             }
         });
         
-        document.getElementById('googleLoginBtn').addEventListener('click', function() {
-            showNotification('Fitur Google Login akan segera hadir!');
+        // ==================== FORGOT PASSWORD ====================
+        const forgotModal = document.getElementById('forgotModal');
+        const forgotBtn = document.getElementById('forgotPasswordBtn');
+        const closeForgotModal = document.getElementById('closeForgotModal');
+        const sendResetLinkBtn = document.getElementById('sendResetLinkBtn');
+        
+        forgotBtn.addEventListener('click', function() {
+            forgotModal.style.display = 'block';
         });
+        
+        closeForgotModal.addEventListener('click', function() {
+            forgotModal.style.display = 'none';
+        });
+        
+        sendResetLinkBtn.addEventListener('click', function() {
+            const email = document.getElementById('forgotEmail').value.trim();
+            const errorDiv = document.getElementById('errorMessage');
+            
+            if (!email) {
+                showNotification('Masukkan email Anda!', true);
+                return;
+            }
+            
+            // Cek apakah email terdaftar di demo accounts
+            const userExists = demoAccounts.some(u => u.email === email);
+            
+            if (userExists) {
+                // Simulasi pengiriman email reset password
+                showNotification(`Instruksi reset password telah dikirim ke ${email}`, false);
+                document.getElementById('forgotEmail').value = '';
+                forgotModal.style.display = 'none';
+                
+                // Simpan ke localStorage untuk simulasi
+                const resetRequests = JSON.parse(localStorage.getItem('vintara_reset_requests') || '[]');
+                resetRequests.push({
+                    email: email,
+                    token: Math.random().toString(36).substring(2, 15),
+                    createdAt: new Date().toISOString()
+                });
+                localStorage.setItem('vintara_reset_requests', JSON.stringify(resetRequests));
+            } else {
+                showNotification('Email tidak terdaftar!', true);
+            }
+        });
+        
+        // ==================== GOOGLE LOGIN ====================
+        const googleLoginBtn = document.getElementById('googleLoginBtn');
+        
+        googleLoginBtn.addEventListener('click', function() {
+            // Simulasi Google Login - akan membuka popup simulasi
+            showNotification('Mengarahkan ke Google Login...', false);
+            
+            // Simulasi proses Google Login (dalam real implementation, ini akan redirect ke Google OAuth)
+            setTimeout(() => {
+                // Untuk demo, kita buat user random dari Google
+                const googleUser = {
+                    email: "user@gmail.com",
+                    name: "Google User",
+                    isAdmin: false,
+                    loginTime: new Date().toISOString()
+                };
+                
+                localStorage.setItem('vintara_user', JSON.stringify(googleUser));
+                localStorage.setItem('vintara_member_since', new Date().toISOString());
+                
+                showNotification(`Selamat datang, ${googleUser.name}! Login dengan Google berhasil!`);
+                
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1500);
+            }, 1500);
+        });
+        
+        // ==================== SIGN UP ====================
+        const signupModal = document.getElementById('signupModal');
+        const signupBtn = document.getElementById('signupBtn');
+        const closeSignupModal = document.getElementById('closeSignupModal');
+        const registerBtn = document.getElementById('registerBtn');
+        
+        signupBtn.addEventListener('click', function() {
+            signupModal.style.display = 'block';
+        });
+        
+        closeSignupModal.addEventListener('click', function() {
+            signupModal.style.display = 'none';
+        });
+        
+        registerBtn.addEventListener('click', function() {
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const confirm = document.getElementById('signupConfirm').value;
+            
+            if (!name || !email || !password) {
+                showNotification('Semua field harus diisi!', true);
+                return;
+            }
+            
+            if (password !== confirm) {
+                showNotification('Password tidak cocok!', true);
+                return;
+            }
+            
+            if (password.length < 4) {
+                showNotification('Password minimal 4 karakter!', true);
+                return;
+            }
+            
+            // Cek apakah email sudah terdaftar
+            const emailExists = demoAccounts.some(u => u.email === email);
+            if (emailExists) {
+                showNotification('Email sudah terdaftar!', true);
+                return;
+            }
+            
+            // Simpan user baru ke localStorage
+            const users = JSON.parse(localStorage.getItem('vintara_users') || '[]');
+            users.push({
+                name: name,
+                email: email,
+                password: password,
+                joinDate: new Date().toISOString()
+            });
+            localStorage.setItem('vintara_users', JSON.stringify(users));
+            
+            showNotification('Pendaftaran berhasil! Silakan login.', false);
+            
+            // Reset form signup
+            document.getElementById('signupName').value = '';
+            document.getElementById('signupEmail').value = '';
+            document.getElementById('signupPassword').value = '';
+            document.getElementById('signupConfirm').value = '';
+            
+            // Tutup modal
+            signupModal.style.display = 'none';
+            
+            // Isi form login dengan email yang baru didaftarkan
+            document.getElementById('loginEmail').value = email;
+            document.getElementById('loginPassword').value = '';
+            document.getElementById('loginPassword').focus();
+        });
+        
+        // ==================== TUTUP MODAL KETIKA KLIK DI LUAR ====================
+        window.addEventListener('click', function(event) {
+            if (event.target === forgotModal) {
+                forgotModal.style.display = 'none';
+            }
+            if (event.target === signupModal) {
+                signupModal.style.display = 'none';
+            }
+        });
+        
+        // ==================== ENTER KEY UNTUK LOGIN ====================
+        document.getElementById('loginPassword').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
+            }
+        });
+        
+        // ==================== AUTO-FILL DEMO ACCOUNT (opsional) ====================
+        function setDemoAccount(email, password) {
+            document.getElementById('loginEmail').value = email;
+            document.getElementById('loginPassword').value = password;
+            showNotification(`Demo account: ${email}`, false);
+        }
+        
+        // Export ke global
+        window.goToHome = goToHome;
+        window.showNotification = showNotification;
     </script>
 </body>
 </html>

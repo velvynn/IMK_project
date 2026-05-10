@@ -56,6 +56,7 @@
         background: white;
         cursor: pointer;
         font-size: 16px;
+        transition: all 0.3s;
     }
     .quantity-btn:hover {
         background: #1F1B5B;
@@ -68,6 +69,7 @@
         color: #ff4757;
         cursor: pointer;
         font-size: 18px;
+        transition: all 0.3s;
     }
     .remove-btn:hover {
         transform: scale(1.1);
@@ -105,6 +107,11 @@
         cursor: pointer;
         margin-top: 20px;
         font-size: 16px;
+        transition: all 0.3s;
+    }
+    .checkout-btn:hover {
+        background: #3a3590;
+        transform: translateY(-2px);
     }
     .empty-cart {
         text-align: center;
@@ -196,18 +203,18 @@
         }, 3000);
     }
     
-    // Load cart from localStorage with default data
+    // Load cart from localStorage
     function loadCartData() {
         const savedCart = localStorage.getItem('vintara_cart');
         
         if (savedCart && JSON.parse(savedCart).length > 0) {
             cartData = JSON.parse(savedCart);
         } else {
-            // DEFAULT CART DATA - INI YANG AKAN MUNCUL
+            // Default cart data
             cartData = [
-                { id: 1, name: 'Anker Power Bank 26800', price: 850000, quantity: 2, image: 'https://placehold.co/400x400/e9ecef/1F1B5B?text=Anker', stock: 100, brand: 'Anker' },
-                { id: 2, name: 'Spigen GaN 65W', price: 600000, quantity: 1, image: 'https://placehold.co/400x400/e9ecef/1F1B5B?text=Spigen', stock: 90, brand: 'Spigen' },
-                { id: 3, name: 'Aukey Omnia 100W', price: 900000, quantity: 1, image: 'https://placehold.co/400x400/e9ecef/1F1B5B?text=Aukey', stock: 70, brand: 'Aukey' }
+                { id: 1, name: 'iPhone 16 Pro Max', price: 18000000, quantity: 1, image: 'https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=400&h=400&fit=crop', stock: 50, brand: 'Apple' },
+                { id: 2, name: 'Samsung Galaxy S24 Ultra', price: 19000000, quantity: 1, image: 'https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400&h=400&fit=crop', stock: 45, brand: 'Samsung' },
+                { id: 3, name: 'Mophie Powerstation Plus', price: 1200000, quantity: 1, image: 'https://images.unsplash.com/photo-1609592423409-3b5c58570cac?w=400&h=400&fit=crop', stock: 50, brand: 'Mophie' }
             ];
             localStorage.setItem('vintara_cart', JSON.stringify(cartData));
             console.log('✅ Default cart data added!');
@@ -217,12 +224,13 @@
         if (savedSelected) {
             selectedIds = new Set(JSON.parse(savedSelected));
         } else {
+            // OTOMATIS PILIH SEMUA PRODUK YANG ADA DI CART
             cartData.forEach(item => selectedIds.add(item.id));
             localStorage.setItem('vintara_cart_selected', JSON.stringify([...selectedIds]));
         }
         
         console.log('Cart data:', cartData.length, 'items');
-        console.log('Selected IDs:', [...selectedIds]);
+        console.log('Selected IDs (auto-selected all):', [...selectedIds]);
         
         renderCart();
         updateNavbarCount();
@@ -273,8 +281,10 @@
     function toggleSelect(productId) {
         if (selectedIds.has(productId)) {
             selectedIds.delete(productId);
+            console.log('Deselected product:', productId);
         } else {
             selectedIds.add(productId);
+            console.log('Selected product:', productId);
         }
         saveCartData();
         renderCart();
@@ -283,15 +293,22 @@
     function toggleSelectAll() {
         if (selectedIds.size === cartData.length) {
             selectedIds.clear();
+            console.log('Deselected all products');
         } else {
             cartData.forEach(item => selectedIds.add(item.id));
+            console.log('Selected all products:', [...selectedIds]);
         }
         saveCartData();
         renderCart();
     }
     
     function checkoutSelected() {
+        console.log('Current selectedIds:', [...selectedIds]);
+        console.log('Current cartData:', cartData);
+        
         const selectedProducts = cartData.filter(item => selectedIds.has(item.id));
+        
+        console.log('Selected products for checkout:', selectedProducts);
         
         if (selectedProducts.length === 0) {
             showNotification('Pilih produk yang akan di-checkout!', true);
@@ -302,6 +319,8 @@
         selectedProducts.forEach(item => {
             subtotal += item.price * item.quantity;
         });
+        
+        console.log('Subtotal:', subtotal);
         
         localStorage.setItem('checkout_products', JSON.stringify(selectedProducts));
         localStorage.setItem('checkout_subtotal', subtotal);
@@ -329,7 +348,7 @@
             return;
         }
         
-        // Hitung selected
+        // Hitung selected subtotal dan jumlah produk terpilih
         let selectedSubtotal = 0;
         let selectedCount = 0;
         cartData.forEach(item => {
@@ -339,8 +358,9 @@
             }
         });
         
-        const shipping = selectedSubtotal > 1000000 ? 0 : 20000;
-        const total = selectedSubtotal + shipping;
+        // ONGKOS KIRIM DI KERANJANG = 0 (akan dihitung di checkout nanti)
+        const shippingCost = 0;
+        const total = selectedSubtotal + shippingCost;
         
         container.innerHTML = `
             <div style="display: flex; gap: 30px; flex-wrap: wrap;">
@@ -416,17 +436,21 @@
                         </div>
                         <div class="summary-row">
                             <span>Ongkos Kirim</span>
-                            <span>${selectedSubtotal > 1000000 ? 'Gratis' : formatRupiah(20000)}</span>
+                            <span><strong style="color: #28a745;">Akan dihitung di checkout</strong></span>
                         </div>
                         
                         <div class="summary-total">
-                            <span>Total</span>
+                            <span>Total Sementara</span>
                             <span>${formatRupiah(total)}</span>
                         </div>
                         
                         <button class="checkout-btn" onclick="checkoutSelected()">
-                            Checkout ${selectedCount > 0 ? `(${selectedCount} produk)` : ''} →
+                            Lanjut ke Checkout → (${selectedCount} produk)
                         </button>
+                        
+                        <p style="font-size: 11px; color: #6c757d; text-align: center; margin-top: 15px;">
+                            <i class="fas fa-info-circle"></i> Ongkos kirim akan dihitung setelah Anda mengisi alamat di halaman checkout
+                        </p>
                     </div>
                 </div>
             </div>
@@ -435,6 +459,16 @@
     
     document.addEventListener('DOMContentLoaded', function() {
         loadCartData();
+        
+        // Event listener untuk select all checkbox (pastikan berfungsi)
+        const container = document.getElementById('cart-content');
+        if (container) {
+            container.addEventListener('change', function(e) {
+                if (e.target && e.target.id === 'selectAllCheckbox') {
+                    toggleSelectAll();
+                }
+            });
+        }
     });
     
     window.updateQuantity = updateQuantity;

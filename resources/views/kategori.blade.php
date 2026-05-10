@@ -95,6 +95,22 @@
                 </div>
             </div>
             
+            {{-- SEARCH BAR DI DALAM KATEGORI PAGE --}}
+            <div style="margin-bottom: 20px;">
+                <div style="display: flex; gap: 10px; background: white; border-radius: 50px; padding: 5px 5px 5px 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                    <i class="fas fa-search" style="color: #6c757d; align-self: center;"></i>
+                    <input type="text" id="kategoriSearchInput" placeholder="Cari produk di kategori ini..." 
+                           style="flex: 1; border: none; outline: none; padding: 12px 0; font-size: 14px;">
+                    <button id="kategoriSearchBtn" style="background: #1F1B5B; color: white; border: none; padding: 8px 25px; border-radius: 40px; cursor: pointer;">
+                        Cari
+                    </button>
+                    <button id="kategoriClearSearch" style="background: transparent; border: none; color: #6c757d; cursor: pointer; display: none;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div id="kategoriSearchInfo" style="margin-top: 8px; font-size: 12px; color: #6c757d; display: none;"></div>
+            </div>
+            
             <div class="kategori-product-grid" id="kategoriProductGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 25px;">
                 <div class="loading-spinner" style="text-align: center; padding: 40px;">
                     <i class="fas fa-spinner fa-pulse" style="font-size: 40px; color: #1F1B5B;"></i>
@@ -104,8 +120,8 @@
             <div id="noProductsMessage" style="display: none; text-align: center; padding: 60px; background: white; border-radius: 20px;">
                 <i class="fas fa-search" style="font-size: 60px; color: #ccc;"></i>
                 <h3 style="margin-top: 15px;">Tidak ada produk ditemukan</h3>
-                <p>Coba ubah filter atau cari produk lain</p>
-                <button onclick="resetAllFilters()" class="btn-primary" style="background: #1F1B5B; color: white; border: none; padding: 10px 25px; border-radius: 30px; cursor: pointer; margin-top: 15px;">Reset Filter</button>
+                <p id="kategoriSearchKeywordDisplay"></p>
+                <button onclick="resetAllFiltersAndSearch()" class="btn-primary" style="background: #1F1B5B; color: white; border: none; padding: 10px 25px; border-radius: 30px; cursor: pointer; margin-top: 15px;">Lihat Semua Produk</button>
             </div>
         </div>
     </div>
@@ -286,6 +302,7 @@
     let allProductsData = @json(isset($products) ? $products : []);
     let originalProducts = [];
     let filteredProducts = [];
+    let currentSearchKeyword = '';
     
     // ==================== FUNGSI GET GAMBAR PRODUK (PRIORITAS BENAR) ====================
     function getProductImage(product) {
@@ -359,12 +376,20 @@
     function renderProducts() {
         const grid = document.getElementById('kategoriProductGrid');
         const noMessage = document.getElementById('noProductsMessage');
+        const searchKeywordDisplay = document.getElementById('kategoriSearchKeywordDisplay');
         
         if (!grid) return;
         
         if (!filteredProducts || filteredProducts.length === 0) {
             grid.style.display = 'none';
-            if (noMessage) noMessage.style.display = 'block';
+            if (noMessage) {
+                noMessage.style.display = 'block';
+                if (searchKeywordDisplay && currentSearchKeyword) {
+                    searchKeywordDisplay.innerHTML = `Kata kunci: "<strong>${escapeHtml(currentSearchKeyword)}</strong>"`;
+                } else {
+                    searchKeywordDisplay.innerHTML = '';
+                }
+            }
             const countEl = document.getElementById('filteredCount');
             if (countEl) countEl.textContent = '0';
             return;
@@ -410,6 +435,118 @@
         `}).join('');
     }
     
+    // ==================== SEARCH FUNCTION FOR KATEGORI PAGE (STAY ON PAGE) ====================
+    function searchKategoriProducts(keyword) {
+        const titleElement = document.getElementById('kategoriTitle');
+        const searchInfo = document.getElementById('kategoriSearchInfo');
+        const clearBtn = document.getElementById('kategoriClearSearch');
+        const searchInput = document.getElementById('kategoriSearchInput');
+        
+        currentSearchKeyword = keyword.trim();
+        
+        if (!currentSearchKeyword) {
+            // Reset to original products
+            filteredProducts = [...originalProducts];
+            if (titleElement) {
+                const categoryName = '{{ isset($selectedCategory) ? $selectedCategory->name : 'Semua Produk' }}';
+                titleElement.innerHTML = categoryName;
+            }
+            if (searchInfo) searchInfo.style.display = 'none';
+            if (clearBtn) clearBtn.style.display = 'none';
+            if (searchInput) searchInput.value = '';
+            
+            // Reset filters
+            document.querySelectorAll('input[name="ratingFilter"]').forEach(r => r.checked = false);
+            const brandFilter = document.getElementById('brandFilter');
+            if (brandFilter) brandFilter.value = '';
+            const priceRange = document.getElementById('priceRange');
+            if (priceRange) {
+                priceRange.value = priceRange.max || 50000000;
+                document.getElementById('maxPriceLabel').textContent = formatRupiah(parseInt(priceRange.value));
+            }
+            const sortSelect = document.getElementById('sortProductsKategori');
+            if (sortSelect) sortSelect.value = 'default';
+            
+            renderProducts();
+            return;
+        }
+        
+        const filtered = originalProducts.filter(product => 
+            (product.name && product.name.toLowerCase().includes(currentSearchKeyword.toLowerCase())) ||
+            (product.brand && product.brand.toLowerCase().includes(currentSearchKeyword.toLowerCase()))
+        );
+        
+        filteredProducts = filtered;
+        
+        if (titleElement) {
+            const categoryName = '{{ isset($selectedCategory) ? $selectedCategory->name : 'Semua Produk' }}';
+            titleElement.innerHTML = `🔍 Hasil Pencarian: "${escapeHtml(currentSearchKeyword)}" - ${categoryName}`;
+        }
+        
+        if (searchInfo) {
+            searchInfo.style.display = 'block';
+            searchInfo.innerHTML = `<i class="fas fa-search"></i> Menampilkan ${filtered.length} hasil untuk "${escapeHtml(currentSearchKeyword)}"`;
+        }
+        
+        if (clearBtn && filtered.length !== originalProducts.length) {
+            clearBtn.style.display = 'block';
+        } else if (clearBtn) {
+            clearBtn.style.display = 'none';
+        }
+        
+        renderProducts();
+    }
+    
+    // ==================== RESET ALL FILTERS AND SEARCH ====================
+    function resetAllFiltersAndSearch() {
+        currentSearchKeyword = '';
+        
+        // Reset search input
+        const searchInput = document.getElementById('kategoriSearchInput');
+        if (searchInput) searchInput.value = '';
+        
+        // Reset search info
+        const searchInfo = document.getElementById('kategoriSearchInfo');
+        if (searchInfo) searchInfo.style.display = 'none';
+        
+        // Reset clear button
+        const clearBtn = document.getElementById('kategoriClearSearch');
+        if (clearBtn) clearBtn.style.display = 'none';
+        
+        // Reset title
+        const titleElement = document.getElementById('kategoriTitle');
+        if (titleElement) {
+            const categoryName = '{{ isset($selectedCategory) ? $selectedCategory->name : 'Semua Produk' }}';
+            titleElement.innerHTML = categoryName;
+        }
+        
+        // Reset radio buttons
+        document.querySelectorAll('input[name="ratingFilter"]').forEach(radio => {
+            radio.checked = false;
+        });
+        
+        // Reset brand filter
+        const brandFilter = document.getElementById('brandFilter');
+        if (brandFilter) brandFilter.value = '';
+        
+        // Reset price range
+        const priceRange = document.getElementById('priceRange');
+        if (priceRange) {
+            priceRange.value = priceRange.max || 50000000;
+            document.getElementById('maxPriceLabel').textContent = formatRupiah(parseInt(priceRange.value));
+        }
+        
+        // Reset sort
+        const sortSelect = document.getElementById('sortProductsKategori');
+        if (sortSelect) sortSelect.value = 'default';
+        
+        // Reset products
+        filteredProducts = [...originalProducts];
+        renderProducts();
+        
+        showNotification('Filter dan pencarian direset!');
+    }
+    
     // ==================== FUNGSI FILTER ====================
     function applyFilters() {
         if (!originalProducts.length) {
@@ -419,6 +556,14 @@
         }
         
         let filtered = [...originalProducts];
+        
+        // Filter berdasarkan kata kunci pencarian (jika ada)
+        if (currentSearchKeyword) {
+            filtered = filtered.filter(product => 
+                (product.name && product.name.toLowerCase().includes(currentSearchKeyword.toLowerCase())) ||
+                (product.brand && product.brand.toLowerCase().includes(currentSearchKeyword.toLowerCase()))
+            );
+        }
         
         // Filter Rating
         const selectedRating = document.querySelector('input[name="ratingFilter"]:checked');
@@ -467,24 +612,7 @@
     }
     
     function resetAllFilters() {
-        document.querySelectorAll('input[name="ratingFilter"]').forEach(radio => {
-            radio.checked = false;
-        });
-        
-        const brandFilter = document.getElementById('brandFilter');
-        if (brandFilter) brandFilter.value = '';
-        
-        const priceRange = document.getElementById('priceRange');
-        if (priceRange) {
-            priceRange.value = priceRange.max || 50000000;
-            document.getElementById('maxPriceLabel').textContent = formatRupiah(parseInt(priceRange.value));
-        }
-        
-        const sortSelect = document.getElementById('sortProductsKategori');
-        if (sortSelect) sortSelect.value = 'default';
-        
-        applyFilters();
-        showNotification('Filter direset!');
+        resetAllFiltersAndSearch();
     }
     
     // ==================== UPDATE MAX PRICE LABEL ====================
@@ -492,13 +620,56 @@
     if (priceRangeInput) {
         priceRangeInput.addEventListener('input', function() {
             document.getElementById('maxPriceLabel').textContent = formatRupiah(parseInt(this.value));
+            applyFilters();
         });
+    }
+    
+    // ==================== SETUP KATEGORI SEARCH ====================
+    function setupKategoriSearch() {
+        const searchInput = document.getElementById('kategoriSearchInput');
+        const searchBtn = document.getElementById('kategoriSearchBtn');
+        const clearBtn = document.getElementById('kategoriClearSearch');
+        
+        if (!searchInput) return;
+        
+        let searchTimeout;
+        
+        searchInput.addEventListener('input', function(e) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const keyword = e.target.value.trim();
+                searchKategoriProducts(keyword);
+            }, 500);
+        });
+        
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                clearTimeout(searchTimeout);
+                const keyword = e.target.value.trim();
+                searchKategoriProducts(keyword);
+            }
+        });
+        
+        if (searchBtn) {
+            searchBtn.addEventListener('click', function() {
+                const keyword = searchInput.value.trim();
+                searchKategoriProducts(keyword);
+            });
+        }
+        
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function() {
+                searchInput.value = '';
+                searchKategoriProducts('');
+            });
+        }
     }
     
     // Reset button
     const resetBtn = document.getElementById('resetFilterBtn');
     if (resetBtn) {
-        resetBtn.addEventListener('click', resetAllFilters);
+        resetBtn.addEventListener('click', resetAllFiltersAndSearch);
     }
     
     // ==================== FUNGSI PENCARIAN DARI URL ====================
@@ -507,35 +678,14 @@
         const searchKeyword = urlParams.get('search');
         
         if (searchKeyword && searchKeyword.trim() !== '') {
-            const keyword = searchKeyword.toLowerCase().trim();
+            currentSearchKeyword = searchKeyword.trim();
             
-            const filtered = originalProducts.filter(product => 
-                (product.name && product.name.toLowerCase().includes(keyword)) ||
-                (product.brand && product.brand.toLowerCase().includes(keyword))
-            );
+            // Set search input value
+            const searchInput = document.getElementById('kategoriSearchInput');
+            if (searchInput) searchInput.value = currentSearchKeyword;
             
-            filteredProducts = filtered;
-            renderProducts();
-            
-            const titleElement = document.getElementById('kategoriTitle');
-            if (titleElement) {
-                titleElement.innerHTML = `Hasil Pencarian: "${escapeHtml(searchKeyword)}"`;
-            }
-            
-            if (filtered.length === 0) {
-                const noMessage = document.getElementById('noProductsMessage');
-                if (noMessage) {
-                    noMessage.style.display = 'block';
-                    noMessage.innerHTML = `
-                        <i class="fas fa-search" style="font-size: 60px; color: #ccc;"></i>
-                        <h3 style="margin-top: 15px;">Tidak ada produk ditemukan</h3>
-                        <p>Kata kunci "<strong>${escapeHtml(searchKeyword)}</strong>" tidak ditemukan pada produk kami.</p>
-                        <button onclick="window.location.href='/kategori'" class="btn-primary" style="background: #1F1B5B; color: white; border: none; padding: 10px 25px; border-radius: 30px; cursor: pointer; margin-top: 15px;">Lihat Semua Produk</button>
-                    `;
-                }
-                const grid = document.getElementById('kategoriProductGrid');
-                if (grid) grid.style.display = 'none';
-            }
+            // Perform search
+            searchKategoriProducts(currentSearchKeyword);
         }
     }
     
@@ -562,6 +712,7 @@
         
         renderProducts();
         loadSearchFromUrl();
+        setupKategoriSearch();
     });
     
     // ==================== FUNGSI GLOBAL ====================
@@ -641,9 +792,12 @@
     // Export ke global
     window.applyFilters = applyFilters;
     window.resetAllFilters = resetAllFilters;
+    window.resetAllFiltersAndSearch = resetAllFiltersAndSearch;
+    window.searchKategoriProducts = searchKategoriProducts;
     window.goToProductDetail = goToProductDetail;
     window.addToCartLocal = addToCartLocal;
     window.formatRupiah = formatRupiah;
     window.showNotification = showNotification;
+    window.getProductImage = getProductImage;
 </script>
 @endsection

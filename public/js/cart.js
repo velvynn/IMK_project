@@ -31,14 +31,12 @@ function saveCart() {
 
 // ==================== UPDATE UI ====================
 function updateCartCount() {
-    // Hitung total quantity (jumlah item, bukan jumlah produk unik)
     const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
     const totalProducts = cart.length;
     
     console.log('Update Cart Count - Total Items:', totalItems, 'Total Products:', totalProducts);
     
     document.querySelectorAll('.cart-count').forEach(el => {
-        // Tampilkan total quantity (jumlah item)
         el.textContent = totalItems;
         if (totalItems === 0) {
             el.style.display = 'none';
@@ -47,7 +45,6 @@ function updateCartCount() {
         }
     });
     
-    // Juga simpan ke localStorage agar navbar bisa membaca
     localStorage.setItem('vintara_cart_total_items', totalItems);
 }
 
@@ -55,7 +52,6 @@ function updateCartTotal() {
     let selectedSubtotal = 0;
     let selectedCount = 0;
     
-    // Jika tidak ada item yang dipilih, pilih semua secara otomatis
     if (selectedItems.size === 0 && cart.length > 0) {
         cart.forEach(item => {
             selectedItems.add(item.id);
@@ -152,7 +148,6 @@ function addToCart(productId, quantity = 1) {
         return;
     }
     
-    // CEK STOK SEBELUM ADD TO CART
     const existingItem = cart.find(item => item.id === productId);
     const currentQty = existingItem ? existingItem.quantity : 0;
     const newQty = currentQty + quantity;
@@ -318,7 +313,6 @@ function displayCartPageItems() {
         return;
     }
     
-    // Hitung selected subtotal untuk ditampilkan
     let selectedSubtotal = 0;
     let selectedCount = 0;
     cart.forEach(item => {
@@ -337,7 +331,6 @@ function displayCartPageItems() {
     
     container.innerHTML = `
         <div style="display: flex; gap: 30px; flex-wrap: wrap;">
-            <!-- LEFT COLUMN: PRODUCT LIST -->
             <div style="flex: 2; min-width: 300px;">
                 <div class="cart-header-table" style="display: grid; grid-template-columns: 50px 3fr 1.5fr 1.5fr 1.5fr 50px; background: #F3F0FF; padding: 15px 20px; font-weight: 600; border-radius: 16px; margin-bottom: 15px;">
                     <div class="checkbox-col">
@@ -384,7 +377,6 @@ function displayCartPageItems() {
                 `).join('')}
             </div>
             
-            <!-- RIGHT COLUMN: SUMMARY -->
             <div style="flex: 1; min-width: 280px;">
                 <div style="background: white; padding: 25px; border-radius: 16px; position: sticky; top: 100px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
                     <h3 style="color: #1F1B5B; margin-bottom: 20px; font-size: 18px;">
@@ -421,7 +413,6 @@ function displayCartPageItems() {
                         <span>${formatRupiah(total)}</span>
                     </div>
                     
-                    <!-- VOUCHER SECTION -->
                     <div style="background: #F3F0FF; padding: 15px; border-radius: 12px; margin: 20px 0;">
                         <p style="font-size: 13px; margin-bottom: 10px; font-weight: 600;">
                             <i class="fas fa-ticket-alt"></i> Kode Voucher
@@ -429,14 +420,13 @@ function displayCartPageItems() {
                         <div style="display: flex; gap: 10px;">
                             <input type="text" id="voucherInput" placeholder="VIN10 / VIN20 / VIN50 / GRATISONGKIR" 
                                    style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 30px; font-size: 13px;">
-                            <button onclick="applyVoucher()" style="background: #1F1B5B; color: white; border: none; padding: 0 20px; border-radius: 30px; cursor: pointer; font-weight: 600;">
+                            <button onclick="applyVoucherInCart()" style="background: #1F1B5B; color: white; border: none; padding: 0 20px; border-radius: 30px; cursor: pointer; font-weight: 600;">
                                 Pakai
                             </button>
                         </div>
                         <div id="voucherMessage" style="font-size: 11px; margin-top: 8px;"></div>
                     </div>
                     
-                    <!-- CHECKOUT BUTTON -->
                     <button onclick="checkoutSelected()" style="width: 100%; background: #1F1B5B; color: white; border: none; padding: 14px; border-radius: 40px; font-weight: 600; cursor: pointer; margin-top: 10px; font-size: 16px;">
                         Checkout ${selectedCount > 0 ? `(${selectedCount} produk)` : ''} →
                     </button>
@@ -445,7 +435,6 @@ function displayCartPageItems() {
         </div>
     `;
     
-    // Update select all checkbox status
     const selectAllCheckbox = document.getElementById('selectAllCheckboxPage');
     if (selectAllCheckbox && cart.length > 0) {
         selectAllCheckbox.checked = selectedItems.size === cart.length;
@@ -476,11 +465,17 @@ function toggleSelectItemPage(productId) {
     updateCartTotal();
 }
 
-function updateSelectAllStatusPage() {
-    const selectAllCheckbox = document.getElementById('selectAllCheckboxPage');
-    if (selectAllCheckbox && cart.length > 0) {
-        selectAllCheckbox.checked = selectedItems.size === cart.length;
-        selectAllCheckbox.indeterminate = selectedItems.size > 0 && selectedItems.size < cart.length;
+// ==================== VOUCHER DI CART (DINONAKTIFKAN - REDIRECT KE CHECKOUT) ====================
+function applyVoucherInCart() {
+    const voucherInput = document.getElementById('voucherInput');
+    const voucherMessage = document.getElementById('voucherMessage');
+    
+    if (!voucherInput) return;
+    
+    showNotification('⚠️ Voucher hanya bisa digunakan di halaman Checkout! Silakan lanjut ke Checkout.', 'error');
+    
+    if (voucherMessage) {
+        voucherMessage.innerHTML = '<span style="color: orange;">⚠️ Gunakan voucher di halaman Checkout!</span>';
     }
 }
 
@@ -520,61 +515,6 @@ function checkoutSelected() {
     setTimeout(() => {
         window.location.href = '/checkout';
     }, 500);
-}
-
-function applyVoucher() {
-    const voucherInput = document.getElementById('voucherInput');
-    const voucherMessage = document.getElementById('voucherMessage');
-    
-    if (!voucherInput) return;
-    
-    const voucherCode = voucherInput.value.toUpperCase();
-    const validVouchers = {
-        'VIN10': 0.1,
-        'VIN20': 0.2,
-        'VIN50': 0.5,
-        'GRATISONGKIR': 'free_shipping'
-    };
-    
-    let selectedSubtotal = 0;
-    cart.forEach(item => {
-        if (selectedItems.has(item.id)) {
-            selectedSubtotal += (item.price * item.quantity);
-        }
-    });
-    
-    if (selectedSubtotal === 0) {
-        if (voucherMessage) voucherMessage.innerHTML = '<span style="color: red;">✗ Pilih produk terlebih dahulu!</span>';
-        showNotification('Pilih produk terlebih dahulu!', 'error');
-        return;
-    }
-    
-    if (validVouchers[voucherCode]) {
-        if (validVouchers[voucherCode] === 'free_shipping') {
-            localStorage.setItem('voucher_discount', 0);
-            localStorage.setItem('voucher_free_shipping', true);
-            if (voucherMessage) {
-                voucherMessage.innerHTML = '<span style="color: green;">✓ Voucher GRATISONGKIR berhasil dipakai!</span>';
-            }
-            showNotification('Voucher GRATISONGKIR berhasil dipakai!', 'success');
-        } else {
-            const discountPercent = validVouchers[voucherCode];
-            const discountAmount = selectedSubtotal * discountPercent;
-            localStorage.setItem('voucher_discount', discountAmount);
-            localStorage.setItem('voucher_free_shipping', false);
-            if (voucherMessage) {
-                voucherMessage.innerHTML = `<span style="color: green;">✓ Voucher ${voucherCode} berhasil dipakai! Potongan ${discountPercent * 100}%</span>`;
-            }
-            showNotification(`Voucher ${voucherCode} berhasil dipakai!`, 'success');
-        }
-        updateCartTotal();
-        displayCartPageItems();
-    } else {
-        if (voucherMessage) {
-            voucherMessage.innerHTML = '<span style="color: red;">✗ Kode voucher tidak valid!</span>';
-        }
-        showNotification('Kode voucher tidak valid!', 'error');
-    }
 }
 
 function animateCartIcon() {
@@ -684,10 +624,8 @@ function initCart() {
         newCheckoutBtn.style.opacity = '1';
     }
     
-    // Perbaikan: Deteksi halaman cart dengan lebih baik
     const currentPath = window.location.pathname;
     if (currentPath.includes('cart.html') || currentPath === '/cart' || currentPath.includes('/cart')) {
-        // Tunggu sebentar agar DOM siap
         setTimeout(() => {
             displayCartPageItems();
         }, 100);
@@ -706,7 +644,7 @@ window.toggleSelectAll = toggleSelectAll;
 window.toggleSelectAllPage = toggleSelectAllPage;
 window.toggleSelectItemPage = toggleSelectItemPage;
 window.checkoutSelected = checkoutSelected;
-window.applyVoucher = applyVoucher;
+window.applyVoucherInCart = applyVoucherInCart;
 window.openCartSidebar = openCartSidebar;
 window.closeCartSidebar = closeCartSidebar;
 window.showNotification = showNotification;
@@ -719,4 +657,4 @@ if (document.readyState === 'loading') {
     initCart();
 }
 
-console.log('✅ cart.js loaded - FULLY FIXED WITH CHECKBOX & CART PAGE');
+console.log('✅ cart.js loaded - VOUCHER DISABLED IN CART (use checkout page only)');

@@ -9,6 +9,7 @@ let selectedCartItems = new Set();
 // ==================== INITIALIZATION ====================
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('VINTARA App Started');
+    console.log('Current path:', window.location.pathname);
     
     loadProductsFromLocalStorage();
     await loadProductsFromAPI();
@@ -18,18 +19,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     setupBackToTop();
     setupNewsletter();
     
-    if (document.getElementById('berandaProductGrid')) {
+    const currentPath = window.location.pathname;
+    const isDealsPage = currentPath.includes('/deals') || currentPath === '/deals' || currentPath === '/deals.html';
+    
+    // ONLY RENDER FOR SPECIFIC PAGES, NOT DEALS PAGE
+    if (document.getElementById('berandaProductGrid') && !isDealsPage) {
+        console.log('Rendering beranda products');
         renderBerandaProducts();
         setupBerandaSort();
         displayRecommendationsSidebar();
+        setupBerandaSearch();
     }
     
-    if (document.getElementById('kategoriProductGrid')) {
+    if (document.getElementById('kategoriProductGrid') && !isDealsPage) {
+        console.log('Rendering kategori products');
         initKategoriPage();
     }
     
-    if (document.getElementById('flashProductsGrid')) {
+    // IMPORTANT: DO NOT RENDER FLASH PRODUCTS ON DEALS PAGE
+    // Biarkan konten dari Blade yang tampil, jangan di-render ulang oleh JavaScript
+    if (document.getElementById('flashProductsGrid') && !isDealsPage) {
+        console.log('Rendering flash products (not on deals page)');
         renderFlashProductsLocal();
+        setupDealsSearch();
+    } else if (document.getElementById('flashProductsGrid') && isDealsPage) {
+        console.log('DEALS PAGE DETECTED - SKIPPING JavaScript render to preserve server content');
+        // Hanya setup search functionality, tidak merender ulang produk
+        setupDealsSearchOnly();
     }
     
     if (document.getElementById('productName')) {
@@ -59,14 +75,16 @@ function loadProductsFromLocalStorage() {
 
 async function loadProductsFromAPI() {
     try {
-        const response = await fetch('/api/products?limit=20');
+        const response = await fetch('/api/products?limit=100');
         if (response.ok) {
             const data = await response.json();
             if (data.success && data.data && data.data.length > 0) {
                 allProducts = data.data;
                 localStorage.setItem('vintara_products', JSON.stringify(allProducts));
                 console.log('Products loaded from API:', allProducts.length);
-                if (document.getElementById('berandaProductGrid')) {
+                const currentPath = window.location.pathname;
+                const isDealsPage = currentPath.includes('/deals');
+                if (document.getElementById('berandaProductGrid') && !isDealsPage) {
                     renderBerandaProducts();
                 }
             }
@@ -118,6 +136,10 @@ function getFallbackProducts() {
         { id: 4, name: "MacBook Air M3", slug: "macbook-air-m3", category_slug: "laptop", brand: "Apple", price: 35000000, original_price: 42000000, stock: 30, sold: 567, rating: 4.9, is_flash_sale: false, discount: 0, main_image: "https://picsum.photos/id/8/400/400" },
         { id: 5, name: "ASUS ROG Zephyrus G14", slug: "asus-rog-zephyrus-g14", category_slug: "laptop", brand: "Asus", price: 22000000, original_price: 28000000, stock: 25, sold: 789, rating: 4.7, is_flash_sale: true, discount: 21, main_image: "https://picsum.photos/id/9/400/400" },
         { id: 6, name: "Sony WH-1000XM5", slug: "sony-wh-1000xm5", category_slug: "headset", brand: "Sony", price: 7000000, original_price: 9500000, stock: 45, sold: 1234, rating: 4.9, is_flash_sale: true, discount: 26, main_image: "https://picsum.photos/id/13/400/400" },
+        { id: 7, name: "Apple Watch Ultra 2", slug: "apple-watch-ultra-2", category_slug: "smartwatch", brand: "Apple", price: 12000000, original_price: 15000000, stock: 25, sold: 567, rating: 4.9, is_flash_sale: true, discount: 20, main_image: "https://picsum.photos/id/14/400/400" },
+        { id: 8, name: "Samsung Galaxy Watch 6 Classic", slug: "samsung-galaxy-watch-6", category_slug: "smartwatch", brand: "Samsung", price: 6000000, original_price: 8000000, stock: 50, sold: 1234, rating: 4.7, is_flash_sale: true, discount: 25, main_image: "https://picsum.photos/id/15/400/400" },
+        { id: 9, name: "JBL Flip 6", slug: "jbl-flip-6", category_slug: "headset", brand: "JBL", price: 1800000, original_price: 2800000, stock: 150, sold: 4567, rating: 4.8, is_flash_sale: false, discount: 0, main_image: "https://picsum.photos/id/16/400/400" },
+        { id: 10, name: "Anker Power Bank 26800", slug: "anker-power-bank", category_slug: "adaptor", brand: "Anker", price: 850000, original_price: 1200000, stock: 100, sold: 7890, rating: 4.7, is_flash_sale: true, discount: 29, main_image: "https://picsum.photos/id/17/400/400" }
     ];
 }
 
@@ -263,7 +285,7 @@ function renderCartSidebarLocal() {
     }
 }
 
-// ==================== RENDER FUNCTIONS ====================
+// ==================== RENDER FUNCTIONS (UNTUK BERANDA & KATEGORI) ====================
 function renderBerandaProducts() {
     const grid = document.getElementById('berandaProductGrid');
     if (!grid) return;
@@ -276,7 +298,7 @@ function renderBerandaProducts() {
     }
     
     grid.innerHTML = featuredProducts.map(product => `
-        <div class="product-card" onclick="goToProductDetail(${product.id})" style="cursor:pointer;">
+        <div class="product-card" onclick="goToProductDetail(${product.id}, '${product.slug}')" style="cursor:pointer;">
             ${product.is_flash_sale ? `<div class="product-badge flash" style="position:absolute; top:12px; left:12px; background:#ff4757; color:white; padding:4px 10px; border-radius:20px; font-size:11px; z-index:1;">🔥 Flash Sale -${product.discount}%</div>` : ''}
             <div class="product-image" style="height:200px; overflow:hidden; background:#f5f5f5;">
                 <img src="${product.main_image || 'https://placehold.co/400x400/e9ecef/1F1B5B?text=' + encodeURIComponent(product.name)}" 
@@ -305,19 +327,85 @@ function renderBerandaProducts() {
     `).join('');
 }
 
-function renderKategoriProducts() {
-    const grid = document.getElementById('kategoriProductGrid');
-    if (!grid) return;
+// ==================== BERANDA SEARCH ====================
+let berandaSearchKeyword = '';
+let originalBerandaProducts = [];
+
+function setupBerandaSearch() {
+    originalBerandaProducts = [...allProducts];
     
-    const productsToShow = currentKategoriProducts.length > 0 ? currentKategoriProducts : allProducts;
+    const searchInput = document.getElementById('searchInput');
+    const searchIcon = document.getElementById('searchIcon');
     
-    if (!productsToShow || productsToShow.length === 0) {
-        grid.innerHTML = `<div class="no-products" style="text-align:center; padding:60px;"><i class="fas fa-search" style="font-size:60px; color:var(--text-light);"></i><h3>Tidak ada produk ditemukan</h3></div>`;
+    if (!searchInput) return;
+    
+    let searchTimeout;
+    
+    searchInput.addEventListener('input', function(e) {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            const keyword = e.target.value.trim();
+            searchBerandaProducts(keyword);
+        }, 500);
+    });
+    
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            clearTimeout(searchTimeout);
+            const keyword = e.target.value.trim();
+            searchBerandaProducts(keyword);
+        }
+    });
+    
+    if (searchIcon) {
+        searchIcon.addEventListener('click', function(e) {
+            e.preventDefault();
+            const keyword = searchInput.value.trim();
+            searchBerandaProducts(keyword);
+        });
+    }
+}
+
+function searchBerandaProducts(keyword) {
+    const titleElement = document.querySelector('.products-left .section-header h2');
+    const grid = document.getElementById('berandaProductGrid');
+    
+    berandaSearchKeyword = keyword.trim();
+    
+    if (!berandaSearchKeyword) {
+        renderBerandaProducts();
+        if (titleElement) {
+            titleElement.innerHTML = '⚡ Produk Unggulan';
+        }
         return;
     }
     
-    grid.innerHTML = productsToShow.map(product => `
-        <div class="product-card" onclick="goToProductDetail(${product.id})" style="cursor:pointer;">
+    const filtered = originalBerandaProducts.filter(product => 
+        (product.name && product.name.toLowerCase().includes(berandaSearchKeyword.toLowerCase())) ||
+        (product.brand && product.brand.toLowerCase().includes(berandaSearchKeyword.toLowerCase()))
+    );
+    
+    if (titleElement) {
+        titleElement.innerHTML = `🔍 Hasil Pencarian: "${escapeHtml(berandaSearchKeyword)}" <span style="font-size: 14px; color: #6c757d;">(${filtered.length} produk)</span>`;
+    }
+    
+    if (!grid) return;
+    
+    if (filtered.length === 0) {
+        grid.innerHTML = `
+            <div class="no-products" style="grid-column:1/-1; text-align:center; padding:60px; background:white; border-radius:20px;">
+                <i class="fas fa-search" style="font-size: 60px; color: #ccc;"></i>
+                <h3 style="margin-top: 15px;">Tidak ada produk ditemukan</h3>
+                <p>Kata kunci "<strong>${escapeHtml(berandaSearchKeyword)}</strong>" tidak ditemukan.</p>
+                <button onclick="resetBerandaSearch()" class="btn-primary" style="margin-top: 15px;">Lihat Semua Produk</button>
+            </div>
+        `;
+        return;
+    }
+    
+    grid.innerHTML = filtered.map(product => `
+        <div class="product-card" onclick="goToProductDetail(${product.id}, '${product.slug}')" style="cursor:pointer;">
             ${product.is_flash_sale ? `<div class="product-badge flash" style="position:absolute; top:12px; left:12px; background:#ff4757; color:white; padding:4px 10px; border-radius:20px; font-size:11px; z-index:1;">🔥 Flash Sale -${product.discount}%</div>` : ''}
             <div class="product-image" style="height:200px; overflow:hidden; background:#f5f5f5;">
                 <img src="${product.main_image || 'https://placehold.co/400x400/e9ecef/1F1B5B?text=' + encodeURIComponent(product.name)}" 
@@ -326,19 +414,140 @@ function renderKategoriProducts() {
                      onerror="this.src='https://placehold.co/400x400/e9ecef/1F1B5B?text=No+Image'">
             </div>
             <div class="product-info" style="padding:16px;">
-                <h4 class="product-title">${escapeHtml(product.name)}</h4>
-                <div class="product-rating">${generateStarRating(product.rating || 0)} <span>(${product.rating || 0})</span></div>
-                <div class="product-price">${formatRupiah(product.price)}${product.original_price > product.price ? `<span class="product-old-price">${formatRupiah(product.original_price)}</span>` : ''}</div>
-                <div class="product-sold"><i class="fas fa-shopping-bag"></i> Terjual ${product.sold || 0}+</div>
-                <button class="btn-add-cart" onclick="event.stopPropagation(); addToCartLocal(${product.id})"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+                <h4 class="product-title" style="font-weight:600; margin-bottom:5px; font-size:15px;">${escapeHtml(product.name)}</h4>
+                <div class="product-rating" style="margin:5px 0;">
+                    ${generateStarRating(product.rating || 0)}
+                    <span style="margin-left:5px;">(${product.rating || 0})</span>
+                </div>
+                <div class="product-price" style="font-size:18px; font-weight:700; color:var(--primary); margin:8px 0;">
+                    ${formatRupiah(product.price)}
+                    ${product.original_price > product.price ? `<span class="product-old-price" style="font-size:14px; color:var(--text-gray); text-decoration:line-through; margin-left:8px;">${formatRupiah(product.original_price)}</span>` : ''}
+                </div>
+                <div class="product-sold" style="font-size:12px; color:var(--text-gray); margin-bottom:10px;">
+                    <i class="fas fa-shopping-bag"></i> Terjual ${product.sold || 0}+
+                </div>
+                <button class="btn-add-cart" onclick="event.stopPropagation(); addToCartLocal(${product.id})" style="width:100%; padding:10px; background:var(--primary); color:white; border:none; border-radius:30px; font-weight:600; cursor:pointer;">
+                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                </button>
             </div>
         </div>
     `).join('');
 }
 
+function resetBerandaSearch() {
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.value = '';
+    }
+    berandaSearchKeyword = '';
+    renderBerandaProducts();
+    
+    const titleElement = document.querySelector('.products-left .section-header h2');
+    if (titleElement) {
+        titleElement.innerHTML = '⚡ Produk Unggulan';
+    }
+}
+
+// ==================== DEALS SEARCH ONLY (TIDAK MERENDER ULANG) ====================
+function setupDealsSearchOnly() {
+    const searchInput = document.getElementById('dealsSearchInput');
+    const searchBtn = document.getElementById('dealsSearchBtn');
+    const clearBtn = document.getElementById('dealsClearSearch');
+    const searchInfo = document.getElementById('dealsSearchInfo');
+    
+    if (!searchInput) return;
+    
+    // Get existing product cards from DOM (already rendered by Blade)
+    const getAllProductCards = () => {
+        return Array.from(document.querySelectorAll('.product-card'));
+    };
+    
+    const performSearch = () => {
+        const keyword = searchInput.value.trim().toLowerCase();
+        
+        if (!keyword) {
+            getAllProductCards().forEach(card => {
+                card.style.display = '';
+            });
+            if (searchInfo) searchInfo.style.display = 'none';
+            if (clearBtn) clearBtn.style.display = 'none';
+            return;
+        }
+        
+        const cards = getAllProductCards();
+        let visibleCount = 0;
+        
+        cards.forEach(card => {
+            const title = card.querySelector('.product-title')?.textContent.toLowerCase() || '';
+            const matches = title.includes(keyword);
+            card.style.display = matches ? '' : 'none';
+            if (matches) visibleCount++;
+        });
+        
+        if (searchInfo) {
+            searchInfo.style.display = 'block';
+            searchInfo.innerHTML = `<i class="fas fa-search"></i> Menampilkan ${visibleCount} hasil untuk "${escapeHtml(keyword)}"`;
+        }
+        if (clearBtn) clearBtn.style.display = visibleCount !== cards.length ? 'block' : 'none';
+    };
+    
+    searchInput.addEventListener('input', function() {
+        clearTimeout(window.dealsSearchTimeout);
+        window.dealsSearchTimeout = setTimeout(performSearch, 300);
+    });
+    
+    if (searchBtn) {
+        searchBtn.addEventListener('click', performSearch);
+    }
+    
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            performSearch();
+        });
+    }
+    
+    console.log('Deals search only initialized - preserves server-rendered content');
+}
+
+// ==================== DEALS SEARCH (UNTUK NON-DEALS PAGE) ====================
+function setupDealsSearch() {
+    setupDealsSearchOnly();
+}
+
+function searchDealsProducts(keyword) {
+    // This function is kept for compatibility but does nothing special on deals page
+    console.log('searchDealsProducts called');
+}
+
+function resetDealsSearch() {
+    const searchInput = document.getElementById('dealsSearchInput');
+    if (searchInput) {
+        searchInput.value = '';
+        const cards = document.querySelectorAll('.product-card');
+        cards.forEach(card => {
+            card.style.display = '';
+        });
+        const searchInfo = document.getElementById('dealsSearchInfo');
+        if (searchInfo) searchInfo.style.display = 'none';
+        const clearBtn = document.getElementById('dealsClearSearch');
+        if (clearBtn) clearBtn.style.display = 'none';
+    }
+}
+
+// ==================== FLASH PRODUCTS RENDER (TIDAK UNTUK DEALS PAGE) ====================
 function renderFlashProductsLocal() {
     const grid = document.getElementById('flashProductsGrid');
     if (!grid) return;
+    
+    const currentPath = window.location.pathname;
+    const isDealsPage = currentPath.includes('/deals');
+    
+    // DO NOT RENDER ON DEALS PAGE - KEEP SERVER CONTENT
+    if (isDealsPage) {
+        console.log('renderFlashProductsLocal SKIPPED on deals page - preserving server content');
+        return;
+    }
     
     const flashProducts = allProducts.filter(p => p.is_flash_sale === true);
     
@@ -348,18 +557,19 @@ function renderFlashProductsLocal() {
     }
     
     grid.innerHTML = flashProducts.map(product => `
-        <div class="product-card" onclick="goToProductDetail(${product.id})" style="cursor:pointer;">
-            <div class="product-badge flash">🔥 Flash Sale -${product.discount}%</div>
-            <div class="product-image">
+        <div class="product-card" onclick="goToProductDetail(${product.id}, '${product.slug}')" style="cursor:pointer;">
+            <div class="product-badge flash" style="position:absolute; top:12px; left:12px; background:#ff4757; color:white; padding:4px 10px; border-radius:20px; font-size:11px; z-index:1;">🔥 Flash Sale -${product.discount}%</div>
+            <div class="product-image" style="height:200px; overflow:hidden; background:#f5f5f5;">
                 <img src="${product.main_image || 'https://placehold.co/400x400/e9ecef/1F1B5B?text=' + encodeURIComponent(product.name)}" 
                      alt="${product.name}" 
+                     style="width:100%; height:100%; object-fit:cover;"
                      onerror="this.src='https://placehold.co/400x400/e9ecef/1F1B5B?text=No+Image'">
             </div>
-            <div class="product-info">
+            <div class="product-info" style="padding:16px;">
                 <h4 class="product-title">${escapeHtml(product.name)}</h4>
                 <div class="product-rating">${generateStarRating(product.rating || 0)}<span>(${product.rating || 0})</span></div>
-                <div class="product-price">${formatRupiah(product.price)}<span class="product-old-price">${formatRupiah(product.original_price)}</span></div>
-                <button class="btn-add-cart" onclick="event.stopPropagation(); addToCartLocal(${product.id})"><i class="fas fa-shopping-cart"></i> Beli Sekarang</button>
+                <div class="product-price">${formatRupiah(product.price)}<span class="product-old-price" style="text-decoration:line-through; font-size:14px; color:#6c757d; margin-left:8px;">${formatRupiah(product.original_price)}</span></div>
+                <button class="btn-add-cart" onclick="event.stopPropagation(); addToCartLocal(${product.id})"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
             </div>
         </div>
     `).join('');
@@ -372,7 +582,7 @@ function displayRecommendationsSidebar() {
     const topProducts = [...allProducts].sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 5);
     
     container.innerHTML = topProducts.map(product => `
-        <div class="recommend-item-horizontal" onclick="goToProductDetail(${product.id})" style="cursor:pointer;">
+        <div class="recommend-item-horizontal" onclick="goToProductDetail(${product.id}, '${product.slug}')" style="cursor:pointer;">
             <div class="recommend-img-small">
                 <img src="${product.main_image || 'https://placehold.co/400x400/e9ecef/1F1B5B?text=' + encodeURIComponent(product.name)}" 
                      alt="${product.name}" 
@@ -602,6 +812,37 @@ function initKategoriPage() {
     setupKategoriFilters();
 }
 
+function renderKategoriProducts() {
+    const grid = document.getElementById('kategoriProductGrid');
+    if (!grid) return;
+    
+    const productsToShow = currentKategoriProducts.length > 0 ? currentKategoriProducts : allProducts;
+    
+    if (!productsToShow || productsToShow.length === 0) {
+        grid.innerHTML = `<div class="no-products" style="text-align:center; padding:60px;"><i class="fas fa-search" style="font-size:60px; color:var(--text-light);"></i><h3>Tidak ada produk ditemukan</h3></div>`;
+        return;
+    }
+    
+    grid.innerHTML = productsToShow.map(product => `
+        <div class="product-card" onclick="goToProductDetail(${product.id}, '${product.slug}')" style="cursor:pointer;">
+            ${product.is_flash_sale ? `<div class="product-badge flash" style="position:absolute; top:12px; left:12px; background:#ff4757; color:white; padding:4px 10px; border-radius:20px; font-size:11px; z-index:1;">🔥 Flash Sale -${product.discount}%</div>` : ''}
+            <div class="product-image" style="height:200px; overflow:hidden; background:#f5f5f5;">
+                <img src="${product.main_image || 'https://placehold.co/400x400/e9ecef/1F1B5B?text=' + encodeURIComponent(product.name)}" 
+                     alt="${product.name}" 
+                     style="width:100%; height:100%; object-fit:cover;"
+                     onerror="this.src='https://placehold.co/400x400/e9ecef/1F1B5B?text=No+Image'">
+            </div>
+            <div class="product-info" style="padding:16px;">
+                <h4 class="product-title">${escapeHtml(product.name)}</h4>
+                <div class="product-rating">${generateStarRating(product.rating || 0)} <span>(${product.rating || 0})</span></div>
+                <div class="product-price">${formatRupiah(product.price)}${product.original_price > product.price ? `<span class="product-old-price">${formatRupiah(product.original_price)}</span>` : ''}</div>
+                <div class="product-sold"><i class="fas fa-shopping-bag"></i> Terjual ${product.sold || 0}+</div>
+                <button class="btn-add-cart" onclick="event.stopPropagation(); addToCartLocal(${product.id})"><i class="fas fa-shopping-cart"></i> Add to Cart</button>
+            </div>
+        </div>
+    `).join('');
+}
+
 function setupKategoriFilters() {
     const sortSelect = document.getElementById('sortProductsKategori');
     if (sortSelect) {
@@ -657,7 +898,7 @@ function setupBerandaSort() {
         const grid = document.getElementById('berandaProductGrid');
         if (grid) {
             grid.innerHTML = sorted.slice(0, 8).map(product => `
-                <div class="product-card" onclick="goToProductDetail(${product.id})" style="cursor:pointer;">
+                <div class="product-card" onclick="goToProductDetail(${product.id}, '${product.slug}')" style="cursor:pointer;">
                     ${product.is_flash_sale ? `<div class="product-badge flash" style="position:absolute; top:12px; left:12px; background:#ff4757; color:white; padding:4px 10px; border-radius:20px; font-size:11px;">🔥 Flash Sale -${product.discount}%</div>` : ''}
                     <div class="product-image">
                         <img src="${product.main_image || 'https://placehold.co/400x400/e9ecef/1F1B5B?text=' + encodeURIComponent(product.name)}" 
@@ -712,9 +953,8 @@ function setupNewsletter() {
     }
 }
 
-// ==================== EVENT LISTENERS (DENGAN PERBAIKAN SEARCH) ====================
+// ==================== EVENT LISTENERS ====================
 function setupEventListeners() {
-    // User Icon - langsung ke profile
     const userIcon = document.getElementById('userIcon');
     if (userIcon) {
         const newUserIcon = userIcon.cloneNode(true);
@@ -726,7 +966,6 @@ function setupEventListeners() {
         });
     }
     
-    // Cart Icon
     const cartIcon = document.getElementById('cartIcon');
     if (cartIcon) {
         const newCartIcon = cartIcon.cloneNode(true);
@@ -738,7 +977,6 @@ function setupEventListeners() {
         });
     }
     
-    // Close Cart
     const closeCart = document.getElementById('closeCart');
     if (closeCart) {
         const newCloseCart = closeCart.cloneNode(true);
@@ -748,7 +986,6 @@ function setupEventListeners() {
         });
     }
     
-    // Cart Overlay
     const cartOverlay = document.getElementById('cartOverlay');
     if (cartOverlay) {
         const newOverlay = cartOverlay.cloneNode(true);
@@ -757,49 +994,9 @@ function setupEventListeners() {
             closeCartSidebar();
         });
     }
-    
-    // ==================== PERBAIKAN SEARCH ====================
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        let timeout;
-        searchInput.addEventListener('input', function(e) {
-            clearTimeout(timeout);
-            timeout = setTimeout(function() {
-                const keyword = e.target.value.trim();
-                if (keyword.length > 0) {
-                    window.location.href = '/kategori?search=' + encodeURIComponent(keyword);
-                }
-            }, 500);
-        });
-        
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                const keyword = e.target.value.trim();
-                if (keyword.length > 0) {
-                    window.location.href = '/kategori?search=' + encodeURIComponent(keyword);
-                }
-            }
-        });
-    }
-    
-    // Search icon click
-    const searchIcon = document.querySelector('.nav-search i');
-    if (searchIcon) {
-        const newSearchIcon = searchIcon.cloneNode(true);
-        searchIcon.parentNode.replaceChild(newSearchIcon, searchIcon);
-        newSearchIcon.addEventListener('click', function(e) {
-            e.preventDefault();
-            const searchInputField = document.getElementById('searchInput');
-            const keyword = searchInputField ? searchInputField.value.trim() : '';
-            if (keyword.length > 0) {
-                window.location.href = '/kategori?search=' + encodeURIComponent(keyword);
-            }
-        });
-    }
 }
 
-// Helper functions
+// ==================== HELPER FUNCTIONS ====================
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
@@ -836,8 +1033,21 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
-function goToProductDetail(productId) {
-    window.location.href = `/product-detail.html?id=${productId}`;
+// ==================== GO TO PRODUCT DETAIL ====================
+function goToProductDetail(productId, productSlug = null) {
+    if (productSlug) {
+        window.location.href = `/product/${productSlug}`;
+        return;
+    }
+    
+    const product = allProducts.find(p => p.id === productId);
+    if (product && product.slug) {
+        window.location.href = `/product/${product.slug}`;
+    } else if (product) {
+        window.location.href = `/product/${productId}`;
+    } else {
+        showNotification('Produk tidak ditemukan!', 'error');
+    }
 }
 
 function goToCategory(categorySlug) {
@@ -865,6 +1075,16 @@ function closeCartSidebar() {
     }
 }
 
+// ==================== VOUCHER DI MAIN.JS (DINONAKTIFKAN) ====================
+window.applyVoucher = function() {
+    if (typeof window.showNotification === 'function') {
+        window.showNotification('⚠️ Voucher hanya bisa digunakan di halaman Checkout!', 'error');
+    } else {
+        alert('⚠️ Voucher hanya bisa digunakan di halaman Checkout!');
+    }
+    return false;
+};
+
 // Export ke global
 window.addToCartLocal = addToCartLocal;
 window.removeFromCartLocal = removeFromCartLocal;
@@ -879,5 +1099,10 @@ window.closeCartSidebar = closeCartSidebar;
 window.formatRupiah = formatRupiah;
 window.generateStarRating = generateStarRating;
 window.showNotification = showNotification;
+window.searchBerandaProducts = searchBerandaProducts;
+window.resetBerandaSearch = resetBerandaSearch;
+window.searchDealsProducts = searchDealsProducts;
+window.resetDealsSearch = resetDealsSearch;
+window.applyVoucher = window.applyVoucher;
 
-console.log('✅ main.js loaded - Stok akan berkurang otomatis saat checkout - Search berfungsi');
+console.log('✅ main.js loaded - DEALS PAGE JavaScript render DISABLED');

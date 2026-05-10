@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\VoucherController;
+use App\Http\Controllers\ChatController; // TAMBAHKAN INI
 
 // ==================== ADMIN CONTROLLERS ====================
 use App\Http\Controllers\Admin\DashboardController;
@@ -20,7 +21,7 @@ use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\WarehouseController;
 use App\Http\Controllers\Admin\SupplierController;
-use App\Http\Controllers\Admin\ChatController;
+use App\Http\Controllers\Admin\ChatController as AdminChatController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\AdminController;
@@ -58,6 +59,9 @@ Route::get('/login', [PageController::class, 'login'])->name('login');
 Route::get('/login.html', [PageController::class, 'login'])->name('login.html');
 Route::get('/register', [PageController::class, 'register'])->name('register');
 Route::get('/register.html', [PageController::class, 'register'])->name('register.html');
+
+// ==================== CHAT ROUTES ====================
+Route::get('/chat', [ChatController::class, 'index'])->name('chat');
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
@@ -101,4 +105,12 @@ Route::prefix('api')->group(function () {
     
     Route::get('/vouchers', [VoucherController::class, 'index']);
     Route::post('/vouchers/validate', [VoucherController::class, 'validateVoucher']);
+    
+    // ==================== CHAT API ROUTES ====================
+    Route::get('/chat/{id}', [ChatController::class, 'getChat']);
+    Route::post('/chat/{id}/send', [ChatController::class, 'sendMessage']);
+    Route::post('/chat/{id}/pin', [ChatController::class, 'togglePin']);
+    Route::post('/chat/{id}/archive', [ChatController::class, 'archive']);
+    Route::delete('/chat/{id}', [ChatController::class, 'destroy']);
+    Route::get('/chat/unread-count', [ChatController::class, 'getUnreadCount']);
 });
